@@ -1,1 +1,2 @@
-HR 1 submenus, contents, contents no functionality yet.
+HR 1 modules, submenus, contents, contents no functionality yet.
+
