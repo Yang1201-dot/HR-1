@@ -1,1 +1,1 @@
-pakiremove nalang yung ibang modules na hindi sainyo and para clear na yung dashboard ay sainyo thankyouuu 
+HR 1 submenus, contents, contents no functionality yet.
