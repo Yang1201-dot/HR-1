@@ -266,10 +266,12 @@
           var roleEl = document.getElementById('inputRole');
           var modal = document.getElementById('applyModal');
           var resultEl = document.getElementById('formResult');
+          var submitBtn = document.querySelector('#applyForm .btn-primary');
           if (titleEl) titleEl.textContent = 'Apply for ' + role;
           if (roleEl) roleEl.value = role;
           if (modal) modal.setAttribute('aria-hidden', 'false');
           if (resultEl) resultEl.textContent = '';
+          if (submitBtn) submitBtn.textContent = 'Submit Application';
         });
       });
     })();

@@ -39,23 +39,33 @@ document.addEventListener('DOMContentLoaded', () => {
           applyBtn.disabled = true;
           applyBtn.removeAttribute('data-role');
           
-          // Add Edit and Delete buttons
-          const buttonContainer = document.createElement('div');
-          buttonContainer.className = 'job-actions';
-          buttonContainer.innerHTML = `
-            <button class="edit-btn" data-job="${jobTitle}">Edit</button>
-            <button class="delete-btn" data-job="${jobTitle}">Delete</button>
-          `;
-          applyBtn.parentNode.appendChild(buttonContainer);
-          
-          // Add event listeners for Edit and Delete buttons
-          buttonContainer.querySelector('.edit-btn').addEventListener('click', () => editApplication(jobTitle));
-          buttonContainer.querySelector('.delete-btn').addEventListener('click', () => deleteApplication(jobTitle));
+          // Check if Edit/Delete buttons already exist
+          let buttonContainer = jobElement.querySelector('.job-actions');
+          if (!buttonContainer) {
+            // Add Edit and Delete buttons only if they don't exist
+            buttonContainer = document.createElement('div');
+            buttonContainer.className = 'job-actions';
+            buttonContainer.innerHTML = `
+              <button class="edit-btn" data-job="${jobTitle}">Edit</button>
+              <button class="delete-btn" data-job="${jobTitle}">Delete</button>
+            `;
+            applyBtn.parentNode.appendChild(buttonContainer);
+            
+            // Add event listeners for Edit and Delete buttons
+            buttonContainer.querySelector('.edit-btn').addEventListener('click', () => editApplication(jobTitle));
+            buttonContainer.querySelector('.delete-btn').addEventListener('click', () => deleteApplication(jobTitle));
+          }
         } else {
           // Job not applied - keep Apply Now button
           applyBtn.textContent = 'Apply Now';
           applyBtn.classList.remove('applied-btn');
           applyBtn.disabled = false;
+          
+          // Remove Edit/Delete buttons if they exist
+          const buttonContainer = jobElement.querySelector('.job-actions');
+          if (buttonContainer) {
+            buttonContainer.remove();
+          }
         }
       }
     });
@@ -78,11 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const modalTitle = document.getElementById('modalTitle');
       const inputRole = document.getElementById('inputRole');
       const formResult = document.getElementById('formResult');
+      const submitBtn = document.querySelector('#applyForm .btn-primary');
       
       if (modalTitle) modalTitle.textContent = 'Edit Application for ' + application.position;
       if (inputRole) inputRole.value = application.position;
       if (modal) modal.setAttribute('aria-hidden', 'false');
       if (formResult) formResult.textContent = '';
+      if (submitBtn) submitBtn.textContent = 'Update Application';
+      
+      // Remove required attribute from file inputs when editing
+      applyForm.querySelectorAll('input[type="file"]').forEach(input => {
+        input.removeAttribute('required');
+      });
       
       // Fill form with existing data
       const form = document.getElementById('applyForm');
@@ -318,26 +335,64 @@ document.addEventListener('DOMContentLoaded', () => {
       
       newBtn.addEventListener('click', () => input.click());
 
+      // Clone clear button and get reference to the new one
+      let newClearBtn = null;
+      if (clearBtn) {
+        newClearBtn = clearBtn.cloneNode(true);
+        clearBtn.parentNode.replaceChild(newClearBtn, clearBtn);
+      }
+
       input.addEventListener('change', () => {
         const f = input.files && input.files[0];
         if (f) {
           nameSpan.textContent = f.name;
-          if (clearBtn) clearBtn.style.display = 'inline-block';
+          if (newClearBtn) newClearBtn.style.display = 'inline-block';
         } else {
           nameSpan.textContent = 'No file chosen';
-          if (clearBtn) clearBtn.style.display = 'none';
+          if (newClearBtn) newClearBtn.style.display = 'none';
         }
       });
 
-      if (clearBtn) {
-        // Remove any existing event listeners by cloning the button
-        const newClearBtn = clearBtn.cloneNode(true);
-        clearBtn.parentNode.replaceChild(newClearBtn, clearBtn);
+      if (newClearBtn) {
         
         newClearBtn.addEventListener('click', () => {
           input.value = '';
           nameSpan.textContent = 'No file chosen';
           newClearBtn.style.display = 'none';
+          
+          // If we're editing an application, also clear the stored file data
+          const modalTitle = document.getElementById('modalTitle');
+          const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
+          if (isEditing) {
+            const inputRole = document.getElementById('inputRole');
+            const role = inputRole ? inputRole.value : '';
+            
+            // Find the current application and clear its file data
+            let applications = [];
+            try { 
+              applications = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
+            } catch(err) {}
+            
+            const jobApplications = applications.filter(app => app.position.toLowerCase() === role.toLowerCase());
+            const application = jobApplications[jobApplications.length - 1];
+            
+            if (application) {
+              let filesMeta = {};
+              try { 
+                filesMeta = JSON.parse(localStorage.getItem('careers_files') || '{}'); 
+              } catch(err) {}
+              
+              // Clear the specific file for this application
+              if (filesMeta[application.id]) {
+                const fieldName = input.getAttribute('name');
+                const fileKey = fieldName === 'resume' ? 'resume' : 
+                               fieldName === 'birth_certificate' ? 'birth' : 
+                               fieldName === 'diploma' ? 'diploma' : 'cover';
+                delete filesMeta[application.id][fileKey];
+                localStorage.setItem('careers_files', JSON.stringify(filesMeta));
+              }
+            }
+          }
         });
       }
     });
@@ -366,12 +421,28 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.setAttribute('aria-hidden', 'true');
       // Reset form when closing
       const form = document.getElementById('applyForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const submitBtn = document.querySelector('#applyForm .btn-primary');
+      
       if (form) {
         form.reset();
         // Reset file picker displays
         document.querySelectorAll('.file-picker .file-name').forEach(s => { s.textContent = 'No file chosen'; });
         document.querySelectorAll('.file-picker .file-clear').forEach(b => { b.style.display = 'none'; });
+        
+        // Restore required attributes for file inputs
+        const resumeInput = form.querySelector('input[name="resume"]');
+        const birthInput = form.querySelector('input[name="birth_certificate"]');
+        const diplomaInput = form.querySelector('input[name="diploma"]');
+        
+        if (resumeInput) resumeInput.setAttribute('required', '');
+        if (birthInput) birthInput.setAttribute('required', '');
+        if (diplomaInput) diplomaInput.setAttribute('required', '');
       }
+      
+      // Reset modal title and submit button text
+      if (modalTitle) modalTitle.textContent = 'Apply for Role';
+      if (submitBtn) submitBtn.textContent = 'Submit Application';
     }
   }
 
@@ -399,25 +470,31 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Validate required files
-    const requiredFiles = [
-      { field: 'resume', name: 'Resume/CV' },
-      { field: 'birth_certificate', name: 'Birth Certificate' },
-      { field: 'diploma', name: 'Diploma/TOR' }
-    ];
+    // Check if we're editing an existing application
+    const modalTitle = document.getElementById('modalTitle');
+    const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
+    
+    // Validate required files (only for new applications, not edits)
+    if (!isEditing) {
+      const requiredFiles = [
+        { field: 'resume', name: 'Resume/CV' },
+        { field: 'birth_certificate', name: 'Birth Certificate' },
+        { field: 'diploma', name: 'Diploma/TOR' }
+      ];
 
-    const missingFiles = [];
-    requiredFiles.forEach(file => {
-      const fileInput = applyForm.querySelector(`input[name="${file.field}"]`);
-      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        missingFiles.push(file.name);
+      const missingFiles = [];
+      requiredFiles.forEach(file => {
+        const fileInput = applyForm.querySelector(`input[name="${file.field}"]`);
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+          missingFiles.push(file.name);
+        }
+      });
+
+      if (missingFiles.length > 0) {
+        formResult.textContent = `Please upload all required files: ${missingFiles.join(', ')}`;
+        formResult.style.color = '#ff6b6b';
+        return;
       }
-    });
-
-    if (missingFiles.length > 0) {
-      formResult.textContent = `Please upload all required files: ${missingFiles.join(', ')}`;
-      formResult.style.color = '#ff6b6b';
-      return;
     }
 
     formResult.textContent = 'Application submitted...';
@@ -429,10 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fullName = [first, middle, last].filter(Boolean).join(' ');
     const role     = (inputRole ? inputRole.value : '') || '';
 
-    // Check if we're editing an existing application
-    const modalTitle = document.getElementById('modalTitle');
-    const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
-    
     if (isEditing) {
       // Find and update existing application
       let applications = [];
@@ -529,7 +602,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let filesMeta = {};
     try { filesMeta = JSON.parse(localStorage.getItem('careers_files') || '{}'); } catch(err) {}
-    filesMeta[appId] = {};
+    
+    // Preserve existing files when editing, create new object only if it doesn't exist
+    if (!filesMeta[appId]) {
+      filesMeta[appId] = {};
+    }
 
     fileMappings.forEach(m => {
       const fileInput = applyForm.querySelector('input[name="' + m.field + '"]');
