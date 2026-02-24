@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Employee Portal - Microfinance System</title>
+<style>
+:root{
+  --brand-green:#2ca078;
+  --button-hover:#4fb97a;
+  --background:#0a0a0a;
+  --surface:#1a1a1a;
+  --text-primary:#f9fafb;
+  --text-secondary:#d1d5db;
+  --border-color:#2d2d2d;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.login-container{
+  background:var(--surface);
+  border:1px solid var(--border-color);
+  border-radius:20px;
+  padding:48px;
+  width:100%;
+  max-width:440px;
+  box-shadow:var(--shadow);
+}
+.logo-section{
+  text-align:center;
+  margin-bottom:32px;
+}
+.logo{
+  width:120px;
+  height:120px;
+  margin:0 auto 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.company-name{
+  font-size:24px;
+  font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:4px;
+}
+.portal-subtitle{
+  font-size:14px;
+  color:var(--text-secondary);
+}
+.form-group{
+  margin-bottom:20px;
+}
+.form-group label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-primary);
+}
+.form-group input{
+  width:100%;
+  padding:14px 16px;
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  background:var(--background);
+  color:var(--text-primary);
+  font-size:15px;
+  transition:border .2s;
+}
+.form-group input:focus{
+  outline:none;
+  border-color:var(--brand-green);
+}
+.form-group input::placeholder{
+  color:#6b7280;
+}
+.btn-login{
+  width:100%;
+  padding:14px;
+  background:var(--brand-green);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:8px;
+}
+.btn-login:hover{
+  background:var(--button-hover);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(44,160,120,.3);
+}
+.divider{
+  text-align:center;
+  margin:24px 0;
+  position:relative;
+}
+.divider::before{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  height:1px;
+  background:var(--border-color);
+}
+.divider span{
+  background:var(--surface);
+  padding:0 16px;
+  position:relative;
+  color:var(--text-secondary);
+  font-size:13px;
+}
+.hr-staff-link{
+  text-align:center;
+  margin-top:20px;
+}
+.hr-staff-link a{
+  color:var(--brand-green);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  transition:color .2s;
+}
+.hr-staff-link a:hover{
+  color:var(--button-hover);
+  text-decoration:underline;
+}
+.error-msg{
+  background:rgba(239,68,68,.1);
+  border:1px solid rgba(239,68,68,.3);
+  color:#ef4444;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:20px;
+  font-size:14px;
+  display:none;
+}
+.error-msg.show{
+  display:block;
+}
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="logo-section">
+    <div class="logo">
+      <img src="img/logo.png" alt="Company Logo">
+    </div>
+    <h1 class="company-name">Microfinance</h1>
+    <p class="portal-subtitle">Employee Portal</p>
+  </div>
+  
+  <div class="error-msg" id="errorMsg"></div>
+  
+  <form id="loginForm" onsubmit="return handleLogin(event)">
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="your.email@company.com" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+    </div>
+    
+    <button type="submit" class="btn-login">Login to Portal</button>
+  </form>
+  
+  <div class="divider">
+    <span>or</span>
+  </div>
+  
+  <div class="hr-staff-link">
+    <a href="hr-staff-login.html">Access HR Workforce System →</a>
+  </div>
+</div>
+
+<script>
+function handleLogin(event) {
+  event.preventDefault();
+  
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  // Send login request to PHP backend
+  fetch('api/employee-login.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email, password})
+  })
+  .then(res => {
+    // If server returned a non-2xx status, try to read text to show a helpful message
+    if (!res.ok) {
+      return res.text().then(text => { throw new Error(text || ('HTTP error ' + res.status)); });
+    }
+    // Try to parse JSON; if parsing fails this will be caught below
+    return res.json();
+  })
+  .then(data => {
+    if (data && data.success) {
+      // Store session data
+      localStorage.setItem('employee_token', data.token);
+      localStorage.setItem('employee_name', data.name);
+      localStorage.setItem('employee_id', data.employee_id);
+
+      // Redirect to employee portal
+      window.location.href = 'employee-portal-dashboard.html';
+    } else {
+      showError((data && data.message) ? data.message : 'Invalid email or password');
+    }
+  })
+  .catch(err => {
+    // Show the real error message when possible
+    showError(err.message || 'Connection error. Please try again.');
+  });
+  
+  return false;
+}
+
+function showError(message) {
+  const errorMsg = document.getElementById('errorMsg');
+  errorMsg.textContent = message;
+  errorMsg.classList.add('show');
+  
+  setTimeout(() => {
+    errorMsg.classList.remove('show');
+  }, 5000);
+}
+</script>
+</body>
+</html>

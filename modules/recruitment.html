@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Recruitment Management</title>
+<style>
+:root{--brand-green:#2ca078;--button-hover:#4fb97a;--background:#f8f9fa;--surface:#ffffff;--surface-hover:#f5f5f5;--text-primary:#111827;--text-secondary:#6b7280;--text-tertiary:#9ca3af;--border-color:#e5e7eb;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);}
+.dark-mode{--background:#0a0a0a;--surface:#1a1a1a;--surface-hover:#252525;--text-primary:#f9fafb;--text-secondary:#d1d5db;--text-tertiary:#9ca3af;--border-color:#2d2d2d;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--background);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+input,select,textarea,button{font-family:inherit;}
+.hr-content{padding:32px;}
+.page-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+.btn-primary{padding:10px 20px;background:var(--brand-green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--button-hover);transform:translateY(-1px);}
+.btn-sm{padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.bsm-blue{background:rgba(59,130,246,.12);color:#3b82f6;}.bsm-blue:hover{background:#3b82f6;color:#fff;}
+.bsm-green{background:rgba(44,160,120,.12);color:var(--brand-green);}.bsm-green:hover{background:var(--brand-green);color:#fff;}
+.bsm-red{background:rgba(239,68,68,.12);color:#ef4444;}.bsm-red:hover{background:#ef4444;color:#fff;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;text-align:center;box-shadow:var(--shadow);transition:all .2s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.stat-num{font-size:30px;font-weight:700;margin-bottom:4px;}
+.c-green{color:var(--brand-green);}.c-blue{color:#3b82f6;}.c-amber{color:#f59e0b;}.c-purple{color:#8b5cf6;}
+.stat-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+.tab-bar{display:flex;gap:4px;border-bottom:1px solid var(--border-color);margin-bottom:24px;flex-wrap:wrap;}
+.tab-btn{padding:10px 18px;border:none;background:none;color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;border-radius:8px 8px 0 0;}
+.tab-btn.active{color:var(--brand-green);border-bottom-color:var(--brand-green);}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+.job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.job-card{background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;box-shadow:var(--shadow);transition:all .2s;}
+.job-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.bd-active{background:rgba(44,160,120,.12);color:var(--brand-green);}
+.bd-draft{background:rgba(107,114,128,.12);color:#6b7280;}
+.bd-pending{background:rgba(245,158,11,.12);color:#d97706;}
+.bd-accepted{background:rgba(44,160,120,.15);color:var(--brand-green);}
+.bd-rejected{background:rgba(239,68,68,.12);color:#ef4444;}
+.meta-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin-bottom:12px;align-items:center;}
+.meta-row svg{vertical-align:middle;margin-right:3px;}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border-color);border-radius:16px;padding:28px;width:90%;max-width:680px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.2);}
+.modal-box h2{font-size:20px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-color);padding-right:2.5rem;}
+.modal-close{position:absolute;top:20px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-secondary);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;}
+.modal-close:hover{background:rgba(239,68,68,.1);color:#ef4444;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;margin-bottom:6px;font-size:13px;font-weight:600;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--border-color);border-radius:10px;background:var(--background);color:var(--text-primary);font-size:14px;font-family:inherit;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--brand-green);}
+.form-group textarea{min-height:100px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.req{color:#ef4444;}
+.btn-submit{width:100%;padding:12px;background:var(--brand-green);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;}
+.btn-submit:hover{background:var(--button-hover);}
+.btn-cancel-modal{width:100%;padding:10px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:10px;font-weight:600;cursor:pointer;margin-top:8px;font-family:inherit;}
+.offer-card{background:var(--background);border:1px solid var(--border-color);border-radius:12px;padding:16px;margin-bottom:12px;}
+.offer-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.offer-name{font-size:15px;font-weight:700;}
+.offer-details{font-size:13px;color:var(--text-secondary);line-height:1.8;}
+.comm-log{display:flex;flex-direction:column;gap:12px;}
+.comm-item{background:var(--background);border-left:3px solid var(--brand-green);border-radius:8px;padding:12px;font-size:13px;}
+.comm-meta{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:var(--text-tertiary);}
+.empty-state{text-align:center;color:var(--text-secondary);padding:60px 20px;font-size:14px;}
+.dark-mode input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer;}
+.dark-mode input[type="date"]{color-scheme:dark;}
+</style>
+</head>
+<body>
+<div class="hr-content">
+  <div class="page-header">
+    <div><h1 class="page-title">Recruitment Management</h1><p class="page-sub">Manage job postings, applications, interviews, and pre-employment processing</p></div>
+    <button class="btn-primary" onclick="r_openAdd()">+ Create Job Post</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num c-green" id="r_s_active">0</div><div class="stat-label">Active Posts</div></div>
+    <div class="stat-card"><div class="stat-num c-blue" id="r_s_apps">0</div><div class="stat-label">Applications</div></div>
+    <div class="stat-card"><div class="stat-num c-purple" id="r_s_interviews">0</div><div class="stat-label">Interviews</div></div>
+    <div class="stat-card"><div class="stat-num c-amber" id="r_s_offers">0</div><div class="stat-label">Offers Extended</div></div>
+    <div class="stat-card"><div class="stat-num c-green" id="r_s_hired">0</div><div class="stat-label">Hired</div></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="r_tab('jobs',this)">Job Postings</button>
+    <button class="tab-btn" onclick="r_tab('interviews',this)">Interview Scheduling</button>
+    <button class="tab-btn" onclick="r_tab('offers',this)">Pre-Employment Processing</button>
+    <button class="tab-btn" onclick="r_tab('communications',this)">Communications</button>
+    <button class="tab-btn" onclick="r_tab('talent',this)">Talent Pool</button>
+  </div>
+  <div class="tab-panel active" id="r_tab_jobs"><div class="job-grid" id="r_jobs"></div></div>
+  <div class="tab-panel" id="r_tab_interviews"><div id="r_interviews"></div></div>
+  <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
+  <div class="tab-panel" id="r_tab_communications"><div id="r_comms"></div></div>
+  <div class="tab-panel" id="r_tab_talent"><div id="r_talent"></div></div>
+</div>
+
+<!-- Modal: Create Job Post -->
+<div class="modal-overlay" id="r_modal_add">
+<div class="modal-box">
+  <button class="modal-close" onclick="r_close('r_modal_add')">&times;</button>
+  <h2>Create Job Posting</h2>
+  <div class="form-group"><label>Job Title <span class="req">*</span></label><input type="text" id="r_title" placeholder="e.g., Loan Officer"></div>
+  <div class="form-row">
+    <div class="form-group"><label>Department</label>
+      <select id="r_dept"><option>Lending Operations</option><option>Customer Service</option><option>Finance &amp; Accounting</option><option>Information Technology</option><option>Human Resources</option><option>Marketing</option></select>
+    </div>
+    <div class="form-group"><label>Location</label><input type="text" id="r_location" placeholder="e.g., Main Branch"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Employment Type</label>
+      <select id="r_emptype"><option>Full-time</option><option>Part-time</option><option>Contract</option></select>
+    </div>
+    <div class="form-group"><label>Salary Range</label><input type="text" id="r_salary" placeholder="e.g., ₱20,000 - ₱25,000"></div>
+  </div>
+  <div class="form-group"><label>Description <span class="req">*</span></label><textarea id="r_desc" placeholder="Job responsibilities, requirements, qualifications..."></textarea></div>
+  <button class="btn-submit" onclick="r_save()">Post Job</button>
+  <button class="btn-cancel-modal" onclick="r_close('r_modal_add')">Cancel</button>
+</div>
+</div>
+
+<!-- Modal: Extend Offer -->
+<div class="modal-overlay" id="r_modal_offer">
+<div class="modal-box">
+  <button class="modal-close" onclick="r_close('r_modal_offer')">&times;</button>
+  <h2>Extend Job Offer</h2>
+  <div class="form-row">
+    <div class="form-group"><label>Candidate Name <span class="req">*</span></label><input type="text" id="r_off_name"></div>
+    <div class="form-group"><label>Position <span class="req">*</span></label><input type="text" id="r_off_pos"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Salary Offered <span class="req">*</span></label><input type="text" id="r_off_salary" placeholder="₱25,000"></div>
+    <div class="form-group"><label>Start Date</label><input type="date" id="r_off_start"></div>
+  </div>
+  <div class="form-group"><label>Offer Details</label><textarea id="r_off_details" placeholder="Benefits, terms, conditions..."></textarea></div>
+  <div class="form-group"><label>Status</label>
+    <select id="r_off_status"><option value="Pending">Pending Review</option><option value="Accepted">Accepted</option><option value="Rejected">Rejected</option></select>
+  </div>
+  <button class="btn-submit" onclick="r_saveOffer()">Save Offer</button>
+  <button class="btn-cancel-modal" onclick="r_close('r_modal_offer')">Cancel</button>
+</div>
+</div>
+
+<!-- Modal: Send Communication -->
+<div class="modal-overlay" id="r_modal_comm">
+<div class="modal-box">
+  <button class="modal-close" onclick="r_close('r_modal_comm')">&times;</button>
+  <h2>Send Communication</h2>
+  <div class="form-group"><label>Recipient <span class="req">*</span></label><input type="text" id="r_comm_to" placeholder="Applicant name or email"></div>
+  <div class="form-group"><label>Subject <span class="req">*</span></label><input type="text" id="r_comm_subj" placeholder="Email subject"></div>
+  <div class="form-group"><label>Message <span class="req">*</span></label><textarea id="r_comm_msg" placeholder="Your message..."></textarea></div>
+  <button class="btn-submit" onclick="r_saveComm()">Send Message</button>
+  <button class="btn-cancel-modal" onclick="r_close('r_modal_comm')">Cancel</button>
+</div>
+</div>
+
+<script>
+var JOBS = [], OFFERS = [], COMMS = [];
+
+/* ── Storage keys ── */
+var KEY_JOBS = 'careers_job_postings';
+var KEY_APPS = 'careers_applications';
+
+/* ── Load from localStorage on init ── */
+function r_loadFromStorage() {
+  try {
+    var j = localStorage.getItem(KEY_JOBS);
+    JOBS = j ? JSON.parse(j) : [];
+  } catch(e) { JOBS = []; }
+  try {
+    var a = localStorage.getItem(KEY_APPS);
+    var apps = a ? JSON.parse(a) : [];
+    // Sync application counts from real applications
+    JOBS.forEach(function(job) {
+      job.apps = apps.filter(function(app) {
+        return app.position === job.title;
+      }).length;
+    });
+  } catch(e) {}
+}
+
+function r_saveJobs() {
+  try { localStorage.setItem(KEY_JOBS, JSON.stringify(JOBS)); } catch(e) {}
+}
+
+/* ── Init ── */
+(function init() {
+  try {
+    if (window.parent !== window)
+      document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
+  } catch(e) {}
+  r_loadFromStorage();
+  r_render();
+  r_updateStats();
+  // Poll every 5 seconds to pick up new applications from careers site
+  setInterval(function() {
+    r_loadFromStorage();
+    r_render();
+    r_updateStats();
+  }, 5000);
+})();
+
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'THEME') document.body.classList.toggle('dark-mode', e.data.dark);
+  if (e.data && e.data.type === 'NEW_APPLICATION') { r_loadFromStorage(); r_render(); r_updateStats(); }
+});
+
+/* ── Tabs ── */
+function r_tab(t, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  var p = document.getElementById('r_tab_' + t);
+  if (p) p.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (t === 'offers')         r_renderOffers();
+  if (t === 'communications') r_renderComms();
+  if (t === 'interviews')     r_renderInterviews();
+  if (t === 'talent')         r_renderTalent();
+}
+
+/* ── Modal helpers ── */
+function r_open(id) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
+  var m = document.getElementById(id); if (m) m.classList.add('active');
+}
+function r_close(id) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
+  var m = document.getElementById(id); if (m) m.classList.remove('active');
+}
+function r_toast(msg, type) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
+}
+function r_openAdd()  { r_open('r_modal_add'); }
+function r_openOffer(){ r_open('r_modal_offer'); }
+function r_openComm() { r_open('r_modal_comm'); }
+function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── SVG icons ── */
+var ICO = {
+  cal: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  usr: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  mic: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'
+};
+
+/* ── Save new job post ── */
+function r_save() {
+  var title = g('r_title'), desc = g('r_desc');
+  if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
+  JOBS.push({
+    id: Date.now(), title: title, dept: g('r_dept'), location: g('r_location'),
+    emptype: g('r_emptype'), salary: g('r_salary'), desc: desc,
+    status: 'Active', posted: new Date().toLocaleDateString(), apps: 0, interviews: 0
+  });
+  r_close('r_modal_add');
+  ['r_title','r_location','r_salary','r_desc'].forEach(function(id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  r_saveJobs();
+  r_render(); r_updateStats();
+  r_toast('Job posted! Now live on Careers page.');
+}
+
+/* ── Render job cards ── */
+function r_render() {
+  var el = document.getElementById('r_jobs'); if (!el) return;
+  if (!JOBS.length) {
+    el.className = '';
+    el.innerHTML = '<div class="empty-state">No job postings yet. Click <strong>+ Create Job Post</strong> to get started.</div>';
+    return;
+    return;
+  }
+  el.className = 'job-grid';
+  el.innerHTML = JOBS.map(function(j) {
+    var desc = (j.desc || '').length > 100 ? j.desc.substring(0,100) + '...' : j.desc;
+    return '<div class="job-card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">' +
+        '<div><h3 style="font-size:17px;margin-bottom:3px;">' + esc(j.title) + '</h3>' +
+        '<p style="font-size:13px;color:var(--text-secondary);">' + esc(j.dept) + ' &bull; ' + esc(j.location) + '</p></div>' +
+        '<span class="badge ' + (j.status === 'Active' ? 'bd-active' : 'bd-draft') + '">' + j.status + '</span>' +
+      '</div>' +
+      '<p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">' + esc(desc) + '</p>' +
+      '<div class="meta-row">' +
+        '<span>' + ICO.cal + esc(j.posted) + '</span>' +
+        '<span>' + ICO.usr + j.apps + ' applicant' + (j.apps !== 1 ? 's' : '') + '</span>' +
+        '<span>' + ICO.mic + j.interviews + ' interview' + (j.interviews !== 1 ? 's' : '') + '</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button class="btn-sm bsm-blue">View Details</button>' +
+        '<button class="btn-sm bsm-green" onclick="r_openOffer()">Extend Offer</button>' +
+        '<button class="btn-sm bsm-red" data-jid="' + j.id + '" onclick="r_deleteJob(this.dataset.jid)">Delete</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function r_deleteJob(id) {
+  JOBS = JOBS.filter(function(j) { return j.id != id; });
+  r_saveJobs(); r_render(); r_updateStats();
+  r_toast('Job posting removed.');
+}
+
+/* ── Offers ── */
+function r_saveOffer() {
+  var name = g('r_off_name'), pos = g('r_off_pos'), salary = g('r_off_salary');
+  if (!name || !pos || !salary) { r_toast('Fill required fields', 'error'); return; }
+  OFFERS.push({id:Date.now(),name:name,position:pos,salary:salary,startDate:g('r_off_start'),details:g('r_off_details'),status:g('r_off_status'),extendedAt:new Date().toLocaleDateString()});
+  r_close('r_modal_offer');
+  ['r_off_name','r_off_pos','r_off_salary','r_off_start','r_off_details'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+  r_renderOffers(); r_updateStats(); r_toast('Offer extended to ' + name);
+}
+function r_renderOffers() {
+  var el = document.getElementById('r_offers'); if (!el) return;
+  el.innerHTML = '<div style="margin-bottom:16px;"><button class="btn-primary" onclick="r_openOffer()">+ Extend New Offer</button></div>' +
+    (OFFERS.length ? OFFERS.map(function(o) {
+      var sc = o.status === 'Accepted' ? 'bd-accepted' : o.status === 'Rejected' ? 'bd-rejected' : 'bd-pending';
+      return '<div class="offer-card"><div class="offer-hdr"><div class="offer-name">' + esc(o.name) + '</div><span class="badge ' + sc + '">' + o.status + '</span></div>' +
+        '<div class="offer-details"><strong>Position:</strong> ' + esc(o.position) + '<br><strong>Salary:</strong> ' + esc(o.salary) + '<br><strong>Start Date:</strong> ' + esc(o.startDate) + '<br><strong>Extended:</strong> ' + o.extendedAt + (o.details ? '<br><strong>Details:</strong> ' + esc(o.details) : '') + '</div></div>';
+    }).join('') : '<p class="empty-state">No offers extended yet.</p>');
+}
+
+/* ── Communications ── */
+function r_saveComm() {
+  var to = g('r_comm_to'), subj = g('r_comm_subj'), msg = g('r_comm_msg');
+  if (!to || !subj || !msg) { r_toast('Fill all fields', 'error'); return; }
+  COMMS.unshift({id:Date.now(),to:to,subject:subj,message:msg,sentAt:new Date().toLocaleString()});
+  r_close('r_modal_comm');
+  ['r_comm_to','r_comm_subj','r_comm_msg'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+  r_renderComms(); r_toast('Message sent to ' + to);
+}
+function r_renderComms() {
+  var el = document.getElementById('r_comms'); if (!el) return;
+  el.innerHTML = '<div style="margin-bottom:16px;"><button class="btn-primary" onclick="r_openComm()">+ Send Communication</button></div>' +
+    (COMMS.length ? '<div class="comm-log">' + COMMS.map(function(c) {
+      return '<div class="comm-item"><div class="comm-meta"><span><strong>To:</strong> ' + esc(c.to) + '</span><span>' + c.sentAt + '</span></div>' +
+        '<div style="font-weight:600;margin-bottom:4px;">' + esc(c.subject) + '</div><div style="color:var(--text-secondary);">' + esc(c.message) + '</div></div>';
+    }).join('') + '</div>' : '<p class="empty-state">No communications sent yet.</p>');
+}
+
+/* ── Interviews / Talent (placeholders) ── */
+function r_renderInterviews() {
+  var el = document.getElementById('r_interviews'); if (!el) return;
+  el.innerHTML = '<p class="empty-state">No interviews scheduled yet.</p>';
+}
+function r_renderTalent() {
+  var el = document.getElementById('r_talent'); if (!el) return;
+  // Pull unique applicants from localStorage
+  try {
+    var a = localStorage.getItem(KEY_APPS);
+    var apps = a ? JSON.parse(a) : [];
+    if (!apps.length) { el.innerHTML = '<p class="empty-state">Talent pool is empty. Applications from the Careers site will appear here.</p>'; return; }
+    el.innerHTML = '<div class="job-grid">' + apps.map(function(ap) {
+      return '<div class="job-card">' +
+        '<div style="font-weight:700;font-size:15px;">' + esc((ap.fname||'') + ' ' + (ap.lname||'')) + '</div>' +
+        '<div style="font-size:13px;color:var(--text-secondary);margin:4px 0;">' + esc(ap.email||'') + '</div>' +
+        '<div style="font-size:12px;color:var(--text-secondary);">Applied for: <strong>' + esc(ap.position||'') + '</strong></div>' +
+        '<div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">' + esc(ap.appliedAt||'') + '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  } catch(e) { el.innerHTML = '<p class="empty-state">Unable to load talent pool.</p>'; }
+}
+
+/* ── Stats ── */
+function r_updateStats() {
+  function set(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+  set('r_s_active',     JOBS.filter(function(j) { return j.status === 'Active'; }).length);
+  set('r_s_apps',       JOBS.reduce(function(sum, j) { return sum + (j.apps||0); }, 0));
+  set('r_s_interviews', JOBS.reduce(function(sum, j) { return sum + (j.interviews||0); }, 0));
+  set('r_s_offers',     OFFERS.length);
+  set('r_s_hired',      OFFERS.filter(function(o) { return o.status === 'Accepted'; }).length);
+}
+</script>
+</body>
+</html>

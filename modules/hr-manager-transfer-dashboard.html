@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Manager - Department Transfer Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #2563eb;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .transfers-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .transfer-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+
+    .transfer-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .transfer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .employee-info h3 {
+      color: #111827;
+      margin-bottom: 0.25rem;
+    }
+
+    .employee-meta {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-sent {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-acknowledged {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .department-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .dept-tag {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .transfer-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-view {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-view:hover {
+      background: #2563eb;
+    }
+
+    .btn-send {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-send:hover {
+      background: #059669;
+    }
+
+    .btn-cancel {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #dc2626;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6b7280;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .data-item {
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+
+    .data-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .data-value {
+      color: #111827;
+      font-weight: 500;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+      color: #6b7280;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+
+    .tab.active {
+      color: #10b981;
+      border-bottom-color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-actions">
+      <div>
+        <h1>📤 Department Transfer Management</h1>
+        <p class="subtitle">HR Manager Dashboard - Manage employee data transfers to other departments</p>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+        <button class="btn btn-primary" onclick="viewAllEmployees()">👥 View All Employees</button>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">⏳</div>
+        </div>
+        <div class="stat-value" id="pendingCount">0</div>
+        <div class="stat-label">Pending Transfers</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">📤</div>
+        </div>
+        <div class="stat-value" id="sentCount">0</div>
+        <div class="stat-label">Sent Today</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">✅</div>
+        </div>
+        <div class="stat-value" id="acknowledgedCount">0</div>
+        <div class="stat-label">Acknowledged</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-value" id="totalEmployees">0</div>
+        <div class="stat-label">Total Employees</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('pending')" id="tabPending">
+        Pending Transfers
+      </button>
+      <button class="tab" onclick="switchTab('sent')" id="tabSent">
+        Sent Transfers
+      </button>
+      <button class="tab" onclick="switchTab('all')" id="tabAll">
+        All Transfers
+      </button>
+    </div>
+
+    <!-- Transfers List -->
+    <div class="transfers-section">
+      <div class="section-header">
+        <h2 id="sectionTitle">Pending Transfers</h2>
+      </div>
+      <div id="transfersList">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>Loading transfer records...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Transfer Details Modal -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Transfer Details</h2>
+        <button class="close-btn" onclick="closeDetailsModal()">&times;</button>
+      </div>
+      <div id="detailsContent"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="../js/mysql-hr1-client.js"></script>
+  <script>
+    let allTransfers = [];
+    let currentTab = 'pending';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTransfers();
+    });
+
+    async function loadTransfers() {
+      try {
+        // Get all onboarding records that are ready for transfer
+        const onboarding = await HR1API.getAllOnboarding();
+        
+        // Filter employees who are 100% complete
+        const readyEmployees = onboarding.filter(o => 
+          o.completion_percentage === 100 && 
+          o.onboarding_status === 'Completed'
+        );
+        
+        // Create transfer records for ready employees
+        allTransfers = await Promise.all(readyEmployees.map(async (emp) => {
+          return {
+            id: emp.id,
+            employee_id: emp.employee_id,
+            employee_name: emp.employee_name,
+            employee_code: emp.employee_code,
+            status: 'Pending', // Ready to be sent
+            transfer_type: 'Onboarding Complete',
+            transfer_reason: 'Employee has completed all onboarding tasks and is ready for department assignment',
+            target_modules: [], // Will be selected by HR Manager
+            employee_data: await getEmployeeData(emp.employee_id),
+            created_at: emp.onboarding_date
+          };
+        }));
+        
+        // Also get existing transfers from database
+        try {
+          const existingTransfers = await HR1API.getPendingTransfers();
+          // Merge with ready employees (avoid duplicates)
+          existingTransfers.forEach(transfer => {
+            if (!allTransfers.find(t => t.employee_id === transfer.employee_id)) {
+              allTransfers.push(transfer);
+            }
+          });
+        } catch (err) {
+          console.log('No existing transfers or API not available yet');
+        }
+        
+        updateStats();
+        displayTransfers(currentTab);
+      } catch (error) {
+        console.error('Error loading transfers:', error);
+        document.getElementById('transfersList').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>Error loading transfers. Please check database connection.</p>
+          </div>
+        `;
+      }
+    }
+    
+    async function getEmployeeData(employeeId) {
+      try {
+        const employee = await HR1API.getEmployee(employeeId);
+        return employee;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function updateStats() {
+      const pending = allTransfers.filter(t => t.status === 'Pending').length;
+      const today = new Date().toISOString().split('T')[0];
+      const sent = allTransfers.filter(t => 
+        t.status === 'Sent' && t.sent_date?.startsWith(today)
+      ).length;
+      const acknowledged = allTransfers.filter(t => t.status === 'Acknowledged').length;
+
+      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('sentCount').textContent = sent;
+      document.getElementById('acknowledgedCount').textContent = acknowledged;
+      
+      // TODO: Get total employees from API
+      document.getElementById('totalEmployees').textContent = allTransfers.length;
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      // Update active tab
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.add('active');
+      
+      // Update section title
+      const titles = {
+        'pending': 'Pending Transfers',
+        'sent': 'Sent Transfers',
+        'all': 'All Transfers'
+      };
+      document.getElementById('sectionTitle').textContent = titles[tab];
+      
+      // Display filtered transfers
+      displayTransfers(tab);
+    }
+
+    function displayTransfers(filter) {
+      let filtered = allTransfers;
+      
+      if (filter === 'pending') {
+        filtered = allTransfers.filter(t => t.status === 'Pending');
+      } else if (filter === 'sent') {
+        filtered = allTransfers.filter(t => t.status === 'Sent');
+      }
+      
+      const container = document.getElementById('transfersList');
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>No ${filter} transfers found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(transfer => {
+        const statusClass = transfer.status.toLowerCase();
+        const targetModules = JSON.parse(transfer.target_modules || '[]');
+        
+        return `
+          <div class="transfer-card">
+            <div class="transfer-header">
+              <div class="employee-info">
+                <h3>${transfer.employee_name}</h3>
+                <div class="employee-meta">
+                  Employee Code: ${transfer.employee_code} • Transfer ID: #${transfer.id}
+                </div>
+              </div>
+              <span class="status-badge status-${statusClass}">${transfer.status}</span>
+            </div>
+
+            <div>
+              <strong style="font-size: 0.875rem; color: #6b7280;">Target Departments:</strong>
+              <div class="department-tags">
+                ${targetModules.map(dept => `
+                  <span class="dept-tag">${dept}</span>
+                `).join('')}
+              </div>
+            </div>
+
+            <div style="margin-top: 0.75rem;">
+              <div style="font-size: 0.875rem; color: #6b7280;">
+                <strong>Reason:</strong> ${transfer.transfer_reason || 'N/A'}
+              </div>
+              ${transfer.sent_date ? `
+                <div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">
+                  <strong>Sent:</strong> ${new Date(transfer.sent_date).toLocaleString()}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="transfer-actions">
+              <button class="btn-small btn-view" onclick="viewTransferDetails(${transfer.id})">
+                👁️ View Details
+              </button>
+              
+              ${transfer.status === 'Pending' ? `
+                <button class="btn-small btn-send" onclick="sendTransfer(${transfer.id})">
+                  📤 Send Now
+                </button>
+                <button class="btn-small btn-cancel" onclick="cancelTransfer(${transfer.id})">
+                  ❌ Cancel
+                </button>
+              ` : ''}
+              
+              ${transfer.status === 'Sent' ? `
+                <button class="btn-small" style="background: #6b7280; color: white;" onclick="checkAcknowledgment(${transfer.id})">
+                  🔍 Check Status
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function viewTransferDetails(transferId) {
+      const transfer = allTransfers.find(t => t.id === transferId);
+      if (!transfer) return;
+
+      const employeeData = JSON.parse(transfer.employee_data || '{}');
+      const targetModules = JSON.parse(transfer.target_modules || '[]');
+
+      const content = document.getElementById('detailsContent');
+      content.innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="margin-bottom: 0.5rem;">Transfer Information</h3>
+          <div class="data-item" style="margin-bottom: 0.5rem;">
+            <div class="data-label">Transfer ID</div>
+            <div class="data-value">#${transfer.id}</div>
+          </div>
+          <div class="data-item" style="margin-bottom: 0.5rem;">
+            <div class="data-label">Status</div>
+            <div class="data-value">
+              <span class="status-badge status-${transfer.status.toLowerCase()}">${transfer.status}</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Target Departments</div>
+            <div class="data-value">${targetModules.join(', ')}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="margin-bottom: 0.5rem;">Employee Data Being Sent</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <div class="data-label">Employee Code</div>
+              <div class="data-value">${employeeData.employee_code || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Full Name</div>
+              <div class="data-value">${employeeData.first_name} ${employeeData.last_name}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Email</div>
+              <div class="data-value">${employeeData.email || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Phone</div>
+              <div class="data-value">${employeeData.phone || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Department</div>
+              <div class="data-value">${employeeData.department || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Position</div>
+              <div class="data-value">${employeeData.position || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Hire Date</div>
+              <div class="data-value">${employeeData.hire_date ? new Date(employeeData.hire_date).toLocaleDateString() : 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Basic Salary</div>
+              <div class="data-value">${employeeData.basic_salary ? formatCurrency(employeeData.basic_salary) : 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">SSS Number</div>
+              <div class="data-value">${employeeData.sss_number || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">TIN Number</div>
+              <div class="data-value">${employeeData.tin_number || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">PhilHealth</div>
+              <div class="data-value">${employeeData.philhealth_number || 'N/A'}</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Pag-IBIG</div>
+              <div class="data-value">${employeeData.pagibig_number || 'N/A'}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: right;">
+          <button class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>
+        </div>
+      `;
+
+      document.getElementById('detailsModal').classList.add('active');
+    }
+
+    function closeDetailsModal() {
+      document.getElementById('detailsModal').classList.remove('active');
+    }
+
+    async function sendTransfer(transferId) {
+      const transfer = allTransfers.find(t => t.id === transferId);
+      
+      // Show department selection modal
+      const { value: departments } = await Swal.fire({
+        title: 'Select Departments',
+        html: `
+          <p style="margin-bottom: 1rem;">Select which departments should receive employee data for:</p>
+          <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>${transfer.employee_name}</strong><br>
+            <span style="font-size: 0.875rem; color: #6b7280;">${transfer.employee_code}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; text-align: left;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="HR2" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">HR2</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Competency & Training</span>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="HR3" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">HR3</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Timesheet</span>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="HR4" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">HR4</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Compensation</span>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="Financial" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">Financial</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Disbursement</span>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="ESS" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">ESS</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Employee Self Service</span>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+              <input type="checkbox" name="dept" value="Logistics1" style="width: 18px; height: 18px;">
+              <div>
+                <strong style="display: block;">Logistics 1</strong>
+                <span style="font-size: 0.75rem; color: #6b7280;">Project Management</span>
+              </div>
+            </label>
+          </div>
+        `,
+        width: '600px',
+        showCancelButton: true,
+        confirmButtonText: 'Send to Selected Departments',
+        confirmButtonColor: '#10b981',
+        preConfirm: () => {
+          const selected = [];
+          document.querySelectorAll('input[name="dept"]:checked').forEach(cb => {
+            selected.push(cb.value);
+          });
+          
+          if (selected.length === 0) {
+            Swal.showValidationMessage('Please select at least one department');
+            return false;
+          }
+          
+          return selected;
+        }
+      });
+
+      if (departments && departments.length > 0) {
+        try {
+          // Create transfer with selected departments
+          const result = await HR1API.finishOnboardingAndTransfer({
+            employee_id: transfer.employee_id,
+            target_modules: departments,
+            completed_by: 1 // TODO: Get from session
+          });
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Transfer Sent!',
+            html: `
+              Employee data for <strong>${transfer.employee_name}</strong> has been sent to:<br><br>
+              <strong>${departments.join(', ')}</strong><br><br>
+              Transfer ID: #${result.transfer_id}
+            `,
+            confirmButtonColor: '#10b981',
+            timer: 3000
+          });
+
+          await loadTransfers();
+        } catch (error) {
+          Swal.fire('Error', 'Failed to send transfer: ' + error.message, 'error');
+        }
+      }
+    }
+
+    async function cancelTransfer(transferId) {
+      const result = await Swal.fire({
+        title: 'Cancel Transfer?',
+        text: 'Are you sure you want to cancel this transfer?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Cancel It',
+        confirmButtonColor: '#ef4444'
+      });
+
+      if (result.isConfirmed) {
+        // TODO: Implement cancel transfer API
+        Swal.fire({
+          icon: 'success',
+          title: 'Transfer Cancelled',
+          timer: 2000
+        });
+        
+        await loadTransfers();
+      }
+    }
+
+    async function checkAcknowledgment(transferId) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Checking Status...',
+        text: 'Contacting receiving departments...',
+        timer: 2000
+      });
+    }
+
+    async function refreshData() {
+      Swal.fire({
+        icon: 'info',
+        title: 'Refreshing...',
+        timer: 1000,
+        showConfirmButton: false
+      });
+      
+      await loadTransfers();
+    }
+
+    function viewAllEmployees() {
+      // TODO: Navigate to employees list
+      Swal.fire({
+        icon: 'info',
+        title: 'View All Employees',
+        text: 'Employee list view will be implemented',
+        timer: 2000
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>New Hired On Board</title>
+<style>
+:root{--brand-green:#2ca078;--button-hover:#4fb97a;--background:#f8f9fa;--surface:#ffffff;--surface-hover:#f5f5f5;--text-primary:#111827;--text-secondary:#6b7280;--text-tertiary:#9ca3af;--border-color:#e5e7eb;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);}
+.dark-mode{--background:#0a0a0a;--surface:#1a1a1a;--surface-hover:#252525;--text-primary:#f9fafb;--text-secondary:#d1d5db;--text-tertiary:#9ca3af;--border-color:#2d2d2d;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--background);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+input,select,textarea,button{font-family:inherit;}
+.hr-content{padding:32px;}
+.page-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+.btn-primary{padding:10px 20px;background:var(--brand-green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--button-hover);}
+.btn-sm{padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.bsm-blue{background:rgba(59,130,246,.12);color:#3b82f6;}.bsm-blue:hover{background:#3b82f6;color:#fff;}
+.bsm-green{background:rgba(44,160,120,.12);color:var(--brand-green);}.bsm-green:hover{background:var(--brand-green);color:#fff;}
+.bsm-amber{background:rgba(245,158,11,.12);color:#d97706;}.bsm-amber:hover{background:#f59e0b;color:#fff;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;text-align:center;box-shadow:var(--shadow);transition:all .2s;}
+.stat-num{font-size:30px;font-weight:700;margin-bottom:4px;}
+.c-green{color:var(--brand-green);}.c-blue{color:#3b82f6;}.c-amber{color:#f59e0b;}.c-red{color:#ef4444;}
+.stat-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+.tab-bar{display:flex;gap:4px;border-bottom:1px solid var(--border-color);margin-bottom:24px;flex-wrap:wrap;}
+.tab-btn{padding:10px 18px;border:none;background:none;color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;border-radius:8px 8px 0 0;}
+.tab-btn.active{color:var(--brand-green);border-bottom-color:var(--brand-green);}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+.emp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.emp-card{background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;box-shadow:var(--shadow);transition:all .2s;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.bd-not-started{background:rgba(107,114,128,.12);color:#6b7280;}
+.bd-in-progress{background:rgba(59,130,246,.12);color:#3b82f6;}
+.bd-completed{background:rgba(44,160,120,.12);color:var(--brand-green);}
+.bd-submitted{background:rgba(139,92,246,.12);color:#8b5cf6;}
+.bd-verified{background:rgba(139,92,246,.12);color:#8b5cf6;}
+.bd-pending{background:rgba(245,158,11,.12);color:#d97706;}
+.bd-returned{background:rgba(239,68,68,.12);color:#ef4444;}
+.prog-bar-bg{height:8px;background:var(--background);border-radius:4px;overflow:hidden;margin-bottom:16px;}
+.prog-bar-fill{height:100%;background:var(--brand-green);border-radius:4px;transition:width .5s ease;}
+.checklist{display:flex;flex-direction:column;gap:8px;}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--background);border:1px solid var(--border-color);cursor:pointer;transition:all .2s;}
+.check-item.done{opacity:.65;}
+.check-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.check-item.done .check-box{background:var(--brand-green);border-color:var(--brand-green);}
+.check-tick{color:#fff;font-size:12px;font-weight:700;}
+.doc-item{background:var(--background);border:1px solid var(--border-color);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.induction-schedule{display:flex;flex-direction:column;gap:10px;}
+.schedule-item{background:var(--background);border-left:3px solid var(--brand-green);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;}
+.alert{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#d97706;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:13px;}
+.alert-returned{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#ef4444;}
+</style>
+</head>
+<body>
+<div class="hr-content">
+  <div class="page-header">
+    <div><h1 class="page-title">New Hired On Board</h1><p class="page-sub">Employee onboarding, document verification, and induction process tracking</p></div>
+    <button class="btn-primary" onclick="ob_openAdd()">+ Add New Hire</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num c-blue" id="ob_s_total">0</div><div class="stat-label">Total Hires</div></div>
+    <div class="stat-card"><div class="stat-num c-amber" id="ob_s_inprog">0</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card"><div class="stat-num c-green" id="ob_s_done">0</div><div class="stat-label">Ready to Submit</div></div>
+    <div class="stat-card"><div class="stat-num c-red" id="ob_s_returned">0</div><div class="stat-label">Returned</div></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="ob_tab('onboarding',this)">Employee Onboarding</button>
+    <button class="tab-btn" onclick="ob_tab('documents',this)">Document Verification</button>
+    <button class="tab-btn" onclick="ob_tab('induction',this)">Induction Process</button>
+  </div>
+  <div class="tab-panel active" id="ob_tab_onboarding"><div class="emp-grid" id="ob_list"></div></div>
+  <div class="tab-panel" id="ob_tab_documents"><div id="ob_docs"></div></div>
+  <div class="tab-panel" id="ob_tab_induction"><div id="ob_induction"></div></div>
+</div>
+
+<script>
+var OB=[],DOCS=[],INDUCTION=[];
+var DEFAULT_CHECKLIST=['Complete employment documents','Receive company ID','IT setup','Office tour','Benefits enrollment','Company policy orientation','Department orientation','Meet supervisor','Set 30-day goals','Complete training modules'];
+var REQUIRED_DOCS=['Government ID','Birth Certificate','TIN','SSS','PhilHealth','Pag-IBIG','NBI Clearance','Medical Certificate'];
+var INDUCTION_ACTIVITIES=['Welcome orientation','Department tour','System access setup','Policy handbook review','Meet team members','Training session 1','Training session 2','First week review'];
+(function init(){
+  try{if(window.parent!==window)document.body.classList.toggle('dark-mode',window.parent.document.body.classList.contains('dark-mode'));}catch(e){}
+  OB=[
+    {id:1,fname:'Maria',lname:'Santos',position:'Loan Officer',dept:'Lending Operations',start:'2026-02-10',checklist:[true,true,true,true,true,true,false,false,false,false],submissionStatus:'Not Submitted',returnReason:''},
+    {id:2,fname:'Pedro',lname:'Garcia',position:'IT Support',dept:'Information Technology',start:'2026-02-14',checklist:[true,true,true,true,true,true,true,true,true,true],submissionStatus:'Ready',returnReason:''},
+  ];
+  DOCS=[
+    {id:1,empId:1,empName:'Maria Santos',docType:'Government ID',status:'Verified',uploadedAt:'Feb 10, 2026'},
+    {id:2,empId:1,empName:'Maria Santos',docType:'TIN',status:'Verified',uploadedAt:'Feb 10, 2026'},
+    {id:3,empId:1,empName:'Maria Santos',docType:'NBI Clearance',status:'Pending',uploadedAt:''},
+    {id:4,empId:2,empName:'Pedro Garcia',docType:'Government ID',status:'Verified',uploadedAt:'Feb 14, 2026'},
+    {id:5,empId:2,empName:'Pedro Garcia',docType:'TIN',status:'Verified',uploadedAt:'Feb 14, 2026'},
+    {id:6,empId:2,empName:'Pedro Garcia',docType:'SSS',status:'Verified',uploadedAt:'Feb 14, 2026'},
+  ];
+  INDUCTION=[
+    {id:1,empId:1,empName:'Maria Santos',activity:'Welcome orientation',date:'2026-02-10',completed:true},
+    {id:2,empId:1,empName:'Maria Santos',activity:'Department tour',date:'2026-02-11',completed:true},
+    {id:3,empId:2,empName:'Pedro Garcia',activity:'Welcome orientation',date:'2026-02-14',completed:true},
+    {id:4,empId:2,empName:'Pedro Garcia',activity:'Department tour',date:'2026-02-15',completed:true},
+    {id:5,empId:2,empName:'Pedro Garcia',activity:'System access setup',date:'2026-02-15',completed:true},
+  ];
+  ob_render();ob_updateStats();
+})();
+window.addEventListener('message',e=>{if(e.data&&e.data.type==='THEME')document.body.classList.toggle('dark-mode',e.data.dark);});
+function ob_tab(t,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ob_tab_'+t).classList.add('active');if(btn)btn.classList.add('active');
+  if(t==='documents')ob_renderDocs();
+  if(t==='induction')ob_renderInduction();
+}
+function ob_toast(msg,type){try{if(window.parent!==window){window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*');return;}}catch(e){}}
+function ob_openAdd(){alert('Add New Hire - Coming soon! (HR4 will handle employee data entry)');}
+function ob_getStatus(emp){
+  if(emp.submissionStatus==='Submitted') return 'Submitted';
+  if(emp.submissionStatus==='Returned') return 'Returned';
+  var done=emp.checklist.filter(Boolean).length;
+  if(done===0)return'Not Started';
+  if(done===emp.checklist.length)return'Completed';
+  return'In Progress';
+}
+function ob_getPct(emp){return Math.round(emp.checklist.filter(Boolean).length/emp.checklist.length*100);}
+function ob_toggle(empId,idx){var emp=OB.find(e=>e.id==empId);if(emp&&emp.submissionStatus!=='Submitted'){emp.checklist[idx]=!emp.checklist[idx];ob_render();ob_updateStats();}}
+function ob_submitForApproval(empId){
+  var emp=OB.find(e=>e.id==empId);
+  if(!emp) return;
+  var pct=ob_getPct(emp);
+  if(pct<100){ob_toast('Cannot submit - Onboarding checklist not 100% complete','error');return;}
+  var empDocs=DOCS.filter(d=>d.empId==empId);
+  var allDocsVerified=empDocs.length>=REQUIRED_DOCS.length && empDocs.every(d=>d.status==='Verified');
+  if(!allDocsVerified){ob_toast('Cannot submit - All documents must be verified','error');return;}
+  if(confirm(`Submit ${emp.fname} ${emp.lname}'s onboarding to HR Manager for approval?`)){
+    emp.submissionStatus='Submitted';
+    ob_render();ob_updateStats();
+    ob_toast(`${emp.fname} ${emp.lname}'s onboarding submitted to HR Manager!`);
+  }
+}
+function ob_render(){
+  var el=document.getElementById('ob_list');if(!el)return;
+  el.innerHTML=OB.map((e,i)=>{
+    var pct=ob_getPct(e),status=ob_getStatus(e);
+    var canSubmit=pct===100;
+    var returnAlert=e.submissionStatus==='Returned'?'<div class="alert alert-returned"><strong>⚠️ Returned by HR Manager:</strong> '+e.returnReason+'</div>':'';
+    var checks=DEFAULT_CHECKLIST.map((item,idx)=>{
+      var done=e.checklist[idx];
+      var disabled=e.submissionStatus==='Submitted'?' style="opacity:0.5;cursor:not-allowed;"':'';
+      return'<div class="check-item'+(done?' done':'')+'"'+disabled+' onclick="'+(e.submissionStatus!=='Submitted'?'ob_toggle('+e.id+','+idx+')':'')+'"><div class="check-box">'+(done?'<span class="check-tick">✓</span>':'')+'</div><span style="font-size:13px;font-weight:500;">'+item+'</span></div>';
+    }).join('');
+    var submitBtn=e.submissionStatus==='Submitted'?'<button class="btn-sm bsm-blue" disabled style="opacity:0.5;">Submitted</button>':'<button class="btn-sm '+(canSubmit?'bsm-green':'bsm-amber')+'" onclick="ob_submitForApproval('+e.id+')">'+(canSubmit?'Submit for Approval':'Not Ready ('+pct+'%)')+'</button>';
+    return'<div class="emp-card">'+returnAlert+'<div style="display:flex;justify-content:space-between;margin-bottom:12px;"><div><div style="font-size:16px;font-weight:700;">'+e.fname+' '+e.lname+'</div><div style="font-size:12px;color:var(--text-secondary);">'+e.position+' • '+e.dept+'</div></div><span class="badge bd-'+(status==='Submitted'?'submitted':status==='Returned'?'returned':status==='Completed'?'completed':status==='In Progress'?'in-progress':'not-started').toLowerCase().replace(' ','-')+'">'+status+'</span></div><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;color:var(--text-secondary);">Progress</span><strong style="font-size:13px;">'+pct+'% ('+e.checklist.filter(Boolean).length+'/'+e.checklist.length+')</strong></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:'+pct+'%"></div></div><div class="checklist">'+checks+'</div><div style="margin-top:12px;display:flex;justify-content:flex-end;">'+submitBtn+'</div></div>';
+  }).join('');
+}
+function ob_renderDocs(){
+  var el=document.getElementById('ob_docs');if(!el)return;
+  var empGroups={};
+  DOCS.forEach(d=>{if(!empGroups[d.empName])empGroups[d.empName]=[];empGroups[d.empName].push(d);});
+  el.innerHTML='<h3 style="margin-bottom:16px;">Document Verification Status</h3>'+
+    Object.keys(empGroups).map(name=>'<div style="background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);"><h4 style="margin-bottom:12px;">'+name+'</h4>'+
+      empGroups[name].map(d=>'<div class="doc-item"><div><div style="font-weight:600;font-size:13px;">'+d.docType+'</div>'+(d.uploadedAt?'<div style="font-size:11px;color:var(--text-secondary);">Uploaded: '+d.uploadedAt+'</div>':'')+'</div><span class="badge bd-'+(d.status==='Verified'?'verified':'pending')+'">'+d.status+'</span></div>').join('')+
+    '</div>').join('');
+}
+function ob_renderInduction(){
+  var el=document.getElementById('ob_induction');if(!el)return;
+  var empGroups={};
+  INDUCTION.forEach(i=>{if(!empGroups[i.empName])empGroups[i.empName]=[];empGroups[i.empName].push(i);});
+  el.innerHTML='<h3 style="margin-bottom:16px;">Induction Schedule</h3>'+
+    Object.keys(empGroups).map(name=>'<div style="background:var(--surface);border:1px solid var(--border-color);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);"><h4 style="margin-bottom:12px;">'+name+'</h4><div class="induction-schedule">'+
+      empGroups[name].map(i=>'<div class="schedule-item"><div><div style="font-weight:600;font-size:13px;">'+i.activity+'</div>'+(i.date?'<div style="font-size:11px;color:var(--text-secondary);">'+i.date+'</div>':'')+'</div><span class="badge bd-'+(i.completed?'completed':'pending')+'">'+( i.completed?'Completed':'Pending')+'</span></div>').join('')+
+    '</div></div>').join('');
+}
+function ob_updateStats(){
+  var fn=(id,v)=>{var e=document.getElementById(id);if(e)e.textContent=v;};
+  fn('ob_s_total',OB.length);
+  fn('ob_s_inprog',OB.filter(e=>ob_getStatus(e)==='In Progress').length);
+  fn('ob_s_done',OB.filter(e=>ob_getStatus(e)==='Completed'&&e.submissionStatus!=='Submitted').length);
+  fn('ob_s_returned',OB.filter(e=>e.submissionStatus==='Returned').length);
+}
+</script>
+</body>
+</html>

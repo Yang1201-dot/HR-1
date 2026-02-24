@@ -1,0 +1,161 @@
+/* Careers page styles - lightweight, uses dashboard variables */
+.careers-header { background: var(--surface); border-bottom: 1px solid var(--border-color); }
+.careers-header .container { display:flex; align-items:center; justify-content:space-between; padding:18px 6px; }
+.brand { display:flex; align-items:center; gap:12px; margin-left:-60px; }
+.career-logo { width:48px;height:48px;border-radius:8px; }
+.brand h1{margin:0;font-size:20px}
+.brand .subtitle{margin:0;color:var(--text-secondary);font-size:13px}
+.brand h1{margin:0;font-size:20px;}
+.top-nav a{color:var(--text-secondary);margin-left:18px;text-decoration:none}
+.top-nav a.active{color:var(--brand-green);font-weight:600}
+
+.hero{position:relative;height:360px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(0.45)}
+.hero-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:white;text-align:center;width:100%;max-width:960px;padding:0 20px}
+.hero-text h2{font-size:40px;margin-bottom:10px}
+.hero-text p{opacity:0.95;margin:0 auto}
+
+/* Tagline styling placed under the hero heading */
+.hero-text .tagline{font-size:18px;color:rgba(255,255,255,0.95);margin-top:6px;margin-bottom:8px;font-weight:600}
+
+/* Prominent tagline inside the About section */
+.about-tagline { font-size:20px; font-weight:700; color:var(--text-primary); margin:10px 0 18px; }
+
+/* Layout for split name fields inside modal */
+.name-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.name-row input{width:100%}
+@media (max-width:700px){
+  .name-row{grid-template-columns:1fr;}
+}
+
+/* Autofill background fix for browsers that apply white/yellow backgrounds */
+input:-webkit-autofill, textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+  box-shadow: 0 0 0px 1000px var(--background) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* Phone warning default style (inline aria-live fallback exists) */
+.phone-warning{color:#ff6b6b;font-size:13px;margin-top:-6px}
+
+.container{max-width:1100px;margin:0 auto;padding:36px}
+.container h2 { text-align:center; font-size:34px; margin-bottom:30px; }
+.jobs-section h2{margin-bottom:22px}
+.job-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.job{background:var(--surface);padding:18px;border-radius:10px;border:1px solid var(--border-color)}
+.job h3{margin-bottom:6px}
+.job-meta{font-size:13px;color:var(--text-secondary);margin-bottom:12px}
+.apply-btn{background:var(--brand-green);color:white;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+.apply-btn:hover{opacity:0.95}
+
+/* Modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:999999}
+.modal[aria-hidden="false"]{display:flex}
+.modal-dialog{background:var(--surface);color:var(--text-primary);padding:28px 28px 20px;border-radius:12px;width:680px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 8px 48px rgba(0,0,0,0.5)}
+.modal-close{position:absolute;right:14px;top:12px;border:none;background:transparent;font-size:26px;cursor:pointer;color:var(--text-primary);line-height:1}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-weight:600;margin-bottom:6px}
+.form-row input[type="text"],.form-row input[type="email"],.form-row input[type="tel"],.form-row textarea{width:100%;padding:10px;border-radius:8px;border:2px solid #a0b4a0;background:var(--background);color:var(--text-primary);outline:none;transition:border-color 0.2s}
+.form-row input[type="text"]:focus,.form-row input[type="email"]:focus,.form-row input[type="tel"]:focus,.form-row textarea:focus{border-color:var(--brand-green);outline:none;box-shadow:0 0 0 3px rgba(52,168,83,0.18)}
+body.dark-mode .form-row input[type="text"],body.dark-mode .form-row input[type="email"],body.dark-mode .form-row input[type="tel"],body.dark-mode .form-row textarea{border-color:#4a5c4a}
+.form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:10px}
+.btn-primary{background:var(--brand-green);color:white;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+.btn-primary:hover{opacity:0.9}
+.btn-secondary{background:transparent;border:2px solid var(--border-color);padding:10px 14px;border-radius:8px;color:var(--text-primary);cursor:pointer;font-weight:600}
+.btn-secondary:hover{background:var(--surface-hover)}
+.form-result{margin-top:12px}
+
+/* Style file inputs and their button where supported */
+.form-row input[type="file"]{color:var(--text-secondary);}
+.form-row input[type="file"]::file-selector-button{background:var(--surface-hover);border:1px solid var(--border-color);color:var(--text-primary);padding:6px 10px;border-radius:8px;margin-right:8px;cursor:pointer}
+/* WebKit fallback */
+.form-row input[type="file"]::-webkit-file-upload-button{background:var(--surface-hover);border:1px solid var(--border-color);color:var(--text-primary);padding:6px 10px;border-radius:8px;margin-right:8px;cursor:pointer}
+
+/* Make the phone input visually match other inputs but slightly narrower for UX */
+.form-row input[type="tel"]{max-width:260px}
+
+/* Custom file picker UI */
+.file-picker{display:flex;align-items:center;gap:10px}
+.file-btn{background:var(--brand-green);border:none;color:white;padding:7px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px}
+.file-btn:hover{opacity:0.9}
+.file-name{color:var(--text-secondary);font-size:14px}
+.file-clear{background:transparent;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.file-clear:hover{color:#ff6b6b}
+
+/* ── Light-mode card visibility ── */
+body:not(.dark-mode) .step {
+  background: #ffffff;
+  border: 2px solid #c8d8c8;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+body:not(.dark-mode) .job {
+  background: #ffffff;
+  border: 2px solid #c8d8c8;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+body:not(.dark-mode) .faq-item {
+  background: #ffffff;
+  border: 2px solid #c8d8c8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+@media (max-width:700px){
+  .hero{height:260px}
+  .hero-text{left:50%;top:50%;transform:translate(-50%,-50%);padding:0 12px}
+  .hero-text h2{font-size:22px}
+}
+
+/* Three step guide */
+.steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin:36px 0; }
+.step { background:var(--surface); padding:24px; border-radius:10px; border:1px solid var(--border-color); text-align:center }
+.step h4{margin-bottom:10px; font-size:18px}
+.step p{font-size:16px; line-height:1.7}
+.start-apply { display:block; text-align:center; margin:18px auto 30px; }
+
+/* Footer */
+.careers-footer { border-top:1px solid var(--border-color); padding:48px 18px; color:var(--text-secondary); background:transparent }
+.careers-footer .links { display:flex; gap:24px; flex-wrap:wrap; justify-content:center }
+.careers-footer a { color:var(--text-secondary); text-decoration:none }
+
+/* Terms modal (reuse modal styles) */
+.terms-modal .modal-dialog{max-width:760px}
+.terms-content{max-height:60vh;overflow:auto;padding-top:8px}
+
+/* FAQ accordion */
+.faq-item { margin-bottom:28px; border-radius:10px; overflow:hidden; border:1px solid var(--border-color); background:var(--surface); }
+.faq-question { width:100%; text-align:left; padding:20px 22px; background:transparent; border:none; font-weight:800; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:space-between; font-size:18px }
+.faq-question::after { content: '\25B6'; font-size:16px; opacity:0.8; margin-left:12px; transform:rotate(0deg); transition:transform 0.2s ease }
+.faq-item.open .faq-question::after { transform:rotate(90deg); }
+.faq-answer { padding:0 22px; max-height:0; overflow:hidden; transition:max-height 0.25s ease; color:var(--text-secondary); font-size:18px; line-height:2 }
+.faq-item.open .faq-answer { padding:18px 22px 22px; max-height:900px; }
+
+/* Back to homepage button */
+.btn-secondary { display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color); color:var(--text-secondary); text-decoration:none }
+.btn-secondary:hover { background:var(--surface-hover); color:var(--text-primary); }
+
+/* Make main page sections wider, larger text and centered for longer page feel */
+.about-section, .contact-section {
+  max-width: 960px;
+  margin: 56px auto;
+  text-align: center;
+  font-size: 20px;
+  line-height: 1.9;
+}
+
+/* Jobs heading spacing */
+.jobs-section { padding-top: 12px; padding-bottom: 12px; }
+
+/* Larger paragraph text in main container by default (except inside job cards) */
+.container p { font-size: 20px; line-height: 1.9; }
+
+/* Add breathing room between the intro paragraph under the page H2 and the following FAQ/questions */
+.container h2 + p { margin-bottom: 28px; }
+
+/* Keep job card content compact/left aligned */
+.job { text-align: left; }
+.job p, .job .job-meta { font-size: 15px; line-height: 1.6; }
+
+@media (max-width:700px){
+  .about-section, .contact-section, .container p { font-size:16px }
+  .hero-text h2{font-size:22px}
+}

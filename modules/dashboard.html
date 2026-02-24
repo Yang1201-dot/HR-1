@@ -6,7 +6,7 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="../css/dashboard.css">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
 <body>
   <!-- Theme Toggle -->
@@ -36,7 +36,7 @@
       <div class="nav-section">
         <span class="nav-section-title">MAIN MENU</span>
         
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item active" data-page="dashboard">
           <i data-lucide="layout-dashboard"></i>
           <span>Dashboard</span>
         </a>
@@ -50,21 +50,30 @@
             <i data-lucide="chevron-down" class="submenu-icon"></i>
           </button>
           <div class="submenu" id="submenu-hr">
-            <a href="payroll.html" class="submenu-item">
-              <i data-lucide="wallet"></i>
-              <span>Payroll</span>
+            <!-- Direct HR1 Modules -->
+            <a href="#" class="submenu-item" data-page="recruitment">
+              <i data-lucide="briefcase"></i>
+              <span>Recruitment</span>
             </a>
-            <a href="compensation.html" class="submenu-item">
+            <a href="#" class="submenu-item" data-page="app-mgmt">
+              <i data-lucide="file-text"></i>
+              <span>Application Management</span>
+            </a>
+            <a href="#" class="submenu-item" data-page="onboard">
+              <i data-lucide="user-check"></i>
+              <span>Onboarding</span>
+            </a>
+            <a href="#" class="submenu-item" data-page="evaluation">
               <i data-lucide="trending-up"></i>
-              <span>Compensation Planning</span>
+              <span>Performance Evaluation</span>
             </a>
-            <a href="#" class="submenu-item">
-              <i data-lucide="user-circle"></i>
-              <span>Core Human Capital</span>
+            <a href="#" class="submenu-item" data-page="social-rec">
+              <i data-lucide="award"></i>
+              <span>Social Recognition</span>
             </a>
-            <a href="#" class="submenu-item">
-              <i data-lucide="bar-chart-3"></i>
-              <span>HR Analytics</span>
+            <a href="#" class="submenu-item" data-page="transfer-mgmt">
+              <i data-lucide="send"></i>
+              <span>Transfer Management</span>
             </a>
           </div>
         </div>
@@ -144,8 +153,7 @@
           <i data-lucide="shield"></i>
           <span>Security</span>
         </a>
-        <!-- HARDCODED: Logout just returns to the login UI -->
-        <a href="../login.html" class="nav-item">
+        <a href="login.html" class="nav-item">
             <i data-lucide="log-out"></i>
             <span>Logout</span>
         </a>
@@ -155,7 +163,7 @@
     <div class="sidebar-footer">
       <div class="user-profile">
         <div class="user-avatar">
-          <img src="../img/profile.png" alt="User">
+          <img src="../img/profile.png" alt="John Doe" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:36px;height:36px;background:#2ca078;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:14px;\'>JD</div>'">
         </div>
         <div class="user-info">
           <span class="user-name">John Doe</span>
@@ -191,7 +199,7 @@
       </div>
     </header>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="mainContentArea">
       <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-card">
@@ -485,7 +493,11 @@
       </div>
     </div>
   </main>
+  
+  <!-- Scripts - UPDATED -->
+  <script src="../js/mysql-hr1-client.js"></script>
   <script src="../js/dashboard.js"></script>
+  <script src="../js/dashboard-hr1-integration.js"></script>
   <script>
     lucide.createIcons();
   </script>

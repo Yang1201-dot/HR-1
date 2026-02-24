@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Microfinance</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/careers.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme');
+      if (t === 'light') document.documentElement.setAttribute('data-theme-pre','light');
+    })();
+  </script>
+  <style>
+    /* Empty jobs state */
+    .no-jobs-msg {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    .no-jobs-msg .no-jobs-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+    }
+    .no-jobs-msg h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .no-jobs-msg p {
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <header class="careers-header">
+    <div class="container">
+      <div class="brand">
+        <img src="/img/logo.png" alt="Microfinance" class="career-logo">
+        <div>
+          <h1>Microfinance</h1>
+        </div>
+      </div>
+      <nav class="top-nav">
+        <a href="#home" class="active">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#jobs">Jobs</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1800&auto=format&fit=crop&ixlib=rb-4.0.3" alt="team"/>
+      <div class="hero-text container">
+        <h2>Work with purpose</h2>
+        <p>We're looking for people who want to make a difference. Check our open roles below and apply.</p>
+      </div>
+    </section>
+
+    <!-- 3-step guide -->
+    <section class="container">
+      <h2>How to apply in 3 easy steps</h2>
+      <div class="steps">
+        <div class="step">
+          <h4>1. Find a role</h4>
+          <p>Browse open positions that match your skills and interests.</p>
+        </div>
+        <div class="step">
+          <h4>2. Prepare requirements</h4>
+          <p>Gather your resume, birth certificate, diploma/TOR and other supporting docs.</p>
+        </div>
+        <div class="step">
+          <h4>3. Submit application</h4>
+          <p>Click Apply, complete the form and upload your documents.</p>
+        </div>
+      </div>
+      <div class="start-apply">
+        <button id="startApplyBtn" class="btn-primary">Start applying now</button>
+      </div>
+    </section>
+
+    <!-- Open Positions - populated dynamically from Recruitment module -->
+    <section id="jobs" class="container jobs-section">
+      <h2>Open Positions</h2>
+      <div class="job-list" id="jobList"></div>
+      <div id="noJobsMsg" class="no-jobs-msg" style="display:none;">
+        <div class="no-jobs-icon">&#128193;</div>
+        <h3>No Open Positions Right Now</h3>
+        <p>We currently have no open vacancies. Please check back later &mdash; new opportunities are posted regularly.</p>
+      </div>
+    </section>
+
+    <section id="about" class="container about-section">
+      <h2>About Us</h2>
+      <p class="about-tagline">Join our team and help communities grow.</p>
+      <p>Microfinance is a community-first financial services provider dedicated to increasing financial inclusion for underserved communities. We provide small loans, savings products, and training to micro-entrepreneurs and households to help them build sustainable livelihoods. Our approach combines responsible lending practices, community engagement, and financial education.</p>
+      <p>We believe in integrity, transparency, and measurable impact. Our teams work closely with local partners to design programs that fit the needs of communities while focusing on long-term client outcomes. Join us in making a difference &mdash; whether as a team member or a partner.</p>
+    </section>
+
+    <section id="contact" class="container contact-section">
+      <h2>Contact</h2>
+      <p>Questions about hiring? Email us at <a href="mailto:careers@microfinance.local">careers@microfinance.local</a></p>
+    </section>
+  </main>
+
+  <!-- Application modal -->
+  <div id="applyModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <h3 id="modalTitle">Apply for Role</h3>
+      <form id="applyForm" enctype="multipart/form-data">
+        <input type="hidden" name="role" id="inputRole">
+        <div class="form-row name-row">
+          <div>
+            <label>First name <span class="required">*</span></label>
+            <input type="text" name="first_name" required>
+          </div>
+          <div>
+            <label>Middle name</label>
+            <input type="text" name="middle_name">
+          </div>
+          <div>
+            <label>Last name <span class="required">*</span></label>
+            <input type="text" name="last_name" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" name="email" required>
+        </div>
+
+        <div class="form-row">
+          <label>Phone <span class="required">*</span></label>
+          <input type="tel" name="phone" required maxlength="11" placeholder="e.g. 09171234567">
+        </div>
+        <div class="form-row">
+          <div class="phone-warning" aria-live="polite" style="color:#ff6b6b;font-size:13px;margin-top:-6px"></div>
+        </div>
+
+        <div class="form-row">
+          <label>Resume / CV (PDF)</label>
+          <div class="file-picker">
+            <button type="button" class="file-btn">Choose File</button>
+            <span class="file-name">No file chosen</span>
+            <button type="button" class="file-clear" aria-label="Remove file" style="display:none">&times;</button>
+            <input type="file" name="resume" accept="application/pdf" required class="real-file">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Birth Certificate (image/pdf)</label>
+          <div class="file-picker">
+            <button type="button" class="file-btn">Choose File</button>
+            <span class="file-name">No file chosen</span>
+            <button type="button" class="file-clear" aria-label="Remove file" style="display:none">&times;</button>
+            <input type="file" name="birth_certificate" accept="image/*,application/pdf" class="real-file">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Diploma / TOR (image/pdf)</label>
+          <div class="file-picker">
+            <button type="button" class="file-btn">Choose File</button>
+            <span class="file-name">No file chosen</span>
+            <button type="button" class="file-clear" aria-label="Remove file" style="display:none">&times;</button>
+            <input type="file" name="diploma" accept="image/*,application/pdf" class="real-file">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Cover Letter (optional)</label>
+          <div class="file-picker">
+            <button type="button" class="file-btn">Choose File</button>
+            <span class="file-name">No file chosen</span>
+            <button type="button" class="file-clear" aria-label="Remove file" style="display:none">&times;</button>
+            <input type="file" name="cover_letter" accept="application/pdf" class="real-file">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Message</label>
+          <textarea name="message" rows="3"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit Application</button>
+          <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+        </div>
+      </form>
+      <div id="formResult" class="form-result" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="careers-footer">
+    <div class="container">
+      <div class="links">
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="help.html">Help</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/careers.js"></script>
+
+  <script>
+    // ── Load job postings from localStorage (written by Recruitment module) ──
+    (function loadCareersJobs() {
+      var listEl = document.getElementById('jobList');
+      var noJobsEl = document.getElementById('noJobsMsg');
+      if (!listEl) return;
+
+      var jobs = [];
+      try {
+        var stored = localStorage.getItem('careers_job_postings');
+        if (stored) jobs = JSON.parse(stored);
+      } catch(e) {}
+
+      // Only show Active jobs on the careers page
+      var activeJobs = jobs.filter(function(j) { return j.status === 'Active'; });
+
+      if (activeJobs.length === 0) {
+        listEl.style.display = 'none';
+        if (noJobsEl) noJobsEl.style.display = 'block';
+        return;
+      }
+
+      listEl.style.display = '';
+      if (noJobsEl) noJobsEl.style.display = 'none';
+
+      listEl.innerHTML = activeJobs.map(function(j) {
+        var meta = [];
+        if (j.location) meta.push('Location: ' + j.location);
+        if (j.emptype) meta.push('Type: ' + j.emptype);
+        var metaStr = meta.join(' \u2022 ');
+        var desc = (j.desc || '');
+        if (desc.length > 120) desc = desc.substring(0, 120) + '...';
+        return '<article class="job">' +
+          '<h3>' + j.title + '</h3>' +
+          '<p>' + desc + '</p>' +
+          (metaStr ? '<div class="job-meta">' + metaStr + '</div>' : '') +
+          '<button class="apply-btn" data-role="' + j.title + '">Apply Now</button>' +
+          '</article>';
+      }).join('');
+
+      // Re-bind Apply Now buttons after dynamic render
+      // (careers.js runs before this and won't see dynamically added buttons)
+      listEl.querySelectorAll('.apply-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var role = btn.getAttribute('data-role') || 'Position';
+          var titleEl = document.getElementById('modalTitle');
+          var roleEl = document.getElementById('inputRole');
+          var modal = document.getElementById('applyModal');
+          var resultEl = document.getElementById('formResult');
+          if (titleEl) titleEl.textContent = 'Apply for ' + role;
+          if (roleEl) roleEl.value = role;
+          if (modal) modal.setAttribute('aria-hidden', 'false');
+          if (resultEl) resultEl.textContent = '';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
