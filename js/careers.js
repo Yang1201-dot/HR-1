@@ -434,15 +434,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const resumeInput = form.querySelector('input[name="resume"]');
         const birthInput = form.querySelector('input[name="birth_certificate"]');
         const diplomaInput = form.querySelector('input[name="diploma"]');
+        const firstNameInput = form.querySelector('input[name="first_name"]');
+        const lastNameInput = form.querySelector('input[name="last_name"]');
+        const emailInput = form.querySelector('input[name="email"]');
+        const phoneInput = form.querySelector('input[name="phone"]');
         
         if (resumeInput) resumeInput.setAttribute('required', '');
         if (birthInput) birthInput.setAttribute('required', '');
         if (diplomaInput) diplomaInput.setAttribute('required', '');
+        if (firstNameInput) firstNameInput.setAttribute('required', '');
+        if (lastNameInput) lastNameInput.setAttribute('required', '');
+        if (emailInput) emailInput.setAttribute('required', '');
+        if (phoneInput) phoneInput.setAttribute('required', '');
       }
       
       // Reset modal title and submit button text
       if (modalTitle) modalTitle.textContent = 'Apply for Role';
       if (submitBtn) submitBtn.textContent = 'Submit Application';
+      
+      // Hide edit warning when modal is closed
+      const editWarningEl = document.getElementById('editWarning');
+      if (editWarningEl) editWarningEl.style.display = 'none';
     }
   }
 
@@ -474,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitle = document.getElementById('modalTitle');
     const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
     
-    // Validate required files (only for new applications, not edits)
+    // For new applications: validate all required files are present with proper size and type
     if (!isEditing) {
       const requiredFiles = [
         { field: 'resume', name: 'Resume/CV' },
@@ -483,17 +495,161 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       const missingFiles = [];
+      const invalidFiles = [];
+      
       requiredFiles.forEach(file => {
         const fileInput = applyForm.querySelector(`input[name="${file.field}"]`);
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
           missingFiles.push(file.name);
+        } else if (fileInput.files && fileInput.files[0]) {
+          const f = fileInput.files[0];
+          
+          // Check file size
+          if (f.size > 2 * 1024 * 1024) {
+            const fileSizeMB = (f.size / (1024 * 1024)).toFixed(2);
+            invalidFiles.push(`${f.name} is too large (${fileSizeMB} MB)`);
+          }
+          
+          // Check file type
+          const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'image/jpeg',
+            'image/png',
+            'image/jpg'
+          ];
+          
+          if (!allowedTypes.includes(f.type) && f.type !== '') {
+            invalidFiles.push(`${f.name} has unsupported file type`);
+          }
         }
       });
 
       if (missingFiles.length > 0) {
-        formResult.textContent = `Please upload all required files: ${missingFiles.join(', ')}`;
+        formResult.textContent = `⚠️ Please upload all required files: ${missingFiles.join(', ')}. These documents are required to process your application.`;
         formResult.style.color = '#ff6b6b';
         return;
+      }
+      
+      if (invalidFiles.length > 0) {
+        formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+        formResult.style.color = '#ff6b6b';
+        return;
+      }
+    }
+    
+    // For editing applications: validate files and show appropriate warnings
+    if (isEditing) {
+      const fileInputs = [
+        { field: 'resume', name: 'Resume/CV', required: true },
+        { field: 'birth_certificate', name: 'Birth Certificate', required: true },
+        { field: 'diploma', name: 'Diploma/TOR', required: true },
+        { field: 'cover_letter', name: 'Cover Letter', required: false }
+      ];
+      
+      const uploadedFiles = [];
+      const missingRequiredFiles = [];
+      const invalidFiles = [];
+      const modifiedFiles = []; // Track which files were actually modified
+      
+      fileInputs.forEach(fileInfo => {
+        const fileInput = applyForm.querySelector(`input[name="${fileInfo.field}"]`);
+        const picker = fileInput?.closest('.file-picker');
+        const nameSpan = picker?.querySelector('.file-name');
+        const clearBtn = picker?.querySelector('.file-clear');
+        
+        // Check if this file was modified (new file uploaded or existing file cleared)
+        const hasExistingFile = nameSpan && nameSpan.textContent !== 'No file chosen' && clearBtn && clearBtn.style.display !== 'none';
+        const hasNewFile = fileInput && fileInput.files && fileInput.files.length > 0;
+        const wasCleared = hasExistingFile && !hasNewFile && clearBtn && clearBtn.style.display === 'none';
+        
+        if (hasNewFile || wasCleared) {
+          modifiedFiles.push(fileInfo.name);
+        }
+        
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+          // File is empty - check if it's required
+          if (fileInfo.required) {
+            missingRequiredFiles.push(fileInfo.name);
+          }
+        } else if (fileInput.files && fileInput.files[0]) {
+          const f = fileInput.files[0];
+          uploadedFiles.push(f.name);
+          
+          // Check file size
+          if (f.size > 2 * 1024 * 1024) {
+            const fileSizeMB = (f.size / (1024 * 1024)).toFixed(2);
+            invalidFiles.push(`${f.name} is too large (${fileSizeMB} MB)`);
+          }
+          
+          // Check file type
+          const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'image/jpeg',
+            'image/png',
+            'image/jpg'
+          ];
+          
+          if (!allowedTypes.includes(f.type) && f.type !== '') {
+            invalidFiles.push(`${f.name} has unsupported file type`);
+          }
+        }
+      });
+      
+      // Only show warnings if files were actually modified
+      if (modifiedFiles.length === 0) {
+        // No files were modified, show warning and prevent submission
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) {
+          editWarningEl.textContent = '⚠️ Please fill requirements to submit';
+          editWarningEl.style.display = 'block';
+        }
+        
+        // Clear form result to avoid confusion
+        formResult.textContent = '';
+        formResult.style.color = '';
+        
+        return; // Completely stop form submission - just show warning
+      } else if (missingRequiredFiles.length > 0 && uploadedFiles.length > 0) {
+        // User uploaded some files but left other required files empty
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        
+        formResult.textContent = `⚠️ Please upload the missing files requirements: ${missingRequiredFiles.join(', ')}. You have uploaded some files but still need to complete all required documents.`;
+        formResult.style.color = '#ff6b6b';
+        return;
+      } else if (missingRequiredFiles.length > 0 && invalidFiles.length > 0) {
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        
+        formResult.textContent = `⚠️ Please upload missing required files: ${missingRequiredFiles.join(', ')}. Also fix these issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+        formResult.style.color = '#ff6b6b';
+        return;
+      } else if (missingRequiredFiles.length > 0) {
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        
+        formResult.textContent = `⚠️ Please upload all required files: ${missingRequiredFiles.join(', ')} to complete your application. These documents are required to process your submission.`;
+        formResult.style.color = '#ff6b6b';
+        return;
+      } else if (invalidFiles.length > 0) {
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        
+        formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+        formResult.style.color = '#ff6b6b';
+        return;
+      } else {
+        // All validations passed - hide warning and proceed
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none';
       }
     }
 
@@ -613,9 +769,63 @@ document.addEventListener('DOMContentLoaded', () => {
       if (fileInput && fileInput.files && fileInput.files[0]) {
         const f = fileInput.files[0];
         
-        // Check file size - reject files larger than 2MB
+        // Check file size - show warning for files larger than 2MB
         if (f.size > 2 * 1024 * 1024) {
+          const fileSizeMB = (f.size / (1024 * 1024)).toFixed(2);
+          const warningMsg = `⚠️ ${f.name} is too large (${fileSizeMB} MB). Maximum file size is 2MB. Please choose a smaller file.`;
+          
+          // Show warning in form result
+          if (formResult) {
+            formResult.textContent = warningMsg;
+            formResult.style.color = '#ff6b6b';
+          }
+          
+          // Clear this file input
+          fileInput.value = '';
+          const picker = fileInput.closest('.file-picker');
+          if (picker) {
+            const nameSpan = picker.querySelector('.file-name');
+            const clearBtn = picker.querySelector('.file-clear');
+            if (nameSpan) nameSpan.textContent = 'No file chosen';
+            if (clearBtn) clearBtn.style.display = 'none';
+          }
+          
           console.warn(`File ${f.name} is too large (${Math.round(f.size / 1024)} KB). Skipping.`);
+          return;
+        }
+        
+        // Check file type - only allow common document types
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'image/jpeg',
+          'image/png',
+          'image/jpg'
+        ];
+        
+        if (!allowedTypes.includes(f.type) && f.type !== '') {
+          const warningMsg = `⚠️ ${f.name} has an unsupported file type (${f.type || 'unknown'}). Please upload PDF, Word, Excel, or image files.`;
+          
+          // Show warning in form result
+          if (formResult) {
+            formResult.textContent = warningMsg;
+            formResult.style.color = '#ff6b6b';
+          }
+          
+          // Clear this file input
+          fileInput.value = '';
+          const picker = fileInput.closest('.file-picker');
+          if (picker) {
+            const nameSpan = picker.querySelector('.file-name');
+            const clearBtn = picker.querySelector('.file-clear');
+            if (nameSpan) nameSpan.textContent = 'No file chosen';
+            if (clearBtn) clearBtn.style.display = 'none';
+          }
+          
+          console.warn(`File ${f.name} has unsupported type (${f.type}). Skipping.`);
           return;
         }
         

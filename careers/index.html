@@ -120,7 +120,7 @@
     <div class="modal-dialog">
       <button class="modal-close" id="modalClose">&times;</button>
       <h3 id="modalTitle">Apply for Role</h3>
-      <form id="applyForm" enctype="multipart/form-data">
+      <form id="applyForm" enctype="multipart/form-data" novalidate>
         <input type="hidden" name="role" id="inputRole">
         <div class="form-row name-row">
           <div>
@@ -201,6 +201,7 @@
         </div>
       </form>
       <div id="formResult" class="form-result" role="status" aria-live="polite"></div>
+      <div id="editWarning" class="edit-warning" style="display:none; margin-top:10px; padding:10px; color:#ff6b6b; font-size:14px;"></div>
     </div>
   </div>
 
