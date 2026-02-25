@@ -360,39 +360,8 @@ document.addEventListener('DOMContentLoaded', () => {
           nameSpan.textContent = 'No file chosen';
           newClearBtn.style.display = 'none';
           
-          // If we're editing an application, also clear the stored file data
-          const modalTitle = document.getElementById('modalTitle');
-          const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
-          if (isEditing) {
-            const inputRole = document.getElementById('inputRole');
-            const role = inputRole ? inputRole.value : '';
-            
-            // Find the current application and clear its file data
-            let applications = [];
-            try { 
-              applications = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
-            } catch(err) {}
-            
-            const jobApplications = applications.filter(app => app.position.toLowerCase() === role.toLowerCase());
-            const application = jobApplications[jobApplications.length - 1];
-            
-            if (application) {
-              let filesMeta = {};
-              try { 
-                filesMeta = JSON.parse(localStorage.getItem('careers_files') || '{}'); 
-              } catch(err) {}
-              
-              // Clear the specific file for this application
-              if (filesMeta[application.id]) {
-                const fieldName = input.getAttribute('name');
-                const fileKey = fieldName === 'resume' ? 'resume' : 
-                               fieldName === 'birth_certificate' ? 'birth' : 
-                               fieldName === 'diploma' ? 'diploma' : 'cover';
-                delete filesMeta[application.id][fileKey];
-                localStorage.setItem('careers_files', JSON.stringify(filesMeta));
-              }
-            }
-          }
+          // Don't immediately delete from localStorage during edit
+          // Files will be properly updated after successful submission
         });
       }
     });
