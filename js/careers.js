@@ -562,22 +562,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameSpan = picker?.querySelector('.file-name');
         const clearBtn = picker?.querySelector('.file-clear');
         
-        // Check if this file was modified (new file uploaded or existing file cleared)
+        // Check file status for this field
+        // Debug: Check what we're seeing
+        const nameSpanText = nameSpan ? nameSpan.textContent : 'NO SPAN';
+        const clearBtnDisplay = clearBtn ? clearBtn.style.display : 'NO BTN';
+        
         const hasExistingFile = nameSpan && nameSpan.textContent !== 'No file chosen' && clearBtn && clearBtn.style.display !== 'none';
         const hasNewFile = fileInput && fileInput.files && fileInput.files.length > 0;
-        const wasCleared = hasExistingFile && !hasNewFile && clearBtn && clearBtn.style.display === 'none';
+        const wasCleared = clearBtn && clearBtn.style.display === 'none'; // Simplified: if clear button is hidden, file was cleared
         
-        // Always track if this file was modified in any way
+        // Debug: Log file status
+        console.log(`File: ${fileInfo.name}, hasExistingFile: ${hasExistingFile}, hasNewFile: ${hasNewFile}, wasCleared: ${wasCleared}, nameSpanText: "${nameSpanText}", clearBtnDisplay: "${clearBtnDisplay}"`);
+        
+        // Track modifications
         if (hasNewFile || wasCleared) {
           modifiedFiles.push(fileInfo.name);
         }
         
-        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-          // File is empty - check if it's required
-          if (fileInfo.required) {
-            missingRequiredFiles.push(fileInfo.name);
+        // Determine if this file is actually missing
+        let isMissing = false;
+        if (fileInfo.required) {
+          if (wasCleared) {
+            // File was cleared - it's now missing
+            isMissing = true;
+          } else if (!hasExistingFile && !hasNewFile) {
+            // No existing file and no new file uploaded
+            isMissing = true;
           }
-        } else if (fileInput.files && fileInput.files[0]) {
+          // If hasExistingFile is true, file is NOT missing (pre-existing)
+        }
+        
+        if (isMissing) {
+          missingRequiredFiles.push(fileInfo.name);
+          console.log(`Missing file added: ${fileInfo.name} (wasCleared: ${wasCleared}, hasExistingFile: ${hasExistingFile})`);
+        }
+        
+        // Process uploaded files for validation
+        if (hasNewFile && fileInput.files && fileInput.files[0]) {
           const f = fileInput.files[0];
           uploadedFiles.push(f.name);
           
@@ -607,59 +628,71 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Only show warnings if files were actually modified
       if (modifiedFiles.length === 0) {
-        // No files were modified, show warning and prevent submission
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) {
-          editWarningEl.textContent = '⚠️ Please fill requirements to submit';
-          editWarningEl.style.display = 'block';
+        // Check if there are any pre-existing files
+        const hasAnyExistingFiles = fileInputs.some(fileInfo => {
+          const picker = applyForm.querySelector(`input[name="${fileInfo.field}"]`)?.closest('.file-picker');
+          const nameSpan = picker?.querySelector('.file-name');
+          const clearBtn = picker?.querySelector('.file-clear');
+          return nameSpan && nameSpan.textContent !== 'No file chosen' && clearBtn && clearBtn.style.display !== 'none';
+        });
+        
+        if (hasAnyExistingFiles) {
+          // User has pre-existing files and didn't modify anything - allow submission
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none';
+          // Don't return - let the submission proceed
+        } else {
+          // No files at all - show warning
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) {
+            editWarningEl.textContent = '⚠️ Please fill requirements to submit';
+            editWarningEl.style.display = 'block';
+          }
+          
+          // Clear form result to avoid confusion
+          formResult.textContent = '';
+          formResult.style.color = '';
+          
+          return; // Completely stop form submission - just show warning
         }
-        
-        // Clear form result to avoid confusion
-        formResult.textContent = '';
-        formResult.style.color = '';
-        
-        return; // Completely stop form submission - just show warning
-      } else if (wasCleared && missingRequiredFiles.length > 0) {
-        // User cleared a file and other required files are missing
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
-        
-        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. You cleared a file and need to complete all required documents.`;
-        formResult.style.color = '#ff6b6b';
-        return;
-      } else if (missingRequiredFiles.length > 0 && uploadedFiles.length > 0) {
-        // User uploaded some files but left other required files empty
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
-        
-        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. You have uploaded some files but still need to complete all required documents.`;
-        formResult.style.color = '#ff6b6b';
-        return;
-      } else if (missingRequiredFiles.length > 0 && invalidFiles.length > 0) {
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
-        
-        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. Also fix these issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
-        formResult.style.color = '#ff6b6b';
-        return;
-      } else if (missingRequiredFiles.length > 0) {
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
-        
-        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')} to complete your application. These documents are required to process your submission.`;
-        formResult.style.color = '#ff6b6b';
-        return;
-      } else if (invalidFiles.length > 0) {
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
-        
-        formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
-        formResult.style.color = '#ff6b6b';
-        return;
-      } else {
-        // All validations passed - hide warning and proceed
-        const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none';
+      }
+      
+      // Only proceed with validation if files were actually modified
+      if (modifiedFiles.length > 0) {
+        if (missingRequiredFiles.length > 0 && uploadedFiles.length > 0) {
+          // User uploaded some files but left other required files empty
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
+          
+          formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. You have uploaded some files but still need to complete all required documents.`;
+          formResult.style.color = '#ff6b6b';
+          return;
+        } else if (missingRequiredFiles.length > 0 && invalidFiles.length > 0) {
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
+          
+          formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. Also fix these issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+          formResult.style.color = '#ff6b6b';
+          return;
+        } else if (missingRequiredFiles.length > 0) {
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
+          
+          formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')} to complete your application. These documents are required to process your submission.`;
+          formResult.style.color = '#ff6b6b';
+          return;
+        } else if (invalidFiles.length > 0) {
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
+          
+          formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+          formResult.style.color = '#ff6b6b';
+          return;
+        } else {
+          // All validations passed - hide warning and proceed
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none';
+        }
       }
     }
 
