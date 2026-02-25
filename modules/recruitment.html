@@ -161,12 +161,25 @@ var JOBS = [], OFFERS = [], COMMS = [];
 var KEY_JOBS = 'careers_job_postings';
 var KEY_APPS = 'careers_applications';
 
+/* ── SVG icons ── */
+var ICO = {
+  cal: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  usr: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  mic: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'
+};
+
 /* ── Load from localStorage on init ── */
 function r_loadFromStorage() {
+  console.log('Loading from storage...');
   try {
     var j = localStorage.getItem(KEY_JOBS);
+    console.log('Raw jobs data:', j);
     JOBS = j ? JSON.parse(j) : [];
-  } catch(e) { JOBS = []; }
+    console.log('Parsed JOBS:', JOBS);
+  } catch(e) { 
+    console.error('Error loading jobs:', e);
+    JOBS = []; 
+  }
   try {
     var a = localStorage.getItem(KEY_APPS);
     var apps = a ? JSON.parse(a) : [];
@@ -180,7 +193,13 @@ function r_loadFromStorage() {
 }
 
 function r_saveJobs() {
-  try { localStorage.setItem(KEY_JOBS, JSON.stringify(JOBS)); } catch(e) {}
+  try { 
+    console.log('Saving jobs:', JOBS);
+    localStorage.setItem(KEY_JOBS, JSON.stringify(JOBS));
+    console.log('Jobs saved successfully');
+  } catch(e) { 
+    console.error('Error saving jobs:', e);
+  }
 }
 
 /* ── Init ── */
@@ -189,9 +208,25 @@ function r_saveJobs() {
     if (window.parent !== window)
       document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
   } catch(e) {}
-  r_loadFromStorage();
-  r_render();
-  r_updateStats();
+  
+  // Ensure DOM is ready before loading
+  function delayedInit() {
+    r_loadFromStorage();
+    r_render();
+    r_updateStats();
+  }
+  
+  // Try immediate init first
+  delayedInit();
+  
+  // If that fails, try again after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', delayedInit);
+  }
+  
+  // Also try after a short delay to handle iframe loading issues
+  setTimeout(delayedInit, 100);
+  
   // Poll every 5 seconds to pick up new applications from careers site
   setInterval(function() {
     r_loadFromStorage();
@@ -212,6 +247,7 @@ function r_tab(t, btn) {
   var p = document.getElementById('r_tab_' + t);
   if (p) p.classList.add('active');
   if (btn) btn.classList.add('active');
+  if (t === 'jobs')           r_render();
   if (t === 'offers')         r_renderOffers();
   if (t === 'communications') r_renderComms();
   if (t === 'interviews')     r_renderInterviews();
@@ -236,13 +272,6 @@ function r_openComm() { r_open('r_modal_comm'); }
 function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-/* ── SVG icons ── */
-var ICO = {
-  cal: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-  usr: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  mic: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'
-};
-
 /* ── Save new job post ── */
 function r_save() {
   var title = g('r_title'), desc = g('r_desc');
@@ -265,7 +294,6 @@ function r_render() {
   if (!JOBS.length) {
     el.className = '';
     el.innerHTML = '<div class="empty-state">No job postings yet. Click <strong>+ Create Job Post</strong> to get started.</div>';
-    return;
     return;
   }
   el.className = 'job-grid';
