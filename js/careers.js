@@ -595,6 +595,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
+      // Check text fields for edit applications
+      if (isEditing) {
+        const requiredTextFields = ['first_name', 'last_name', 'email', 'phone'];
+        const missingTextFields = [];
+        
+        requiredTextFields.forEach(fieldName => {
+          const field = applyForm.querySelector(`input[name="${fieldName}"]`);
+          if (field && (!field.value.trim() || field.value.trim() === '')) {
+            const fieldLabel = fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            missingTextFields.push(fieldLabel);
+          }
+        });
+        
+        if (missingTextFields.length > 0) {
+          const editWarningEl = document.getElementById('editWarning');
+          if (editWarningEl) editWarningEl.style.display = 'none';
+          
+          formResult.textContent = `⚠️ Please fill in the required fields: ${missingTextFields.join(', ')}. These fields are required to process your application.`;
+          formResult.style.color = '#ff6b6b';
+          return;
+        }
+      }
+      
       // Only show warnings if files were actually modified
       if (modifiedFiles.length === 0) {
         // Check if there are any pre-existing files
