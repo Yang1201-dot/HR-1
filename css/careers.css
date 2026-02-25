@@ -48,12 +48,14 @@
 }
 
 .edit-btn {
-  background: var(--brand-yellow);
-  color: #000;
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
 }
 
 .edit-btn:hover {
-  background: #e6b800;
+  background: var(--surface-hover);
+  border-color: var(--text-secondary);
   transform: translateY(-1px);
 }
 

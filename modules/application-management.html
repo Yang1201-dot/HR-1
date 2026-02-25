@@ -127,6 +127,16 @@ input,select,textarea,button{font-family:inherit;}
 </div>
 </div>
 
+<!-- Modal: View Applicant -->
+<div class="modal-overlay" id="am_modal_view">
+<div class="modal-box">
+  <button class="modal-close" onclick="am_close('am_modal_view')">&times;</button>
+  <h2>Applicant Details</h2>
+  <div id="am_view_content"></div>
+  <button class="btn-cancel-modal" onclick="am_close('am_modal_view')">Close</button>
+</div>
+</div>
+
 <script>
 /* ── SVG icons stored as variables (NEVER nest SVG strings inside other string literals) ── */
 var SVG = {
@@ -213,7 +223,7 @@ function am_render() {
       '<td><span class="badge bd-' + sk + '">' + esc(a.status||'New') + '</span></td>' +
       '<td>' +
         '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssess(this.dataset.id)">Assess</button> ' +
-        '<button class="btn-sm bsm-green">View</button>' +
+        '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_viewApplicant(this.dataset.id)">View</button>' +
       '</td></tr>';
   }).join('');
 }
@@ -238,6 +248,140 @@ function am_saveAssess() {
   am_close('am_modal_assess');
   am_toast('Assessment saved for ' + name);
   am_renderAssess();
+}
+
+/* ── View Applicant Details ── */
+function am_viewApplicant(id) {
+  var a = AM.find(function(x) { return String(x.id) === String(id); });
+  if (!a) return;
+  
+  var content = document.getElementById('am_view_content');
+  if (!content) return;
+  
+  // Get applicant files
+  var applicantFiles = [];
+  if (FILES[id]) {
+    FILE_CATS.forEach(function(cat) {
+      if (FILES[id][cat.key]) {
+        applicantFiles.push({
+          key: cat.key,
+          label: cat.label,
+          icon: cat.icon,
+          file: FILES[id][cat.key]
+        });
+      }
+    });
+  }
+  
+  // Get existing assessment
+  var existingAssessment = ASSESS.find(function(ass) { return String(ass.applicantId) === String(id); });
+  
+  // Build HTML content
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">' +
+    '<div>' +
+      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Personal Information</h3>' +
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Name:</strong> <span style="color:var(--text-primary);">' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</span></div>' +
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Email:</strong> <span style="color:var(--text-primary);">' + esc(a.email||'') + '</span></div>' +
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Phone:</strong> <span style="color:var(--text-primary);">' + esc(a.phone||'') + '</span></div>' +
+        '<div><strong style="color:var(--text-secondary);">Applied:</strong> <span style="color:var(--text-primary);">' + esc(a.appliedAt||'') + '</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div>' +
+      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Application Details</h3>' +
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Position:</strong> <span style="color:var(--text-primary);">' + esc(a.position||'') + '</span></div>' +
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Department:</strong> <span style="color:var(--text-primary);">' + esc(a.dept||'') + '</span></div>' +
+        '<div><strong style="color:var(--text-secondary);">Status:</strong> <span class="badge bd-' + ((a.status||'new').toLowerCase().replace(/ /g, '-')) + '">' + esc(a.status||'New') + '</span></div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+  
+  // Application message
+  if (a.message) {
+    html += '<div style="margin-bottom:24px;">' +
+      '<h3 style="margin:0 0 12px 0;color:var(--text-primary);">Application Message</h3>' +
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+        '<p style="margin:0;color:var(--text-secondary);line-height:1.6;">' + esc(a.message) + '</p>' +
+      '</div>' +
+    '</div>';
+  }
+  
+  // Files section
+  html += '<div style="margin-bottom:24px;">' +
+    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Submitted Documents</h3>';
+  
+  if (applicantFiles.length > 0) {
+    // Group files by category
+    var filesByCategory = {};
+    applicantFiles.forEach(function(fileInfo) {
+      if (!filesByCategory[fileInfo.label]) {
+        filesByCategory[fileInfo.label] = [];
+      }
+      filesByCategory[fileInfo.label].push(fileInfo);
+    });
+    
+    // Display each category
+    Object.keys(filesByCategory).forEach(function(categoryLabel) {
+      html += '<div style="margin-bottom:20px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
+          SVG[applicantFiles.find(f => f.label === categoryLabel).icon] +
+          '<h4 style="margin:0;color:var(--text-primary);font-size:14px;font-weight:600;">' + esc(categoryLabel) + '</h4>' +
+        '</div>' +
+        '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:12px;">';
+      
+      filesByCategory[categoryLabel].forEach(function(fileInfo) {
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color);">' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<div style="font-weight:600;color:var(--text-primary);">' + esc(fileInfo.file.fileName||'') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-secondary);margin-left:8px;">' + esc(fileInfo.file.fileSize||'') + ' &bull; ' + esc(fileInfo.file.uploadedAt||'') + '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;">' +
+            '<button class="btn-primary" style="padding:6px 12px;font-size:11px;" onclick="am_viewFile(\'' + id + '\',\'' + fileInfo.key + '\')">View</button>' +
+            '<button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="am_downloadFile(\'' + id + '\',\'' + fileInfo.key + '\')">Download</button>' +
+          '</div>' +
+        '</div>';
+      });
+      
+      html += '</div></div>';
+    });
+  } else {
+    html += '<p style="color:var(--text-secondary);font-style:italic;">No documents submitted yet.</p>';
+  }
+  
+  html += '</div>';
+  
+  // Assessment section
+  html += '<div style="margin-bottom:24px;">' +
+    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Qualification Assessment</h3>';
+  
+  if (existingAssessment) {
+    var avg = Math.round((existingAssessment.tech + existingAssessment.comm + existingAssessment.prob + existingAssessment.fit) / 4 * 10) / 10;
+    html += '<div class="assessment-card">' +
+      '<div style="margin-bottom:12px;">' +
+        '<div style="font-weight:700;font-size:16px;color:var(--text-primary);">Assessment Results</div>' +
+        '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + existingAssessment.assessedAt + '</div>' +
+      '</div>' +
+      '<div class="assess-score">' +
+        '<div class="score-item"><div class="score-val">' + existingAssessment.tech + '</div><div class="score-lbl">Technical</div></div>' +
+        '<div class="score-item"><div class="score-val">' + existingAssessment.comm + '</div><div class="score-lbl">Communication</div></div>' +
+        '<div class="score-item"><div class="score-val">' + existingAssessment.prob + '</div><div class="score-lbl">Problem Solving</div></div>' +
+        '<div class="score-item"><div class="score-val">' + existingAssessment.fit + '</div><div class="score-lbl">Cultural Fit</div></div>' +
+        '<div class="score-item"><div class="score-val">' + avg + '</div><div class="score-lbl">Average</div></div>' +
+      '</div>' +
+      (existingAssessment.notes ? '<div style="margin-top:12px;padding:10px;background:var(--surface);border-radius:8px;font-size:13px;"><strong>Notes:</strong> ' + esc(existingAssessment.notes) + '</div>' : '') +
+    '</div>';
+  } else {
+    html += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
+      '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
+      '<button class="btn-primary" style="padding:8px 16px;font-size:12px;" onclick="am_close(\'am_modal_view\'); am_openAssess(\'' + id + '\')">Start Assessment</button>' +
+    '</div>';
+  }
+  
+  html += '</div>';
+  
+  content.innerHTML = html;
+  am_open('am_modal_view');
 }
 
 /* ── Resume / File Management ── */
