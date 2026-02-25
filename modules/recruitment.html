@@ -312,7 +312,7 @@ function r_render() {
         '<span>' + ICO.mic + j.interviews + ' interview' + (j.interviews !== 1 ? 's' : '') + '</span>' +
       '</div>' +
       '<div style="display:flex;gap:8px;">' +
-        '<button class="btn-sm bsm-blue">View Details</button>' +
+        '<button class="btn-sm bsm-blue" onclick="r_viewDetails(\'' + j.id + '\')">View Details</button>' +
         '<button class="btn-sm bsm-green" onclick="r_openOffer()">Extend Offer</button>' +
         '<button class="btn-sm bsm-red" data-jid="' + j.id + '" onclick="r_deleteJob(this.dataset.jid)">Delete</button>' +
       '</div>' +
@@ -326,14 +326,184 @@ function r_deleteJob(id) {
   r_toast('Job posting removed.');
 }
 
-/* ── Offers ── */
-function r_saveOffer() {
-  var name = g('r_off_name'), pos = g('r_off_pos'), salary = g('r_off_salary');
-  if (!name || !pos || !salary) { r_toast('Fill required fields', 'error'); return; }
-  OFFERS.push({id:Date.now(),name:name,position:pos,salary:salary,startDate:g('r_off_start'),details:g('r_off_details'),status:g('r_off_status'),extendedAt:new Date().toLocaleDateString()});
-  r_close('r_modal_offer');
-  ['r_off_name','r_off_pos','r_off_salary','r_off_start','r_off_details'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
-  r_renderOffers(); r_updateStats(); r_toast('Offer extended to ' + name);
+function r_viewDetails(jobId) {
+  console.log('r_viewDetails called with jobId:', jobId, 'type:', typeof jobId);
+  
+  // Find the job - convert both to string for comparison
+  var job = JOBS.find(function(j) { 
+    console.log('Comparing j.id:', j.id, 'type:', typeof j.id, 'with jobId:', jobId);
+    return String(j.id) === String(jobId); 
+  });
+  if (!job) {
+    console.log('Job not found with ID:', jobId);
+    console.log('Available jobs:', JOBS);
+    return;
+  }
+  
+  console.log('Found job:', job);
+  
+  // Get applications for this job from localStorage
+  var applications = [];
+  try {
+    applications = JSON.parse(localStorage.getItem('careers_applications') || '[]');
+    console.log('Total applications loaded:', applications.length);
+  } catch(e) {
+    console.error('Error loading applications:', e);
+  }
+  
+  // Filter applications for this specific job
+  var jobApplications = applications.filter(function(app) { 
+    return app.position.toLowerCase() === job.title.toLowerCase(); 
+  });
+  console.log('Applications for this job:', jobApplications.length);
+  
+  // Create modal HTML
+  var modalHtml = `
+    <div id="jobDetailsModal" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    ">
+      <div style="
+        background: var(--surface);
+        color: var(--text-primary);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        max-width: 700px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid var(--border-color);
+      ">
+        <button onclick="this.closest('#jobDetailsModal').remove()" style="
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: transparent;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: var(--text-secondary);
+          padding: 5px;
+          line-height: 1;
+        ">&times;</button>
+        
+        <h2 style="margin: 0 0 20px 0; color: var(--text-primary);">${job.title}</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+          <div>
+            <strong style="color: var(--text-secondary);">Department:</strong><br>
+            <span style="color: var(--text-primary);">${job.dept}</span>
+          </div>
+          <div>
+            <strong style="color: var(--text-secondary);">Location:</strong><br>
+            <span style="color: var(--text-primary);">${job.location}</span>
+          </div>
+          <div>
+            <strong style="color: var(--text-secondary);">Type:</strong><br>
+            <span style="color: var(--text-primary);">${job.emptype}</span>
+          </div>
+          <div>
+            <strong style="color: var(--text-secondary);">Status:</strong><br>
+            <span class="badge ${job.status === 'Active' ? 'bd-active' : 'bd-draft'}">${job.status}</span>
+          </div>
+          <div>
+            <strong style="color: var(--text-secondary);">Posted:</strong><br>
+            <span style="color: var(--text-primary);">${job.posted}</span>
+          </div>
+          <div>
+            <strong style="color: var(--text-secondary);">Salary:</strong><br>
+            <span style="color: var(--text-primary);">${job.salary}</span>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+          <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Job Description</h3>
+          <p style="margin: 0; line-height: 1.6; color: var(--text-secondary);">${job.desc}</p>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+          <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Requirements</h3>
+          <p style="margin: 0; line-height: 1.6; color: var(--text-secondary);">${job.requirements}</p>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin: 0 0 15px 0; color: var(--text-primary);">Applicants (${jobApplications.length})</h3>
+          ${jobApplications.length === 0 ? 
+            '<p style="color: var(--text-secondary); font-style: italic;">No applications received yet.</p>' :
+            '<div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px;">' +
+              jobApplications.map(function(app, index) {
+                return `
+                  <div style="
+                    padding: 12px;
+                    margin-bottom: 10px;
+                    background: var(--background);
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    ${index < jobApplications.length - 1 ? 'border-bottom: 1px solid var(--border-color);' : ''}
+                  ">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <strong style="color: var(--text-primary);">${app.first_name} ${app.last_name}</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 13px;">${app.email}</span><br>
+                        <span style="color: var(--text-secondary); font-size: 13px;">${app.phone}</span>
+                      </div>
+                      <div style="text-align: right;">
+                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.applied_date || 'N/A'}</span><br>
+                        <span style="color: var(--text-secondary); font-size: 12px;">ID: ${app.id}</span>
+                      </div>
+                    </div>
+                    ${app.message ? '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color);"><em style="color: var(--text-secondary); font-size: 13px;">"' + app.message + '"</em></div>' : ''}
+                  </div>
+                `;
+              }).join('') +
+            '</div>'
+          }
+        </div>
+        
+        <div style="text-align: center; margin-top: 25px;">
+          <button onclick="this.closest('#jobDetailsModal').remove()" style="
+            background: var(--brand-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+          ">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  console.log('Adding modal to page...');
+  try {
+    if (window.parent !== window) {
+      // Send modal HTML to parent window for display
+      window.parent.postMessage({
+        type: 'HR1_SHOW_MODAL',
+        modalId: 'jobDetailsModal',
+        modalHtml: modalHtml
+      }, '*');
+      console.log('Modal sent to parent window');
+      return;
+    }
+  } catch(e) {
+    console.log('Parent window not available, using fallback');
+  }
+  
+  // Fallback: Add modal to current document body
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  console.log('Modal added successfully');
 }
 function r_renderOffers() {
   var el = document.getElementById('r_offers'); if (!el) return;

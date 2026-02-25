@@ -161,6 +161,14 @@
     if (e.data.type === 'HR1_TOAST') {
       showToast(e.data.msg, e.data.style);
     }
+    if (e.data.type === 'HR1_SHOW_MODAL' && e.data.modalHtml) {
+      // Handle custom modal HTML from iframe
+      var existingModal = document.getElementById(e.data.modalId);
+      if (existingModal) {
+        existingModal.remove();
+      }
+      document.body.insertAdjacentHTML('beforeend', e.data.modalHtml);
+    }
   });
 
   // ── THEME SYNC ───────────────────────────────────────────────────

@@ -451,6 +451,24 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Check text fields for both new and edit applications
+    const requiredTextFields = ['first_name', 'last_name', 'email', 'phone'];
+    const missingTextFields = [];
+    
+    requiredTextFields.forEach(fieldName => {
+      const field = applyForm.querySelector(`input[name="${fieldName}"]`);
+      if (field && (!field.value.trim() || field.value.trim() === '')) {
+        const fieldLabel = fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        missingTextFields.push(fieldLabel);
+      }
+    });
+    
+    if (missingTextFields.length > 0) {
+      formResult.textContent = `⚠️ Please fill in the required fields: ${missingTextFields.join(', ')}. These fields are required to process your application.`;
+      formResult.style.color = '#ff6b6b';
+      return;
+    }
+
     // Check if we're editing an existing application
     const modalTitle = document.getElementById('modalTitle');
     const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
