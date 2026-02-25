@@ -554,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const missingRequiredFiles = [];
       const invalidFiles = [];
       const modifiedFiles = []; // Track which files were actually modified
+      let wasCleared = false; // Track if any file was cleared
       
       fileInputs.forEach(fileInfo => {
         const fileInput = applyForm.querySelector(`input[name="${fileInfo.field}"]`);
@@ -566,6 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasNewFile = fileInput && fileInput.files && fileInput.files.length > 0;
         const wasCleared = hasExistingFile && !hasNewFile && clearBtn && clearBtn.style.display === 'none';
         
+        // Always track if this file was modified in any way
         if (hasNewFile || wasCleared) {
           modifiedFiles.push(fileInfo.name);
         }
@@ -617,31 +619,39 @@ document.addEventListener('DOMContentLoaded', () => {
         formResult.style.color = '';
         
         return; // Completely stop form submission - just show warning
+      } else if (wasCleared && missingRequiredFiles.length > 0) {
+        // User cleared a file and other required files are missing
+        const editWarningEl = document.getElementById('editWarning');
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
+        
+        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. You cleared a file and need to complete all required documents.`;
+        formResult.style.color = '#ff6b6b';
+        return;
       } else if (missingRequiredFiles.length > 0 && uploadedFiles.length > 0) {
         // User uploaded some files but left other required files empty
         const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
         
-        formResult.textContent = `⚠️ Please upload the missing files requirements: ${missingRequiredFiles.join(', ')}. You have uploaded some files but still need to complete all required documents.`;
+        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. You have uploaded some files but still need to complete all required documents.`;
         formResult.style.color = '#ff6b6b';
         return;
       } else if (missingRequiredFiles.length > 0 && invalidFiles.length > 0) {
         const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
         
-        formResult.textContent = `⚠️ Please upload missing required files: ${missingRequiredFiles.join(', ')}. Also fix these issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')}. Also fix these issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
         formResult.style.color = '#ff6b6b';
         return;
       } else if (missingRequiredFiles.length > 0) {
         const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
         
-        formResult.textContent = `⚠️ Please upload all required files: ${missingRequiredFiles.join(', ')} to complete your application. These documents are required to process your submission.`;
+        formResult.textContent = `⚠️ Please upload the missing required files: ${missingRequiredFiles.join(', ')} to complete your application. These documents are required to process your submission.`;
         formResult.style.color = '#ff6b6b';
         return;
       } else if (invalidFiles.length > 0) {
         const editWarningEl = document.getElementById('editWarning');
-        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide the "fill requirements" warning
+        if (editWarningEl) editWarningEl.style.display = 'none'; // Hide "fill requirements" warning
         
         formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
         formResult.style.color = '#ff6b6b';
