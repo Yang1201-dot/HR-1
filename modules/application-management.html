@@ -274,47 +274,96 @@ input,select,textarea,button{font-family:inherit;}
 
 </div>
 
-
-
 <script>
+/* ── Global File Functions - MUST BE DEFINED FIRST ── */
+console.log('Defining global functions...');
 
-/* ── SVG icons stored as variables (NEVER nest SVG strings inside other string literals) ── */
-
-var SVG = {
-
-  file: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
-
-  resume:  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-
-  birth:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-
-  diploma: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>',
-
-  cover:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
-
+window.am_viewFile = function(appId, key) {
+  console.log('am_viewFile called with:', appId, key);
+  try {
+    var f = localStorage.getItem('careers_files');
+    if (!f) { alert('File not found.'); return; }
+    var files = JSON.parse(f);
+    var file = (files[appId] && files[appId][key]) ? files[appId][key] : null;
+    if (!file) { alert('File not found.'); return; }
+    if (!file.dataUrl) { alert('File has no content.'); return; }
+    var win = window.open('', '_blank');
+    if (!win) { alert('Popup blocked.'); return; }
+    if (file.mimeType && file.mimeType.startsWith('image/')) {
+      win.document.write('<html><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="' + file.dataUrl + '" style="max-width:100%;max-height:100vh;object-fit:contain;"></body></html>');
+    } else if (file.mimeType === 'application/pdf') {
+      win.document.write('<html><head><title>' + (file.fileName||'Document') + '</title></head><body style="margin:0;"><embed src="' + file.dataUrl + '" type="application/pdf" width="100%" height="100%" style="position:fixed;inset:0;"></body></html>');
+    } else {
+      win.close();
+      var a = document.createElement('a');
+      a.href = file.dataUrl;
+      a.download = file.fileName || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  } catch(e) { alert('Error loading file.'); }
 };
 
+window.am_downloadFile = function(appId, key) {
+  console.log('am_downloadFile called with:', appId, key);
+  try {
+    var f = localStorage.getItem('careers_files');
+    if (!f) { alert('File not found.'); return; }
+    var files = JSON.parse(f);
+    var file = (files[appId] && files[appId][key]) ? files[appId][key] : null;
+    if (!file) { alert('File not found.'); return; }
+    if (!file.dataUrl) { alert('File has no content.'); return; }
+    var a = document.createElement('a');
+    a.href = file.dataUrl;
+    a.download = file.fileName || 'download';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e) { alert('Error downloading file.'); }
+};
 
+console.log('Functions defined:', typeof window.am_viewFile, typeof window.am_downloadFile);
+
+function am_toast(msg, type) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
+  alert(msg);
+}
+
+function am_open(id) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
+  document.getElementById(id).classList.add('active');
+}
+
+function am_close(id) {
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
+  document.getElementById(id).classList.remove('active');
+}
+
+function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+
+
+/* ── SVG icons stored as variables (NEVER nest SVG strings inside other string literals) ── */
+var SVG = {
+  file: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  resume:  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+  birth:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  diploma: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>',
+  cover:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+};
 
 var FILE_CATS = [
-
   { key: 'resume',  label: 'Resume / CV Library',       icon: 'resume'  },
-
   { key: 'birth',   label: 'Birth Certificate Library', icon: 'birth'   },
-
   { key: 'diploma', label: 'Diploma / TOR Library',     icon: 'diploma' },
-
   { key: 'cover',   label: 'Cover Letter Library',      icon: 'cover'   }
-
 ];
 
-
-
 /* ── Data ── */
-
 var AM = [], FILES = {}, ASSESS = [], COMM = [];
-
-
 
 /* ── Storage ── */
 
@@ -380,37 +429,6 @@ function am_tab(t, btn) {
 
 
 
-/* ── Modals ── */
-
-function am_open(id) {
-
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
-
-  document.getElementById(id).classList.add('active');
-
-}
-
-function am_close(id) {
-
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
-
-  document.getElementById(id).classList.remove('active');
-
-}
-
-function am_toast(msg, type) {
-
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
-
-}
-
-function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-
-
-/* ── Applications table ── */
 
 function am_render() {
 
@@ -455,7 +473,6 @@ function am_render() {
   }).join('');
 
 }
-
 
 
 /* ── Assessment ── */
@@ -671,19 +688,17 @@ function am_viewApplicant(id) {
             '<div style="font-weight:600;color:var(--text-primary);">' + esc(fileInfo.file.fileName||'') + '</div>' +
 
             '<div style="font-size:11px;color:var(--text-secondary);margin-left:8px;">' + esc(fileInfo.file.fileSize||'') + ' &bull; ' + esc(fileInfo.file.uploadedAt||'') + '</div>' +
-
           '</div>' +
 
           '<div style="display:flex;gap:6px;">' +
 
-            '<button class="btn-primary" style="padding:6px 12px;font-size:11px;" onclick="am_viewFile(\'' + id + '\',\'' + fileInfo.key + '\')">View</button>' +
+            '<button class="btn-primary" style="padding:6px 12px;font-size:11px;" onclick="window.am_viewFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">View</button>' +
 
-            '<button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="am_downloadFile(\'' + id + '\',\'' + fileInfo.key + '\')">Download</button>' +
+            '<button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="window.am_downloadFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">Download</button>' +
 
           '</div>' +
 
         '</div>';
-
       });
 
       
@@ -926,146 +941,39 @@ function am_renderComms() {
 
 }
 
-
-
 /* ── Stats ── */
-
 function am_updateStats() {
-
-  function set(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
-
-  set('am_s_total',  AM.length);
-
-  set('am_s_new',    AM.filter(function(a) { return a.status === 'New'; }).length);
-
-  set('am_s_review', AM.filter(function(a) { return a.status === 'Under Review'; }).length);
-
-  set('am_s_short',  AM.filter(function(a) { return a.status === 'Shortlisted'; }).length);
-
-  set('am_s_hired',  AM.filter(function(a) { return a.status === 'Hired'; }).length);
-
-}
-
-
-
-/* ── File View / Download ── */
-
-function am_getFile(appId, key) {
-
   try {
-
-    var f = localStorage.getItem('careers_files');
-
-    if (!f) return null;
-
-    var files = JSON.parse(f);
-
-    return (files[appId] && files[appId][key]) ? files[appId][key] : null;
-
-  } catch(e) { return null; }
-
+    document.getElementById('am_s_total').textContent = AM.length;
+    document.getElementById('am_s_new').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'new'; }).length;
+    document.getElementById('am_s_review').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'under review'; }).length;
+    document.getElementById('am_s_short').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'shortlisted'; }).length;
+    document.getElementById('am_s_hired').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'hired'; }).length;
+  } catch(e) {}
 }
-
-
-
-function am_viewFile(appId, key) {
-
-  var f = am_getFile(appId, key);
-
-  if (!f) { am_toast('File not found.', 'error'); return; }
-
-  if (!f.dataUrl) { am_toast('File has no content — the applicant submitted before the new system was active. Ask them to resubmit.', 'error'); return; }
-
-  var win = window.open('', '_blank');
-
-  if (!win) { am_toast('Popup blocked — allow popups for this site.', 'error'); return; }
-
-  if (f.mimeType && f.mimeType.startsWith('image/')) {
-
-    win.document.write('<html><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;">' +
-
-      '<img src="' + f.dataUrl + '" style="max-width:100%;max-height:100vh;object-fit:contain;"></body></html>');
-
-  } else if (f.mimeType === 'application/pdf') {
-
-    win.document.write('<html><head><title>' + esc(f.fileName||'Document') + '</title></head>' +
-
-      '<body style="margin:0;"><embed src="' + f.dataUrl + '" type="application/pdf" width="100%" height="100%" style="position:fixed;inset:0;"></body></html>');
-
-  } else {
-
-    win.close();
-
-    am_downloadFile(appId, key);
-
-  }
-
-}
-
-
-
-function am_downloadFile(appId, key) {
-
-  var f = am_getFile(appId, key);
-
-  if (!f) { am_toast('File not found.', 'error'); return; }
-
-  if (!f.dataUrl) { am_toast('File has no content — ask the applicant to resubmit.', 'error'); return; }
-
-  var a = document.createElement('a');
-
-  a.href = f.dataUrl;
-
-  a.download = f.fileName || 'download';
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  document.body.removeChild(a);
-
-  am_toast('Downloading ' + (f.fileName||'file') + '...');
-
-}
-
-
 
 /* ── Data Reset ── */
-
 function am_confirmReset() {
-
   var confirmed = window.confirm(
-
     'Are you sure you want to clear ALL data?\n\n' +
-
     'This will delete:\n' +
-
     '  • All applications\n' +
-
     '  • All uploaded files\n' +
-
     '  • All job postings\n\n' +
-
     'This cannot be undone.'
-
   );
 
   if (!confirmed) return;
 
   localStorage.removeItem('careers_applications');
-
   localStorage.removeItem('careers_files');
-
   localStorage.removeItem('careers_job_postings');
 
   AM = []; FILES = {}; ASSESS = []; COMM = [];
 
   am_render();
-
   am_updateStats();
-
   am_toast('All data cleared. You can now start fresh.');
-
 }
 
 </script>
