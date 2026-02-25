@@ -778,6 +778,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fileMappings.forEach(m => {
       const fileInput = applyForm.querySelector('input[name="' + m.field + '"]');
+      const picker = fileInput?.closest('.file-picker');
+      const nameSpan = picker?.querySelector('.file-name');
+      const clearBtn = picker?.querySelector('.file-clear');
+      
+      // Check if file was cleared (no file chosen and clear button hidden)
+      const wasCleared = nameSpan && nameSpan.textContent === 'No file chosen' && clearBtn && clearBtn.style.display === 'none';
+      
+      // Debug logging for cover letter
+      if (m.key === 'cover') {
+        console.log(`Cover Letter Debug: nameSpanText="${nameSpan?.textContent}", clearBtnDisplay="${clearBtn?.style.display}", wasCleared=${wasCleared}`);
+      }
+      
+      if (wasCleared) {
+        // Remove this file from storage
+        delete filesMeta[appId][m.key];
+        console.log(`Removed ${m.key} file from storage (was cleared)`);
+        
+        // Save immediately after removal
+        localStorage.setItem('careers_files', JSON.stringify(filesMeta));
+        console.log(`Saved filesMeta after removing ${m.key}`);
+        
+        return; // Skip processing this file
+      }
+      
       if (fileInput && fileInput.files && fileInput.files[0]) {
         const f = fileInput.files[0];
         
