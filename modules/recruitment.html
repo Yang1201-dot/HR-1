@@ -157,6 +157,77 @@ input,select,textarea,button{font-family:inherit;}
 <script>
 var JOBS = [], OFFERS = [], COMMS = [];
 
+// Standalone redirect detection
+(function() {
+  'use strict';
+  
+  function isInIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+  
+  function getModuleName() {
+    var path = window.location.pathname;
+    var filename = path.split('/').pop();
+    return filename.replace('.html', '');
+  }
+  
+  function redirectToDashboard(moduleName) {
+    var dashboardUrl = window.location.pathname.replace(/\/[^\/]*$/, '/dashboard.html');
+    var separator = dashboardUrl.includes('?') ? '&' : '?';
+    var targetUrl = dashboardUrl + separator + 'module=' + encodeURIComponent(moduleName);
+    window.location.replace(targetUrl);
+  }
+  
+  if (!isInIframe()) {
+    var moduleName = getModuleName();
+    console.log('Module loaded standalone, redirecting to dashboard with module:', moduleName);
+    
+    document.body.innerHTML = `
+      <div style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f8f9fa;
+        color: #2ca078;
+        font-size: 18px;
+        font-weight: 600;
+      ">
+        <div style="text-align: center;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #2ca078;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+          "></div>
+          Loading HR Dashboard...
+        </div>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    setTimeout(function() {
+      redirectToDashboard(moduleName);
+    }, 500);
+    return;
+  } else {
+    console.log('Module loaded in dashboard context');
+  }
+})();
+
 /* ── Storage keys ── */
 var KEY_JOBS = 'careers_job_postings';
 var KEY_APPS = 'careers_applications';

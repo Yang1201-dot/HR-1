@@ -194,10 +194,16 @@
   }
 
   // ── LOAD PAGE ────────────────────────────────────────────────────
-  function loadPage(pg) {
+  function loadPage(pg, pushState = true) {
     closeOverlay();
     var path = pageRoutes[pg];
     if (!path) return;
+
+    // Update browser URL
+    if (pushState) {
+      var newUrl = window.location.pathname.replace(/\/[^\/]*$/, '/' + path);
+      history.pushState({page: pg}, '', newUrl);
+    }
 
     // Remove content-wrapper padding so iframe is edge-to-edge (no black border)
     contentWrapper.style.padding = '0';
@@ -239,7 +245,65 @@
     var d = document.querySelector('.nav-item[data-page="dashboard"]');
     if (d) d.classList.add('active');
     if (typeof lucide !== 'undefined') lucide.createIcons();
+    
+    // Update URL to dashboard
+    history.pushState({page: 'dashboard'}, '', window.location.pathname.replace(/\/[^\/]*$/, '/dashboard.html'));
   }
+
+  // ── URL-BASED ROUTING ─────────────────────────────────────────────
+  function routeFromUrl() {
+    var path = window.location.pathname;
+    var fileName = path.split('/').pop();
+    var urlParams = new URLSearchParams(window.location.search);
+    var moduleParam = urlParams.get('module');
+    
+    // Check if we have a module parameter (from standalone redirect)
+    if (moduleParam) {
+      // Convert module parameter to page key
+      var pageKey = null;
+      if (moduleParam === 'recruitment') pageKey = 'recruitment';
+      else if (moduleParam === 'application-management') pageKey = 'app-mgmt';
+      else if (moduleParam === 'onboarding') pageKey = 'onboard';
+      else if (moduleParam === 'performance-evaluation') pageKey = 'evaluation';
+      else if (moduleParam === 'social-recognition') pageKey = 'social-rec';
+      else if (moduleParam === 'hr-manager-transfer-dashboard') pageKey = 'transfer-mgmt';
+      
+      if (pageKey) {
+        loadPage(pageKey, false); // Don't push state since we're already at this URL
+        // Clean up the URL
+        history.replaceState({page: pageKey}, '', window.location.pathname.replace(/\/[^\/]*$/, '/' + pageRoutes[pageKey]));
+        return;
+      }
+    }
+    
+    // Find the page key from the filename (original logic)
+    var pageKey = null;
+    for (var key in pageRoutes) {
+      if (pageRoutes[key] === fileName) {
+        pageKey = key;
+        break;
+      }
+    }
+    
+    if (pageKey) {
+      loadPage(pageKey, false); // Don't push state since we're already at this URL
+    } else if (fileName === 'dashboard.html') {
+      restoreDashboard();
+    }
+  }
+
+  // ── HANDLE BROWSER BACK/FORWARD ───────────────────────────────────
+  window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.page) {
+      if (e.state.page === 'dashboard') {
+        restoreDashboard();
+      } else {
+        loadPage(e.state.page, false); // Don't push state on popstate
+      }
+    } else {
+      routeFromUrl();
+    }
+  });
 
   // ── BIND NAV ─────────────────────────────────────────────────────
   document.querySelectorAll('[data-page]').forEach(function(link) {
@@ -251,6 +315,12 @@
       link.addEventListener('click', function(e) { e.preventDefault(); restoreDashboard(); });
     }
   });
+
+  // ── INITIALIZE ROUTING ON PAGE LOAD ─────────────────────────────────
+  // Check URL on initial load and route accordingly
+  setTimeout(function() {
+    routeFromUrl();
+  }, 100);
 
   console.log('HR1 Navigation ready!');
 })();

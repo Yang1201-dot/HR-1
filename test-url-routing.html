@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Routing Test</title>
+</head>
+<body>
+    <h1>URL Routing Test - Refresh Fix</h1>
+    <p>Testing if the URL routing works correctly with refresh handling.</p>
+    
+    <h2>Expected URLs (with refresh fix):</h2>
+    <ul>
+        <li><a href="http://localhost/microfinance/HR-1/modules/dashboard.html">Dashboard</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/recruitment.html">Recruitment</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/application-management.html">Application Management</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/onboarding.html">Onboarding</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/performance-evaluation.html">Performance Evaluation</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/social-recognition.html">Social Recognition</a></li>
+        <li><a href="http://localhost/microfinance/HR-1/modules/hr-manager-transfer-dashboard.html">Transfer Management</a></li>
+    </ul>
+    
+    <h2>✅ Changes Made:</h2>
+    <ul>
+        <li>✅ Updated dashboard-hr1-integration.js to use History API for proper URL routing</li>
+        <li>✅ Added URL-based routing to handle direct navigation to module pages</li>
+        <li>✅ Updated navigation links to use proper URLs instead of #</li>
+        <li>✅ Added browser back/forward button support</li>
+        <li>✅ <strong>Added standalone detection to all module pages</strong></li>
+        <li>✅ <strong>Automatic redirect to dashboard when modules accessed directly</strong></li>
+        <li>✅ <strong>Fixed refresh behavior - modules now load within dashboard context</strong></li>
+    </ul>
+    
+    <h2>🔧 How the Refresh Fix Works:</h2>
+    <ol>
+        <li>Each module page detects if it's loaded standalone (not in iframe)</li>
+        <li>If standalone, it shows a loading spinner and redirects to dashboard</li>
+        <li>Dashboard receives the module parameter and loads the module in iframe</li>
+        <li>URL gets updated to show the correct module page</li>
+        <li>Theme and navigation are preserved</li>
+    </ol>
+    
+    <h2>🧪 Test Scenarios:</h2>
+    <ul>
+        <li><strong>Direct Access:</strong> Open any module URL directly → Should redirect to dashboard with module loaded</li>
+        <li><strong>Refresh:</strong> Refresh any module page → Should stay in dashboard context with module loaded</li>
+        <li><strong>Bookmark:</strong> Bookmark module page → Should open correctly in dashboard context</li>
+        <li><strong>Back/Forward:</strong> Use browser buttons → Should work correctly</li>
+    </ul>
+    
+    <p><strong>Note:</strong> Make sure XAMPP Apache server is running and access through http://localhost/microfinance/HR-1/modules/dashboard.html</p>
+</body>
+</html>
