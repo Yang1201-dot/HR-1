@@ -14,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once '../mysql-config.php';
+require_once 'mysql-config.php';
 
-$db = new HR1Database();
+$db = new MySQLDatabase();
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
 $endpoint = $request[0] ?? '';

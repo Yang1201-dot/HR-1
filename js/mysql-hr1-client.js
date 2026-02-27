@@ -2,7 +2,7 @@
 // Handles all communication between frontend and PHP API
 
 // Configuration
-const HR1_API_BASE_URL = 'http://localhost:8080/api/hr1-api.php';
+const HR1_API_BASE_URL = 'http://localhost/microfinance/HR-1/api/hr1-api.php';
 
 // Utility function to make API requests
 async function apiRequest(action, data = {}, method = 'GET') {

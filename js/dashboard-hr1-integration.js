@@ -5,12 +5,12 @@
 
   var originalContent = contentWrapper.innerHTML;
   var pageRoutes = {
-    'recruitment':   'recruitment.html',
-    'app-mgmt':      'application-management.html',
-    'onboard':       'onboarding.html',
-    'evaluation':    'performance-evaluation.html',
-    'social-rec':    'social-recognition.html',
-    'transfer-mgmt': 'hr-manager-transfer-dashboard.html'
+    dashboard: 'dashboard.html',
+    recruitment: 'recruitment.html',
+    'app-mgmt': 'application-management.html',
+    onboard: 'onboarding.html',
+    evaluation: 'performance-evaluation.html',
+    'social-rec': 'social-recognition.html'
   };
 
   // ── INJECT PARENT OVERLAY ────────────────────────────────────────

@@ -3,499 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR Manager - Department Transfer Management</title>
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f3f4f6;
-      padding: 2rem;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      color: #111827;
-      margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 2rem;
-    }
-
-    .header-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background: #10b981;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #059669;
-    }
-
-    .btn-secondary {
-      background: #3b82f6;
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: #2563eb;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .stat-icon {
-      font-size: 2rem;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #10b981;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      color: #6b7280;
-      font-size: 0.875rem;
-    }
-
-    .transfers-section {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .transfer-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: all 0.2s;
-    }
-
-    .transfer-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .transfer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
-
-    .employee-info h3 {
-      color: #111827;
-      margin-bottom: 0.25rem;
-    }
-
-    .employee-meta {
-      color: #6b7280;
-      font-size: 0.875rem;
-    }
-
-    .status-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-sent {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .status-acknowledged {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .department-tags {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin: 1rem 0;
-    }
-
-    .dept-tag {
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 0.25rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .transfer-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .btn-small {
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .btn-view {
-      background: #3b82f6;
-      color: white;
-    }
-
-    .btn-view:hover {
-      background: #2563eb;
-    }
-
-    .btn-send {
-      background: #10b981;
-      color: white;
-    }
-
-    .btn-send:hover {
-      background: #059669;
-    }
-
-    .btn-cancel {
-      background: #ef4444;
-      color: white;
-    }
-
-    .btn-cancel:hover {
-      background: #dc2626;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem;
-      color: #6b7280;
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 800px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #6b7280;
-    }
-
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-
-    .data-item {
-      padding: 0.75rem;
-      background: #f9fafb;
-      border-radius: 6px;
-    }
-
-    .data-label {
-      font-size: 0.75rem;
-      color: #6b7280;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .data-value {
-      color: #111827;
-      font-weight: 500;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 1rem;
-      border-bottom: 2px solid #e5e7eb;
-      margin-bottom: 1.5rem;
-    }
-
-    .tab {
-      padding: 0.75rem 1.5rem;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-weight: 600;
-      color: #6b7280;
-      transition: all 0.2s;
-      margin-bottom: -2px;
-    }
-
-    .tab.active {
-      color: #10b981;
-      border-bottom-color: #10b981;
-    }
-  </style>
+  <title>Transfer Management</title>
+  <link rel="stylesheet" href="css/hr-manager-transfer-dashboard.css">
+  <link rel="stylesheet" href="../css/HR1.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
 <body>
-  <div class="container">
-    <div class="header-actions">
-      <div>
-        <h1>📤 Department Transfer Management</h1>
-        <p class="subtitle">HR Manager Dashboard - Manage employee data transfers to other departments</p>
-      </div>
-      <div style="display: flex; gap: 0.5rem;">
-        <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
-        <button class="btn btn-primary" onclick="viewAllEmployees()">👥 View All Employees</button>
-      </div>
-    </div>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon"></i>
+  </button>
 
-    <!-- Statistics -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">⏳</div>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <div class="logo-wrapper">
+          <img src="../img/logo.png" alt="Logo" class="logo">
         </div>
-        <div class="stat-value" id="pendingCount">0</div>
-        <div class="stat-label">Pending Transfers</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">📤</div>
+        <div class="logo-text">
+          <h2 class="app-name">Microfinance</h2>
+          <span class="app-tagline">32005</span>
         </div>
-        <div class="stat-value" id="sentCount">0</div>
-        <div class="stat-label">Sent Today</div>
       </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">✅</div>
-        </div>
-        <div class="stat-value" id="acknowledgedCount">0</div>
-        <div class="stat-label">Acknowledged</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">👥</div>
-        </div>
-        <div class="stat-value" id="totalEmployees">0</div>
-        <div class="stat-label">Total Employees</div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('pending')" id="tabPending">
-        Pending Transfers
-      </button>
-      <button class="tab" onclick="switchTab('sent')" id="tabSent">
-        Sent Transfers
-      </button>
-      <button class="tab" onclick="switchTab('all')" id="tabAll">
-        All Transfers
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i data-lucide="panel-left-close"></i>
       </button>
     </div>
 
-    <!-- Transfers List -->
-    <div class="transfers-section">
-      <div class="section-header">
-        <h2 id="sectionTitle">Pending Transfers</h2>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <span class="nav-section-title">MAIN MENU</span>
+        
+        <a href="hr-manager-transfer-dashboard.html" class="nav-item active" data-page="transfer-mgmt">
+          <i data-lucide="send"></i>
+          <span>Transfer Management</span>
+        </a>
       </div>
-      <div id="transfersList">
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <p>Loading transfer records...</p>
+
+      <div class="nav-section">
+        <span class="nav-section-title">SETTINGS</span>
+        
+        <a href="#" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Configuration</span>
+        </a>
+
+        <a href="#" class="nav-item">
+          <i data-lucide="shield"></i>
+          <span>Security</span>
+        </a>
+        <a href="login.html" class="nav-item">
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img src="../img/profile.png" alt="John Doe" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:36px;height:36px;background:#2ca078;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:14px;\'>JD</div>'">
+        </div>
+        <div class="user-info">
+          <span class="user-name">John Doe</span>
+          <span class="user-role">Administrator</span>
+        </div>
+        <button class="user-menu-btn">
+          <i data-lucide="more-vertical"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="header-title">
+          <h1>Transfer Management</h1>
+          <p>Manage employee department transfers and approvals</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="search" placeholder="Search...">
+        </div>
+        <button class="icon-btn">
+          <i data-lucide="bell"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="content-wrapper" id="mainContentArea">
+      <div class="hr-content">
+        <div class="page-header">
+          <div><h1 class="page-title">Department Transfer Management</h1><p class="page-sub">HR Manager Dashboard - Manage employee data transfers to other departments</p></div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" onclick="refreshData()"><i data-lucide="refresh-cw" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;"></i>Refresh</button>
+            <button class="btn-primary" onclick="viewAllEmployees()"><i data-lucide="users" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;"></i>View All Employees</button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num c-amber" id="pendingCount">0</div><div class="stat-label">Pending Transfers</div></div>
+          <div class="stat-card"><div class="stat-num c-blue" id="sentCount">0</div><div class="stat-label">Sent Today</div></div>
+          <div class="stat-card"><div class="stat-num c-green" id="acknowledgedCount">0</div><div class="stat-label">Acknowledged</div></div>
+          <div class="stat-card"><div class="stat-num c-purple" id="totalEmployees">0</div><div class="stat-label">Total Employees</div></div>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('pending')" id="tabPending">Pending Transfers</button>
+          <button class="tab-btn" onclick="switchTab('sent')" id="tabSent">Sent Transfers</button>
+          <button class="tab-btn" onclick="switchTab('all')" id="tabAll">All Transfers</button>
+        </div>
+
+        <div class="tab-panel active" id="tabPanelPending">
+          <div class="transfer-grid" id="transfersList">
+            <div class="empty-state">
+              <i data-lucide="inbox" style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5;"></i>
+              <p>Loading transfer records...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Transfer Details -->
+      <div class="modal-overlay" id="detailsModal">
+        <div class="modal-box">
+          <h2>Transfer Details</h2>
+          <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+          <div id="detailsContent"></div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- View Transfer Details Modal -->
-  <div id="detailsModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Transfer Details</h2>
-        <button class="close-btn" onclick="closeDetailsModal()">&times;</button>
-      </div>
-      <div id="detailsContent"></div>
-    </div>
-  </div>
-
+  </main>
+  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../js/mysql-hr1-client.js"></script>
   <script>
-    // Standalone redirect detection
-    (function() {
-      'use strict';
+    let allTransfers = [];
+    let currentTab = 'pending';
+
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check for theme toggle button
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          document.body.classList.toggle('dark-mode');
+        });
+      }
       
-      function isInIframe() {
-        try {
-          return window.self !== window.top;
-        } catch (e) {
-          return true;
+      // Initialize theme from localStorage or system preference
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark-mode');
+      }
+    });
+
+    // Sidebar Toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('collapsed');
+          localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+        
+        // Load sidebar state from localStorage
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed');
+        if (sidebarCollapsed === 'true') {
+          sidebar.classList.add('collapsed');
         }
       }
       
-      function getModuleName() {
-        var path = window.location.pathname;
-        var filename = path.split('/').pop();
-        return filename.replace('.html', '');
-      }
+      // Mobile Menu Toggle
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
       
-      function redirectToDashboard(moduleName) {
-        var dashboardUrl = window.location.pathname.replace(/\/[^\/]*$/, '/dashboard.html');
-        var separator = dashboardUrl.includes('?') ? '&' : '?';
-        var targetUrl = dashboardUrl + separator + 'module=' + encodeURIComponent(moduleName);
-        window.location.replace(targetUrl);
-      }
-      
-      if (!isInIframe()) {
-        var moduleName = getModuleName();
-        console.log('Module loaded standalone, redirecting to dashboard with module:', moduleName);
+      if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('mobile-open');
+        });
         
-        document.body.innerHTML = `
-          <div style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa;
-            color: #2ca078;
-            font-size: 18px;
-            font-weight: 600;
-          ">
-            <div style="text-align: center;">
-              <div style="
-                width: 40px;
-                height: 40px;
-                border: 4px solid #e5e7eb;
-                border-top: 4px solid #2ca078;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin: 0 auto 20px;
-              "></div>
-              Loading HR Dashboard...
-            </div>
-          </div>
-          <style>
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+              sidebar.classList.remove('mobile-open');
             }
-          </style>
-        `;
-        
-        setTimeout(function() {
-          redirectToDashboard(moduleName);
-        }, 500);
-        return;
-      } else {
-        console.log('Module loaded in dashboard context');
+          }
+        });
       }
-    })();
-
-    let allTransfers = [];
-    let currentTab = 'pending';
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
       loadTransfers();
@@ -504,7 +212,7 @@
     async function loadTransfers() {
       try {
         // Get all onboarding records that are ready for transfer
-        const onboarding = await HR1API.getAllOnboarding();
+        const onboarding = await HR1API.getOnboardingList();
         
         // Filter employees who are 100% complete
         const readyEmployees = onboarding.filter(o => 
@@ -545,12 +253,7 @@
         displayTransfers(currentTab);
       } catch (error) {
         console.error('Error loading transfers:', error);
-        document.getElementById('transfersList').innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">⚠️</div>
-            <p>Error loading transfers. Please check database connection.</p>
-          </div>
-        `;
+        document.getElementById('transfersList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading transfers. Please check database connection.</p></div>';
       }
     }
     
@@ -583,16 +286,8 @@
       currentTab = tab;
       
       // Update active tab
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.add('active');
-      
-      // Update section title
-      const titles = {
-        'pending': 'Pending Transfers',
-        'sent': 'Sent Transfers',
-        'all': 'All Transfers'
-      };
-      document.getElementById('sectionTitle').textContent = titles[tab];
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
       
       // Display filtered transfers
       displayTransfers(tab);
@@ -610,74 +305,64 @@
       const container = document.getElementById('transfersList');
       
       if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📭</div>
-            <p>No ${filter} transfers found.</p>
-          </div>
-        `;
+        container.innerHTML = '<div class="empty-state"><i data-lucide="inbox" style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5;"></i><p>No ' + filter + ' transfers found.</p></div>';
         return;
       }
 
-      container.innerHTML = filtered.map(transfer => {
+      let html = '';
+      filtered.forEach(transfer => {
         const statusClass = transfer.status.toLowerCase();
         const targetModules = JSON.parse(transfer.target_modules || '[]');
         
-        return `
-          <div class="transfer-card">
-            <div class="transfer-header">
-              <div class="employee-info">
-                <h3>${transfer.employee_name}</h3>
-                <div class="employee-meta">
-                  Employee Code: ${transfer.employee_code} • Transfer ID: #${transfer.id}
-                </div>
-              </div>
-              <span class="status-badge status-${statusClass}">${transfer.status}</span>
-            </div>
-
-            <div>
-              <strong style="font-size: 0.875rem; color: #6b7280;">Target Departments:</strong>
-              <div class="department-tags">
-                ${targetModules.map(dept => `
-                  <span class="dept-tag">${dept}</span>
-                `).join('')}
-              </div>
-            </div>
-
-            <div style="margin-top: 0.75rem;">
-              <div style="font-size: 0.875rem; color: #6b7280;">
-                <strong>Reason:</strong> ${transfer.transfer_reason || 'N/A'}
-              </div>
-              ${transfer.sent_date ? `
-                <div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">
-                  <strong>Sent:</strong> ${new Date(transfer.sent_date).toLocaleString()}
-                </div>
-              ` : ''}
-            </div>
-
-            <div class="transfer-actions">
-              <button class="btn-small btn-view" onclick="viewTransferDetails(${transfer.id})">
-                👁️ View Details
-              </button>
-              
-              ${transfer.status === 'Pending' ? `
-                <button class="btn-small btn-send" onclick="sendTransfer(${transfer.id})">
-                  📤 Send Now
-                </button>
-                <button class="btn-small btn-cancel" onclick="cancelTransfer(${transfer.id})">
-                  ❌ Cancel
-                </button>
-              ` : ''}
-              
-              ${transfer.status === 'Sent' ? `
-                <button class="btn-small" style="background: #6b7280; color: white;" onclick="checkAcknowledgment(${transfer.id})">
-                  🔍 Check Status
-                </button>
-              ` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
+        html += '<div class="transfer-card">';
+        html += '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">';
+        html += '<div>';
+        html += '<h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">' + transfer.employee_name + '</h3>';
+        html += '<div class="meta-row">';
+        html += '<span>👤 ' + transfer.employee_code + '</span>';
+        html += '<span>📋 #' + transfer.id + '</span>';
+        html += '</div>';
+        html += '</div>';
+        html += '<span class="badge bd-' + statusClass + '">' + transfer.status + '</span>';
+        html += '</div>';
+        
+        html += '<div style="margin-bottom: 12px;">';
+        html += '<div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;"><strong>Target Departments:</strong></div>';
+        html += '<div style="display: flex; gap: 4px; flex-wrap: wrap;">';
+        targetModules.forEach(dept => {
+          html += '<span class="dept-tag">' + dept + '</span>';
+        });
+        html += '</div>';
+        html += '</div>';
+        
+        html += '<div style="margin-bottom: 12px;">';
+        html += '<div style="font-size: 12px; color: var(--text-secondary);">';
+        html += '<strong>Reason:</strong> ' + (transfer.transfer_reason || 'N/A');
+        html += '</div>';
+        if (transfer.sent_date) {
+          html += '<div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">';
+          html += '<strong>Sent:</strong> ' + new Date(transfer.sent_date).toLocaleString();
+          html += '</div>';
+        }
+        html += '</div>';
+        
+        html += '<div class="transfer-actions">';
+        html += '<button class="btn-sm bsm-blue" onclick="viewTransferDetails(' + transfer.id + ')"><i data-lucide="eye" style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;"></i>View Details</button>';
+        
+        if (transfer.status === 'Pending') {
+          html += '<button class="btn-sm bsm-green" onclick="sendTransfer(' + transfer.id + ')"><i data-lucide="send" style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;"></i>Send Now</button>';
+          html += '<button class="btn-sm bsm-red" onclick="cancelTransfer(' + transfer.id + ')"><i data-lucide="x" style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;"></i>Cancel</button>';
+        }
+        
+        if (transfer.status === 'Sent') {
+          html += '<button class="btn-sm bsm-blue" onclick="checkAcknowledgment(' + transfer.id + ')"><i data-lucide="search" style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;"></i>Check Status</button>';
+        }
+        
+        html += '</div>';
+        html += '</div>';
+      });
+      
+      container.innerHTML = html;
     }
 
     async function viewTransferDetails(transferId) {
@@ -688,83 +373,7 @@
       const targetModules = JSON.parse(transfer.target_modules || '[]');
 
       const content = document.getElementById('detailsContent');
-      content.innerHTML = `
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="margin-bottom: 0.5rem;">Transfer Information</h3>
-          <div class="data-item" style="margin-bottom: 0.5rem;">
-            <div class="data-label">Transfer ID</div>
-            <div class="data-value">#${transfer.id}</div>
-          </div>
-          <div class="data-item" style="margin-bottom: 0.5rem;">
-            <div class="data-label">Status</div>
-            <div class="data-value">
-              <span class="status-badge status-${transfer.status.toLowerCase()}">${transfer.status}</span>
-            </div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Target Departments</div>
-            <div class="data-value">${targetModules.join(', ')}</div>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="margin-bottom: 0.5rem;">Employee Data Being Sent</h3>
-          <div class="data-grid">
-            <div class="data-item">
-              <div class="data-label">Employee Code</div>
-              <div class="data-value">${employeeData.employee_code || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Full Name</div>
-              <div class="data-value">${employeeData.first_name} ${employeeData.last_name}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Email</div>
-              <div class="data-value">${employeeData.email || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Phone</div>
-              <div class="data-value">${employeeData.phone || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Department</div>
-              <div class="data-value">${employeeData.department || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Position</div>
-              <div class="data-value">${employeeData.position || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Hire Date</div>
-              <div class="data-value">${employeeData.hire_date ? new Date(employeeData.hire_date).toLocaleDateString() : 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Basic Salary</div>
-              <div class="data-value">${employeeData.basic_salary ? formatCurrency(employeeData.basic_salary) : 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">SSS Number</div>
-              <div class="data-value">${employeeData.sss_number || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">TIN Number</div>
-              <div class="data-value">${employeeData.tin_number || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">PhilHealth</div>
-              <div class="data-value">${employeeData.philhealth_number || 'N/A'}</div>
-            </div>
-            <div class="data-item">
-              <div class="data-label">Pag-IBIG</div>
-              <div class="data-value">${employeeData.pagibig_number || 'N/A'}</div>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top: 1.5rem; text-align: right;">
-          <button class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>
-        </div>
-      `;
+      content.innerHTML = '<div style="margin-bottom: 1.5rem;"><h3 style="margin-bottom: 0.5rem;">Transfer Information</h3><div class="data-grid"><div class="data-item"><div class="data-label">Transfer ID</div><div class="data-value">#' + transfer.id + '</div></div><div class="data-item"><div class="data-label">Status</div><div class="data-value"><span class="badge bd-' + transfer.status.toLowerCase() + '">' + transfer.status + '</span></div></div><div class="data-item"><div class="data-label">Target Departments</div><div class="data-value">' + targetModules.join(', ') + '</div></div></div></div><div style="margin-bottom: 1.5rem;"><h3 style="margin-bottom: 0.5rem;">Employee Data Being Sent</h3><div class="data-grid"><div class="data-item"><div class="data-label">Employee Code</div><div class="data-value">' + (employeeData.employee_code || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Full Name</div><div class="data-value">' + employeeData.first_name + ' ' + employeeData.last_name + '</div></div><div class="data-item"><div class="data-label">Email</div><div class="data-value">' + (employeeData.email || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Phone</div><div class="data-value">' + (employeeData.phone || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Department</div><div class="data-value">' + (employeeData.department || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Position</div><div class="data-value">' + (employeeData.position || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Hire Date</div><div class="data-value">' + (employeeData.hire_date ? new Date(employeeData.hire_date).toLocaleDateString() : 'N/A') + '</div></div><div class="data-item"><div class="data-label">Basic Salary</div><div class="data-value">' + (employeeData.basic_salary ? formatCurrency(employeeData.basic_salary) : 'N/A') + '</div></div><div class="data-item"><div class="data-label">SSS Number</div><div class="data-value">' + (employeeData.sss_number || 'N/A') + '</div></div><div class="data-item"><div class="data-label">TIN Number</div><div class="data-value">' + (employeeData.tin_number || 'N/A') + '</div></div><div class="data-item"><div class="data-label">PhilHealth</div><div class="data-value">' + (employeeData.philhealth_number || 'N/A') + '</div></div><div class="data-item"><div class="data-label">Pag-IBIG</div><div class="data-value">' + (employeeData.pagibig_number || 'N/A') + '</div></div></div></div><div style="margin-top: 1.5rem; text-align: right;"><button class="btn-secondary" onclick="closeDetailsModal()">Close</button></div>';
 
       document.getElementById('detailsModal').classList.add('active');
     }
@@ -779,57 +388,7 @@
       // Show department selection modal
       const { value: departments } = await Swal.fire({
         title: 'Select Departments',
-        html: `
-          <p style="margin-bottom: 1rem;">Select which departments should receive employee data for:</p>
-          <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-            <strong>${transfer.employee_name}</strong><br>
-            <span style="font-size: 0.875rem; color: #6b7280;">${transfer.employee_code}</span>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; text-align: left;">
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="HR2" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">HR2</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Competency & Training</span>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="HR3" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">HR3</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Timesheet</span>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="HR4" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">HR4</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Compensation</span>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="Financial" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">Financial</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Disbursement</span>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="ESS" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">ESS</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Employee Self Service</span>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
-              <input type="checkbox" name="dept" value="Logistics1" style="width: 18px; height: 18px;">
-              <div>
-                <strong style="display: block;">Logistics 1</strong>
-                <span style="font-size: 0.75rem; color: #6b7280;">Project Management</span>
-              </div>
-            </label>
-          </div>
-        `,
+        html: '<p style="margin-bottom: 1rem;">Select which departments should receive employee data for:</p><div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;"><strong>' + transfer.employee_name + '</strong><br><span style="font-size: 0.875rem; color: #6b7280;">' + transfer.employee_code + '</span></div><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; text-align: left;"><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="HR2" style="width: 18px; height: 18px;"><div><strong style="display: block;">HR2</strong><span style="font-size: 0.75rem; color: #6b7280;">Competency & Training</span></div></label><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="HR3" style="width: 18px; height: 18px;"><div><strong style="display: block;">HR3</strong><span style="font-size: 0.75rem; color: #6b7280;">Timesheet</span></div></label><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="HR4" style="width: 18px; height: 18px;"><div><strong style="display: block;">HR4</strong><span style="font-size: 0.75rem; color: #6b7280;">Compensation</span></div></label><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="Financial" style="width: 18px; height: 18px;"><div><strong style="display: block;">Financial</strong><span style="font-size: 0.75rem; color: #6b7280;">Disbursement</span></div></label><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="ESS" style="width: 18px; height: 18px;"><div><strong style="display: block;">ESS</strong><span style="font-size: 0.75rem; color: #6b7280;">Employee Self Service</span></div></label><label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;"><input type="checkbox" name="dept" value="Logistics1" style="width: 18px; height: 18px;"><div><strong style="display: block;">Logistics 1</strong><span style="font-size: 0.75rem; color: #6b7280;">Project Management</span></div></label></div>',
         width: '600px',
         showCancelButton: true,
         confirmButtonText: 'Send to Selected Departments',
@@ -861,11 +420,7 @@
           Swal.fire({
             icon: 'success',
             title: 'Transfer Sent!',
-            html: `
-              Employee data for <strong>${transfer.employee_name}</strong> has been sent to:<br><br>
-              <strong>${departments.join(', ')}</strong><br><br>
-              Transfer ID: #${result.transfer_id}
-            `,
+            html: 'Employee data for <strong>' + transfer.employee_name + '</strong> has been sent to:<br><br><strong>' + departments.join(', ') + '</strong><br><br>Transfer ID: #' + result.transfer_id,
             confirmButtonColor: '#10b981',
             timer: 3000
           });
@@ -928,6 +483,16 @@
         timer: 2000
       });
     }
+
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP'
+      }).format(amount);
+    }
+
+    // Initialize Lucide icons
+    lucide.createIcons();
   </script>
 </body>
 </html>
