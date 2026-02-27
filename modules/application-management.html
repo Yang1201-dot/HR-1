@@ -108,6 +108,40 @@ input,select,textarea,button{font-family:inherit;}
 
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--border-color);border-radius:10px;background:var(--background);color:var(--text-primary);font-size:14px;font-family:inherit;}
 
+/* Scrollbar styling for dark/light mode compatibility */
+.form-group textarea::-webkit-scrollbar{width:8px;height:8px;}
+.form-group textarea::-webkit-scrollbar-track{background:#f8f9fa !important;border-radius:4px;}
+.form-group textarea::-webkit-scrollbar-thumb{background:#6b7280 !important;border-radius:4px;}
+.form-group textarea::-webkit-scrollbar-thumb:hover{background:#111827 !important;}
+.form-group textarea::-moz-scrollbar{width:8px;height:8px;}
+.form-group textarea::-moz-scrollbar-track{background:#f8f9fa !important;border-radius:4px;}
+.form-group textarea::-moz-scrollbar-thumb{background:#6b7280 !important;border-radius:4px;}
+.form-group textarea::-moz-scrollbar-thumb:hover{background:#111827 !important;}
+
+/* Modal-specific scrollbar targeting */
+#am_modal_assess textarea::-webkit-scrollbar-track{background:#f8f9fa !important;border-radius:4px;}
+#am_modal_assess textarea::-webkit-scrollbar-thumb{background:#6b7280 !important;border-radius:4px;}
+#am_modal_assess textarea::-webkit-scrollbar-thumb:hover{background:#111827 !important;}
+#am_modal_assess textarea::-moz-scrollbar-track{background:#f8f9fa !important;border-radius:4px;}
+#am_modal_assess textarea::-moz-scrollbar-thumb{background:#6b7280 !important;border-radius:4px;}
+#am_modal_assess textarea::-moz-scrollbar-thumb:hover{background:#111827 !important;}
+
+/* Dark mode scrollbar override - more specific and aggressive */
+body.dark-mode #am_modal_assess textarea::-webkit-scrollbar-track{background:#0a0a0a !important;}
+body.dark-mode #am_modal_assess textarea::-webkit-scrollbar-thumb{background:#404040 !important;}
+body.dark-mode #am_modal_assess textarea::-webkit-scrollbar-thumb:hover{background:#606060 !important;}
+body.dark-mode #am_modal_assess textarea::-moz-scrollbar-track{background:#0a0a0a !important;}
+body.dark-mode #am_modal_assess textarea::-moz-scrollbar-thumb{background:#404040 !important;}
+body.dark-mode #am_modal_assess textarea::-moz-scrollbar-thumb:hover{background:#606060 !important;}
+
+/* Alternative dark mode targeting */
+.dark-mode #am_modal_assess textarea::-webkit-scrollbar-track{background:#0a0a0a !important;}
+.dark-mode #am_modal_assess textarea::-webkit-scrollbar-thumb{background:#404040 !important;}
+.dark-mode #am_modal_assess textarea::-webkit-scrollbar-thumb:hover{background:#606060 !important;}
+.dark-mode #am_modal_assess textarea::-moz-scrollbar-track{background:#0a0a0a !important;}
+.dark-mode #am_modal_assess textarea::-moz-scrollbar-thumb{background:#404040 !important;}
+.dark-mode #am_modal_assess textarea::-moz-scrollbar-thumb:hover{background:#606060 !important;}
+
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
 .btn-submit{width:100%;padding:12px;background:var(--brand-green);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
@@ -445,31 +479,17 @@ function am_render() {
   }
 
   tbody.innerHTML = AM.map(function(a) {
-
     var sk = (a.status || 'new').toLowerCase().replace(/ /g, '-');
-
     return '<tr>' +
-
-      '<td><div style="font-weight:600;">' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</div>' +
-
-           '<div style="font-size:12px;color:var(--text-secondary);">' + esc(a.email||'') + '</div></td>' +
-
+      '<td>' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</td>' +
       '<td>' + esc(a.position||'') + '</td>' +
-
       '<td>' + esc(a.dept||'') + '</td>' +
-
       '<td>' + esc(a.appliedAt||'') + '</td>' +
-
       '<td><span class="badge bd-' + sk + '">' + esc(a.status||'New') + '</span></td>' +
-
       '<td>' +
-
         '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssess(this.dataset.id)">Assess</button> ' +
-
         '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_viewApplicant(this.dataset.id)">View</button>' +
-
       '</td></tr>';
-
   }).join('');
 
 }
@@ -487,6 +507,20 @@ function am_openAssess(id) {
 
   document.getElementById('am_assess_name').dataset.applicantId = id;
 
+  // Apply appropriate scrollbar styling based on current mode
+  var notesTextarea = document.getElementById('am_assess_notes');
+  if (notesTextarea) {
+    if (document.body.classList.contains('dark-mode')) {
+      // Dark mode scrollbar colors
+      notesTextarea.style.scrollbarWidth = 'thin';
+      notesTextarea.style.scrollbarColor = '#404040 #0a0a0a';
+    } else {
+      // Light mode scrollbar colors
+      notesTextarea.style.scrollbarWidth = 'thin';
+      notesTextarea.style.scrollbarColor = '#6b7280 #f8f9fa';
+    }
+  }
+
   am_open('am_modal_assess');
 
 }
@@ -497,23 +531,46 @@ function am_saveAssess() {
 
   var name = g('am_assess_name');
 
-  ASSESS.push({
-
-    id: Date.now(), applicantId: id, applicantName: name,
-
-    tech: parseInt(g('am_assess_tech')||5), comm: parseInt(g('am_assess_comm')||5),
-
-    prob: parseInt(g('am_assess_prob')||5), fit:  parseInt(g('am_assess_fit')||5),
-
-    notes: g('am_assess_notes'), assessedAt: new Date().toLocaleDateString()
-
+  // Find existing assessment for this applicant
+  var existingAssessmentIndex = ASSESS.findIndex(function(a) { 
+    return String(a.applicantId) === String(id); 
   });
+
+  var assessmentData = {
+    applicantId: id, 
+    applicantName: name,
+    tech: parseInt(g('am_assess_tech')||5), 
+    comm: parseInt(g('am_assess_comm')||5),
+    prob: parseInt(g('am_assess_prob')||5), 
+    fit:  parseInt(g('am_assess_fit')||5),
+    notes: g('am_assess_notes'), 
+    assessedAt: new Date().toLocaleDateString()
+  };
+
+  if (existingAssessmentIndex !== -1) {
+    // Update existing assessment
+    assessmentData.id = ASSESS[existingAssessmentIndex].id; // Keep existing ID
+    ASSESS[existingAssessmentIndex] = assessmentData;
+  } else {
+    // Create new assessment if none exists
+    assessmentData.id = Date.now();
+    ASSESS.push(assessmentData);
+  }
 
   am_close('am_modal_assess');
 
   am_toast('Assessment saved for ' + name);
 
   am_renderAssess();
+
+  // Refresh applicant details view if it's open for the same applicant
+  var viewModal = document.getElementById('am_modal_view');
+  if (viewModal && viewModal.classList.contains('active')) {
+    var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
+    if (currentApplicantId === id) {
+      am_viewApplicant(id);
+    }
+  }
 
 }
 
@@ -603,7 +660,7 @@ function am_viewApplicant(id) {
 
         '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Department:</strong> <span style="color:var(--text-primary);">' + esc(a.dept||'') + '</span></div>' +
 
-        '<div><strong style="color:var(--text-secondary);">Status:</strong> <span class="badge bd-' + ((a.status||'new').toLowerCase().replace(/ /g, '-')) + '">' + esc(a.status||'New') + '</span></div>' +
+        '<div><strong style="color:var(--text-secondary);">Status:</strong> <select id="applicant_status_' + a.id + '" class="status-dropdown" style="margin-left:8px;padding:4px 8px;border:1px solid var(--border-color);border-radius:6px;background:var(--background);color:var(--text-primary);"><option value="new" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'new' ? 'selected' : '') + '>New</option><option value="under-review" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'under-review' ? 'selected' : '') + '>Under Review</option><option value="shortlisted" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'shortlisted' ? 'selected' : '') + '>Shortlisted</option><option value="hired" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'hired' ? 'selected' : '') + '>Hired</option><option value="rejected" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'rejected' ? 'selected' : '') + '>Rejected</option></select> <button class="btn-sm bsm-green" onclick="am_updateApplicantStatus(\'' + a.id + '\')" style="margin-left:64px;margin-top:8px;cursor:pointer;padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;background:rgba(44,160,120,.12);color:var(--brand-green);transition:all .2s;" onmouseover="this.style.background=\'var(--brand-green)\';this.style.color=\'#fff\';" onmouseout="this.style.background=\'rgba(44,160,120,.12)\';this.style.color=\'var(--brand-green)\';">Update Status</button></div>' +
 
       '</div>' +
 
@@ -743,19 +800,19 @@ function am_viewApplicant(id) {
 
       '<div class="assess-score">' +
 
-        '<div class="score-item"><div class="score-val">' + existingAssessment.tech + '</div><div class="score-lbl">Technical</div></div>' +
+        '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + existingAssessment.tech + '</div></div>' +
 
-        '<div class="score-item"><div class="score-val">' + existingAssessment.comm + '</div><div class="score-lbl">Communication</div></div>' +
+        '<div class="score-item"><div class="score-lbl">Communication</div><div class="score-val">' + existingAssessment.comm + '</div></div>' +
 
-        '<div class="score-item"><div class="score-val">' + existingAssessment.prob + '</div><div class="score-lbl">Problem Solving</div></div>' +
+        '<div class="score-item"><div class="score-lbl">Problem Solving</div><div class="score-val">' + existingAssessment.prob + '</div></div>' +
 
-        '<div class="score-item"><div class="score-val">' + existingAssessment.fit + '</div><div class="score-lbl">Cultural Fit</div></div>' +
+        '<div class="score-item"><div class="score-lbl">Cultural Fit</div><div class="score-val">' + existingAssessment.fit + '</div></div>' +
 
-        '<div class="score-item"><div class="score-val">' + avg + '</div><div class="score-lbl">Average</div></div>' +
+        '<div class="score-item"><div class="score-lbl">Average</div><div class="score-val">' + avg + '</div></div>' +
 
       '</div>' +
 
-      (existingAssessment.notes ? '<div style="margin-top:12px;padding:10px;background:var(--surface);border-radius:8px;font-size:13px;"><strong>Notes:</strong> ' + esc(existingAssessment.notes) + '</div>' : '') +
+      (existingAssessment.notes ? '<div style="margin-top:16px;padding:16px;background:var(--surface);border:2px solid var(--border-color);border-radius:10px;font-size:13px;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;"><strong style="color:var(--text-primary);display:block;margin-bottom:8px;">Notes:</strong> ' + esc(existingAssessment.notes) + '</div>' : '') +
 
     '</div>';
 
@@ -764,8 +821,6 @@ function am_viewApplicant(id) {
     html += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
 
       '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
-
-      '<button class="btn-primary" style="padding:8px 16px;font-size:12px;" onclick="am_close(\'am_modal_view\'); am_openAssess(\'' + id + '\')">Start Assessment</button>' +
 
     '</div>';
 
@@ -950,6 +1005,45 @@ function am_updateStats() {
     document.getElementById('am_s_short').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'shortlisted'; }).length;
     document.getElementById('am_s_hired').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'hired'; }).length;
   } catch(e) {}
+}
+
+/* ── Update Applicant Status ── */
+function am_updateApplicantStatus(applicantId) {
+  var statusDropdown = document.getElementById('applicant_status_' + applicantId);
+  if (!statusDropdown) return;
+  
+  var newStatus = statusDropdown.value;
+  var applicant = AM.find(function(a) { return String(a.id) === String(applicantId); });
+  if (!applicant) return;
+  
+  // Update the applicant's status
+  applicant.status = newStatus;
+  
+  // Save to localStorage to persist the change
+  localStorage.setItem('careers_applications', JSON.stringify(AM)); // Use correct localStorage key
+  
+  // Debugging to ensure status update works
+  console.log('Applicant status updated:', applicantId, newStatus);
+  console.log('Updated applicant object:', applicant);
+  console.log('Updated applications array:', AM);
+  
+  // Show confirmation
+  am_toast('Status updated to ' + newStatus + ' for ' + (applicant.fname || '') + ' ' + (applicant.lname || ''));
+  
+  // Refresh the applications table
+  am_renderApps();
+  
+  // Update statistics
+  am_updateStats();
+  
+  // Refresh the applicant details view if it's open
+  var viewModal = document.getElementById('am_modal_view');
+  if (viewModal && viewModal.classList.contains('active')) {
+    var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
+    if (currentApplicantId === applicantId) {
+      am_viewApplicant(applicantId);
+    }
+  }
 }
 
 /* ── Data Reset ── */
