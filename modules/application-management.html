@@ -1,928 +1,589 @@
 <!DOCTYPE html>
 
+
+
 <html lang="en">
+
+
 
 <head>
 
+
+
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 
+
+
   <title>Application Management</title>
-  <link rel="stylesheet" href="css/application-management.css">
+
+  <link rel="stylesheet" href="../css/application-management.css">
+
+
 
 </head>
 
+
+
 <body>
+
+
 
 <div class="hr-content">
 
+
+
   <div class="page-header">
+
+
 
     <div>
 
+
+
       <h1 class="page-title">Application Management</h1>
+
+
 
       <p class="page-sub">Track applications, manage resumes, conduct assessments, and communicate with applicants</p>
 
+
+
     </div>
 
+
+
   </div>
+
+
+
+
 
 
 
   <!-- Data Reset Bar -->
 
+
+
   <div class="reset-bar">
+
+
 
     <p>Need to reset and redo the process? <strong>Clear all data</strong> below — this removes all applications, files, and job postings from storage.</p>
 
+
+
     <button class="btn-sm bsm-red" onclick="am_confirmReset()">🗑 Clear All Data</button>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="stats-row">
 
+
+
     <div class="stat-card"><div class="stat-num c-blue" id="am_s_total">0</div><div class="stat-label">Total</div></div>
+
+
 
     <div class="stat-card"><div class="stat-num c-blue" id="am_s_new">0</div><div class="stat-label">New</div></div>
 
+
+
     <div class="stat-card"><div class="stat-num c-amber" id="am_s_review">0</div><div class="stat-label">Under Review</div></div>
+
+
 
     <div class="stat-card"><div class="stat-num c-purple" id="am_s_short">0</div><div class="stat-label">Shortlisted</div></div>
 
+
+
     <div class="stat-card"><div class="stat-num c-green" id="am_s_hired">0</div><div class="stat-label">Hired</div></div>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="tab-bar">
 
+
+
     <button class="tab-btn active" onclick="am_tab('applications',this)">Applications</button>
+
+
 
     <button class="tab-btn" onclick="am_tab('resumes',this)">Resume/File Management</button>
 
+
+
     <button class="tab-btn" onclick="am_tab('assessments',this)">Assessment Tools</button>
+
+
 
     <button class="tab-btn" onclick="am_tab('communication',this)">Applicant Communication</button>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="tab-panel active" id="am_tab_applications">
 
+
+
     <table class="app-table">
+
+
 
       <thead><tr><th>Applicant</th><th>Position</th><th>Department</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
 
+
+
       <tbody id="am_tbody"></tbody>
+
+
 
     </table>
 
+
+
   </div>
+
+
 
   <div class="tab-panel" id="am_tab_resumes"><div id="am_resumes"></div></div>
 
+
+
   <div class="tab-panel" id="am_tab_assessments"><div id="am_assessments"></div></div>
+
+
 
   <div class="tab-panel" id="am_tab_communication"><div id="am_comms"></div></div>
 
+
+
 </div>
+
+
+
+
 
 
 
 <!-- Modal: Assessment -->
 
+
+
 <div class="modal-overlay" id="am_modal_assess">
+
+
 
 <div class="modal-box">
 
+
+
   <button class="modal-close" onclick="am_close('am_modal_assess')">&times;</button>
+
+
 
   <h2>Assessment Tool</h2>
 
+
+
   <div class="form-group"><label>Applicant Name</label><input type="text" id="am_assess_name" readonly></div>
 
+
+
   <div class="form-row">
+
+
 
     <div class="form-group"><label>Technical Skills (1-10)</label><input type="number" id="am_assess_tech" min="1" max="10" value="5"></div>
 
+
+
     <div class="form-group"><label>Communication (1-10)</label><input type="number" id="am_assess_comm" min="1" max="10" value="5"></div>
 
+
+
   </div>
+
+
 
   <div class="form-row">
 
+
+
     <div class="form-group"><label>Problem Solving (1-10)</label><input type="number" id="am_assess_prob" min="1" max="10" value="5"></div>
+
+
 
     <div class="form-group"><label>Cultural Fit (1-10)</label><input type="number" id="am_assess_fit" min="1" max="10" value="5"></div>
 
+
+
   </div>
+
+
 
   <div class="form-group"><label>Overall Notes</label><textarea id="am_assess_notes" rows="3"></textarea></div>
 
+
+
   <button class="btn-submit" onclick="am_saveAssess()">Save Assessment</button>
+
+
 
   <button class="btn-cancel-modal" onclick="am_close('am_modal_assess')">Cancel</button>
 
-</div>
+
 
 </div>
+
+
+
+</div>
+
+
+
+
 
 
 
 <!-- Modal: View Applicant -->
 
+
+
 <div class="modal-overlay" id="am_modal_view">
+
+
 
 <div class="modal-box">
 
+
+
   <button class="modal-close" onclick="am_close('am_modal_view')">&times;</button>
+
+
 
   <h2>Applicant Details</h2>
 
+
+
   <div id="am_view_content"></div>
+
+
 
   <button class="btn-cancel-modal" onclick="am_close('am_modal_view')">Close</button>
 
-</div>
+
 
 </div>
+
+
+
+</div>
+
+
 
 <script>
+
 // Standalone redirect detection
+
 (function() {
+
   'use strict';
+
   
+
   function isInIframe() {
+
     try {
+
       return window.self !== window.top;
+
     } catch (e) {
+
       return true;
+
     }
+
   }
+
   
+
   function getModuleName() {
+
     var path = window.location.pathname;
+
     var filename = path.split('/').pop();
+
     return filename.replace('.html', '');
+
   }
+
   
+
   function redirectToDashboard(moduleName) {
+
     var dashboardUrl = window.location.pathname.replace(/\/[^\/]*$/, '/dashboard.html');
+
     var separator = dashboardUrl.includes('?') ? '&' : '?';
+
     var targetUrl = dashboardUrl + separator + 'module=' + encodeURIComponent(moduleName);
+
     window.location.replace(targetUrl);
+
   }
+
   
+
   if (!isInIframe()) {
+
     var moduleName = getModuleName();
+
     console.log('Module loaded standalone, redirecting to dashboard with module:', moduleName);
+
     
+
     document.body.innerHTML = `
+
       <div style="
+
         display: flex;
+
         justify-content: center;
+
         align-items: center;
+
         height: 100vh;
+
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
         background: #f8f9fa;
+
         color: #2ca078;
+
         font-size: 18px;
+
         font-weight: 600;
+
       ">
+
         <div style="text-align: center;">
+
           <div style="
+
             width: 40px;
+
             height: 40px;
+
             border: 4px solid #e5e7eb;
+
             border-top: 4px solid #2ca078;
+
             border-radius: 50%;
+
             animation: spin 1s linear infinite;
+
             margin: 0 auto 20px;
+
           "></div>
+
           Loading HR Dashboard...
+
         </div>
+
       </div>
+
       <style>
+
         @keyframes spin {
+
           0% { transform: rotate(0deg); }
+
           100% { transform: rotate(360deg); }
+
         }
+
       </style>
+
     `;
+
     
+
     setTimeout(function() {
+
       redirectToDashboard(moduleName);
+
     }, 500);
+
     return;
+
   } else {
+
     console.log('Module loaded in dashboard context');
+
   }
+
 })();
 
+
+
 /* ── Global File Functions - MUST BE DEFINED FIRST ── */
+
 console.log('Defining global functions...');
 
+
+
 window.am_viewFile = function(appId, key) {
+
   console.log('am_viewFile called with:', appId, key);
+
   try {
+
     var f = localStorage.getItem('careers_files');
+
     if (!f) { alert('File not found.'); return; }
+
     var files = JSON.parse(f);
+
     var file = (files[appId] && files[appId][key]) ? files[appId][key] : null;
+
     if (!file) { alert('File not found.'); return; }
+
     if (!file.dataUrl) { alert('File has no content.'); return; }
+
     var win = window.open('', '_blank');
+
     if (!win) { alert('Popup blocked.'); return; }
+
     if (file.mimeType && file.mimeType.startsWith('image/')) {
+
       win.document.write('<html><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="' + file.dataUrl + '" style="max-width:100%;max-height:100vh;object-fit:contain;"></body></html>');
+
     } else if (file.mimeType === 'application/pdf') {
+
       win.document.write('<html><head><title>' + (file.fileName||'Document') + '</title></head><body style="margin:0;"><embed src="' + file.dataUrl + '" type="application/pdf" width="100%" height="100%" style="position:fixed;inset:0;"></body></html>');
+
     } else {
+
       win.close();
+
       var a = document.createElement('a');
+
       a.href = file.dataUrl;
+
       a.download = file.fileName || 'download';
+
       document.body.appendChild(a);
+
       a.click();
+
       document.body.removeChild(a);
+
     }
+
   } catch(e) { alert('Error loading file.'); }
+
 };
 
+
+
 window.am_downloadFile = function(appId, key) {
+
   console.log('am_downloadFile called with:', appId, key);
+
   try {
+
     var f = localStorage.getItem('careers_files');
+
     if (!f) { alert('File not found.'); return; }
+
     var files = JSON.parse(f);
+
     var file = (files[appId] && files[appId][key]) ? files[appId][key] : null;
+
     if (!file) { alert('File not found.'); return; }
+
     if (!file.dataUrl) { alert('File has no content.'); return; }
+
     var a = document.createElement('a');
+
     a.href = file.dataUrl;
+
     a.download = file.fileName || 'download';
+
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
+
   } catch(e) { alert('Error downloading file.'); }
+
 };
+
+
 
 console.log('Functions defined:', typeof window.am_viewFile, typeof window.am_downloadFile);
 
+
+
 function am_toast(msg, type) {
+
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
+
   alert(msg);
+
 }
+
+
 
 function am_open(id) {
+
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
+
   document.getElementById(id).classList.add('active');
+
 }
 
+
+
 function am_close(id) {
+
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
+
   document.getElementById(id).classList.remove('active');
+
 }
+
+
 
 function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-
-
-/* ── SVG icons stored as variables (NEVER nest SVG strings inside other string literals) ── */
-var SVG = {
-  file: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
-  resume:  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-  birth:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-  diploma: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>',
-  cover:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
-};
-
-var FILE_CATS = [
-  { key: 'resume',  label: 'Resume / CV Library',       icon: 'resume'  },
-  { key: 'birth',   label: 'Birth Certificate Library', icon: 'birth'   },
-  { key: 'diploma', label: 'Diploma / TOR Library',     icon: 'diploma' },
-  { key: 'cover',   label: 'Cover Letter Library',      icon: 'cover'   }
-];
-
-/* ── Data ── */
-var AM = [], FILES = {}, ASSESS = [], COMM = [];
-
-/* ── Storage ── */
-
-function am_load() {
-
-  try { AM    = JSON.parse(localStorage.getItem('careers_applications') || '[]'); } catch(e) { AM = []; }
-
-  try { FILES = JSON.parse(localStorage.getItem('careers_files')        || '{}'); } catch(e) { FILES = {}; }
-
-}
-
-
-
-/* ── Init ── */
-
-(function init() {
-
-  try {
-
-    if (window.parent !== window)
-
-      document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
-
-  } catch(e) {}
-
-  am_load();
-
-  am_render();
-
-  am_updateStats();
-
-})();
-
-
-
-window.addEventListener('message', function(e) {
-
-  if (e.data && e.data.type === 'THEME') document.body.classList.toggle('dark-mode', e.data.dark);
-
-});
-
-
-
-/* ── Tabs ── */
-
-function am_tab(t, btn) {
-
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-
-  document.getElementById('am_tab_' + t).classList.add('active');
-
-  if (btn) btn.classList.add('active');
-
-  if (t === 'resumes')       { am_load(); am_renderResumes(); }
-
-  if (t === 'assessments')   am_renderAssess();
-
-  if (t === 'communication') am_renderComms();
-
-}
-
-
-
-
-function am_render() {
-
-  var tbody = document.getElementById('am_tbody');
-
-  if (!tbody) return;
-
-  if (!AM.length) {
-
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-full">No applications yet. They will appear here after someone applies on the Careers website.</td></tr>';
-
-    return;
-
-  }
-
-  tbody.innerHTML = AM.map(function(a) {
-    var sk = (a.status || 'new').toLowerCase().replace(/ /g, '-');
-    return '<tr>' +
-      '<td>' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</td>' +
-      '<td>' + esc(a.position||'') + '</td>' +
-      '<td>' + esc(a.dept||'') + '</td>' +
-      '<td>' + esc(a.appliedAt||'') + '</td>' +
-      '<td><span class="badge bd-' + sk + '">' + esc(a.status||'New') + '</span></td>' +
-      '<td>' +
-        '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssess(this.dataset.id)">Assess</button> ' +
-        '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_viewApplicant(this.dataset.id)">View</button>' +
-      '</td></tr>';
-  }).join('');
-
-}
-
-
-/* ── Assessment ── */
-
-function am_openAssess(id) {
-
-  var a = AM.find(function(x) { return String(x.id) === String(id); });
-
-  if (!a) return;
-
-  document.getElementById('am_assess_name').value = (a.fname||'') + ' ' + (a.lname||'');
-
-  document.getElementById('am_assess_name').dataset.applicantId = id;
-
-  // Apply appropriate scrollbar styling based on current mode
-  var notesTextarea = document.getElementById('am_assess_notes');
-  if (notesTextarea) {
-    if (document.body.classList.contains('dark-mode')) {
-      // Dark mode scrollbar colors
-      notesTextarea.style.scrollbarWidth = 'thin';
-      notesTextarea.style.scrollbarColor = '#404040 #0a0a0a';
-    } else {
-      // Light mode scrollbar colors
-      notesTextarea.style.scrollbarWidth = 'thin';
-      notesTextarea.style.scrollbarColor = '#6b7280 #f8f9fa';
-    }
-  }
-
-  am_open('am_modal_assess');
-
-}
-
-function am_saveAssess() {
-
-  var id   = document.getElementById('am_assess_name').dataset.applicantId;
-
-  var name = g('am_assess_name');
-
-  // Find existing assessment for this applicant
-  var existingAssessmentIndex = ASSESS.findIndex(function(a) { 
-    return String(a.applicantId) === String(id); 
-  });
-
-  var assessmentData = {
-    applicantId: id, 
-    applicantName: name,
-    tech: parseInt(g('am_assess_tech')||5), 
-    comm: parseInt(g('am_assess_comm')||5),
-    prob: parseInt(g('am_assess_prob')||5), 
-    fit:  parseInt(g('am_assess_fit')||5),
-    notes: g('am_assess_notes'), 
-    assessedAt: new Date().toLocaleDateString()
-  };
-
-  if (existingAssessmentIndex !== -1) {
-    // Update existing assessment
-    assessmentData.id = ASSESS[existingAssessmentIndex].id; // Keep existing ID
-    ASSESS[existingAssessmentIndex] = assessmentData;
-  } else {
-    // Create new assessment if none exists
-    assessmentData.id = Date.now();
-    ASSESS.push(assessmentData);
-  }
-
-  am_close('am_modal_assess');
-
-  am_toast('Assessment saved for ' + name);
-
-  am_renderAssess();
-
-  // Refresh applicant details view if it's open for the same applicant
-  var viewModal = document.getElementById('am_modal_view');
-  if (viewModal && viewModal.classList.contains('active')) {
-    var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
-    if (currentApplicantId === id) {
-      am_viewApplicant(id);
-    }
-  }
-
-}
-
-
-
-/* ── View Applicant Details ── */
-
-function am_viewApplicant(id) {
-
-  var a = AM.find(function(x) { return String(x.id) === String(id); });
-
-  if (!a) return;
-
-  
-
-  var content = document.getElementById('am_view_content');
-
-  if (!content) return;
-
-  
-
-  // Get applicant files
-
-  var applicantFiles = [];
-
-  if (FILES[id]) {
-
-    FILE_CATS.forEach(function(cat) {
-
-      if (FILES[id][cat.key]) {
-
-        applicantFiles.push({
-
-          key: cat.key,
-
-          label: cat.label,
-
-          icon: cat.icon,
-
-          file: FILES[id][cat.key]
-
-        });
-
-      }
-
-    });
-
-  }
-
-  
-
-  // Get existing assessment
-
-  var existingAssessment = ASSESS.find(function(ass) { return String(ass.applicantId) === String(id); });
-
-  
-
-  // Build HTML content
-
-  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">' +
-
-    '<div>' +
-
-      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Personal Information</h3>' +
-
-      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
-
-        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Name:</strong> <span style="color:var(--text-primary);">' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</span></div>' +
-
-        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Email:</strong> <span style="color:var(--text-primary);">' + esc(a.email||'') + '</span></div>' +
-
-        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Phone:</strong> <span style="color:var(--text-primary);">' + esc(a.phone||'') + '</span></div>' +
-
-        '<div><strong style="color:var(--text-secondary);">Applied:</strong> <span style="color:var(--text-primary);">' + esc(a.appliedAt||'') + '</span></div>' +
-
-      '</div>' +
-
-    '</div>' +
-
-    '<div>' +
-
-      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Application Details</h3>' +
-
-      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
-
-        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Position:</strong> <span style="color:var(--text-primary);">' + esc(a.position||'') + '</span></div>' +
-
-        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Department:</strong> <span style="color:var(--text-primary);">' + esc(a.dept||'') + '</span></div>' +
-
-        '<div><strong style="color:var(--text-secondary);">Status:</strong> <select id="applicant_status_' + a.id + '" class="status-dropdown" style="margin-left:8px;padding:4px 8px;border:1px solid var(--border-color);border-radius:6px;background:var(--background);color:var(--text-primary);"><option value="new" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'new' ? 'selected' : '') + '>New</option><option value="under-review" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'under-review' ? 'selected' : '') + '>Under Review</option><option value="shortlisted" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'shortlisted' ? 'selected' : '') + '>Shortlisted</option><option value="hired" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'hired' ? 'selected' : '') + '>Hired</option><option value="rejected" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'rejected' ? 'selected' : '') + '>Rejected</option></select> <button class="btn-sm bsm-green" onclick="am_updateApplicantStatus(\'' + a.id + '\')" style="margin-left:64px;margin-top:8px;cursor:pointer;padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;background:rgba(44,160,120,.12);color:var(--brand-green);transition:all .2s;" onmouseover="this.style.background=\'var(--brand-green)\';this.style.color=\'#fff\';" onmouseout="this.style.background=\'rgba(44,160,120,.12)\';this.style.color=\'var(--brand-green)\';">Update Status</button></div>' +
-
-      '</div>' +
-
-    '</div>' +
-
-  '</div>';
-
-  
-
-  // Application message
-
-  if (a.message) {
-
-    html += '<div style="margin-bottom:24px;">' +
-
-      '<h3 style="margin:0 0 12px 0;color:var(--text-primary);">Application Message</h3>' +
-
-      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
-
-        '<p style="margin:0;color:var(--text-secondary);line-height:1.6;">' + esc(a.message) + '</p>' +
-
-      '</div>' +
-
-    '</div>';
-
-  }
-
-  
-
-  // Files section
-
-  html += '<div style="margin-bottom:24px;">' +
-
-    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Submitted Documents</h3>';
-
-  
-
-  if (applicantFiles.length > 0) {
-
-    // Group files by category
-
-    var filesByCategory = {};
-
-    applicantFiles.forEach(function(fileInfo) {
-
-      if (!filesByCategory[fileInfo.label]) {
-
-        filesByCategory[fileInfo.label] = [];
-
-      }
-
-      filesByCategory[fileInfo.label].push(fileInfo);
-
-    });
-
-    
-
-    // Display each category
-
-    Object.keys(filesByCategory).forEach(function(categoryLabel) {
-
-      html += '<div style="margin-bottom:20px;">' +
-
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
-
-          SVG[applicantFiles.find(f => f.label === categoryLabel).icon] +
-
-          '<h4 style="margin:0;color:var(--text-primary);font-size:14px;font-weight:600;">' + esc(categoryLabel) + '</h4>' +
-
-        '</div>' +
-
-        '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:12px;">';
-
-      
-
-      filesByCategory[categoryLabel].forEach(function(fileInfo) {
-
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color);">' +
-
-          '<div style="display:flex;align-items:center;gap:8px;">' +
-
-            '<div style="font-weight:600;color:var(--text-primary);">' + esc(fileInfo.file.fileName||'') + '</div>' +
-
-            '<div style="font-size:11px;color:var(--text-secondary);margin-left:8px;">' + esc(fileInfo.file.fileSize||'') + ' &bull; ' + esc(fileInfo.file.uploadedAt||'') + '</div>' +
-          '</div>' +
-
-          '<div style="display:flex;gap:6px;">' +
-
-            '<button class="btn-primary" style="padding:6px 12px;font-size:11px;" onclick="window.am_viewFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">View</button>' +
-
-            '<button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="window.am_downloadFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">Download</button>' +
-
-          '</div>' +
-
-        '</div>';
-      });
-
-      
-
-      html += '</div></div>';
-
-    });
-
-  } else {
-
-    html += '<p style="color:var(--text-secondary);font-style:italic;">No documents submitted yet.</p>';
-
-  }
-
-  
-
-  html += '</div>';
-
-  
-
-  // Assessment section
-
-  html += '<div style="margin-bottom:24px;">' +
-
-    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Qualification Assessment</h3>';
-
-  
-
-  if (existingAssessment) {
-
-    var avg = Math.round((existingAssessment.tech + existingAssessment.comm + existingAssessment.prob + existingAssessment.fit) / 4 * 10) / 10;
-
-    html += '<div class="assessment-card">' +
-
-      '<div style="margin-bottom:12px;">' +
-
-        '<div style="font-weight:700;font-size:16px;color:var(--text-primary);">Assessment Results</div>' +
-
-        '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + existingAssessment.assessedAt + '</div>' +
-
-      '</div>' +
-
-      '<div class="assess-score">' +
-
-        '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + existingAssessment.tech + '</div></div>' +
-
-        '<div class="score-item"><div class="score-lbl">Communication</div><div class="score-val">' + existingAssessment.comm + '</div></div>' +
-
-        '<div class="score-item"><div class="score-lbl">Problem Solving</div><div class="score-val">' + existingAssessment.prob + '</div></div>' +
-
-        '<div class="score-item"><div class="score-lbl">Cultural Fit</div><div class="score-val">' + existingAssessment.fit + '</div></div>' +
-
-        '<div class="score-item"><div class="score-lbl">Average</div><div class="score-val">' + avg + '</div></div>' +
-
-      '</div>' +
-
-      (existingAssessment.notes ? '<div style="margin-top:16px;padding:16px;background:var(--surface);border:2px solid var(--border-color);border-radius:10px;font-size:13px;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;"><strong style="color:var(--text-primary);display:block;margin-bottom:8px;">Notes:</strong> ' + esc(existingAssessment.notes) + '</div>' : '') +
-
-    '</div>';
-
-  } else {
-
-    html += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
-
-      '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
-
-    '</div>';
-
-  }
-
-  
-
-  html += '</div>';
-
-  
-
-  content.innerHTML = html;
-
-  am_open('am_modal_view');
-
-}
-
-
-
-/* ── Resume / File Management ── */
-
-function am_renderResumes() {
-
-  var el = document.getElementById('am_resumes');
-
-  if (!el) return;
-
-  var html = '';
-
-  FILE_CATS.forEach(function(cat) {
-
-    var rows = '';
-
-    Object.keys(FILES).forEach(function(appId) {
-
-      var bucket = FILES[appId];
-
-      if (!bucket || !bucket[cat.key]) return;
-
-      var f = bucket[cat.key];
-
-      /* Use data-* so onclick handlers NEVER contain nested quotes */
-
-      rows += '<div class="file-item">' +
-
-        '<div>' +
-
-          '<div class="file-name-wrap">' + SVG.file + esc(f.fileName||'') + '</div>' +
-
-          '<div class="file-meta">' + esc(f.applicantName||'') + ' &bull; ' + esc(f.fileSize||'') + ' &bull; ' + esc(f.uploadedAt||'') + '</div>' +
-
-        '</div>' +
-
-        '<div style="display:flex;gap:8px;">' +
-
-          '<button class="btn-sm bsm-blue"  data-aid="' + esc(appId) + '" data-key="' + esc(cat.key) + '" onclick="am_viewFile(this.dataset.aid,this.dataset.key)">View</button>' +
-
-          '<button class="btn-sm bsm-green" data-aid="' + esc(appId) + '" data-key="' + esc(cat.key) + '" onclick="am_downloadFile(this.dataset.aid,this.dataset.key)">Download</button>' +
-
-        '</div>' +
-
-      '</div>';
-
-    });
-
-    html += '<div class="cat-section">' +
-
-      '<div class="cat-heading">' + SVG[cat.icon] + cat.label + '</div>' +
-
-      (rows ? '<div class="file-list">' + rows + '</div>' : '<p class="empty-msg">No files in this category yet.</p>') +
-
-    '</div>';
-
-  });
-
-  el.innerHTML = html;
-
-}
-
-
-
-/* ── Assessment Tools ── */
-
-function am_renderAssess() {
-
-  var el = document.getElementById('am_assessments');
-
-  if (!el) return;
-
-  if (!ASSESS.length) {
-
-    el.innerHTML = '<h3 style="margin-bottom:16px;">Assessment Results</h3><p class="empty-full">No assessments completed yet.</p>';
-
-    return;
-
-  }
-
-  el.innerHTML = '<h3 style="margin-bottom:16px;">Assessment Results</h3>' +
-
-    ASSESS.map(function(a) {
-
-      var avg = Math.round((a.tech + a.comm + a.prob + a.fit) / 4 * 10) / 10;
-
-      return '<div class="assessment-card">' +
-
-        '<div style="margin-bottom:12px;">' +
-
-          '<div style="font-weight:700;font-size:16px;">' + esc(a.applicantName) + '</div>' +
-
-          '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + a.assessedAt + '</div>' +
-
-        '</div>' +
-
-        '<div class="assess-score">' +
-
-          '<div class="score-item"><div class="score-val">' + a.tech + '</div><div class="score-lbl">Technical</div></div>' +
-
-          '<div class="score-item"><div class="score-val">' + a.comm + '</div><div class="score-lbl">Communication</div></div>' +
-
-          '<div class="score-item"><div class="score-val">' + a.prob + '</div><div class="score-lbl">Problem Solving</div></div>' +
-
-          '<div class="score-item"><div class="score-val">' + a.fit  + '</div><div class="score-lbl">Cultural Fit</div></div>' +
-
-          '<div class="score-item"><div class="score-val">' + avg   + '</div><div class="score-lbl">Average</div></div>' +
-
-        '</div>' +
-
-        (a.notes ? '<div style="margin-top:12px;padding:10px;background:var(--surface);border-radius:8px;font-size:13px;">' + esc(a.notes) + '</div>' : '') +
-
-      '</div>';
-
-    }).join('');
-
-}
-
-
-
-/* ── Communication ── */
-
-function am_renderComms() {
-
-  var el = document.getElementById('am_comms');
-
-  if (!el) return;
-
-  if (!COMM.length) {
-
-    el.innerHTML = '<h3 style="margin-bottom:16px;">Communication History</h3><p class="empty-full">No communications sent yet.</p>';
-
-    return;
-
-  }
-
-  el.innerHTML = '<h3 style="margin-bottom:16px;">Communication History</h3>' +
-
-    COMM.map(function(c) {
-
-      return '<div style="background:var(--background);border-left:3px solid var(--brand-green);border-radius:8px;padding:12px;margin-bottom:12px;">' +
-
-        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:var(--text-tertiary);">' +
-
-          '<span><strong>To:</strong> ' + esc(c.to) + '</span><span>' + c.sentAt + '</span>' +
-
-        '</div>' +
-
-        '<div style="font-weight:600;margin-bottom:4px;font-size:14px;">' + esc(c.subject) + '</div>' +
-
-        '<div style="font-size:13px;color:var(--text-secondary);">' + esc(c.message) + '</div>' +
-
-      '</div>';
-
-    }).join('');
-
-}
-
-/* ── Stats ── */
-function am_updateStats() {
-  try {
-    document.getElementById('am_s_total').textContent = AM.length;
-    document.getElementById('am_s_new').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'new'; }).length;
-    document.getElementById('am_s_review').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'under review'; }).length;
-    document.getElementById('am_s_short').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'shortlisted'; }).length;
-    document.getElementById('am_s_hired').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'hired'; }).length;
-  } catch(e) {}
-}
-
-/* ── Update Applicant Status ── */
-function am_updateApplicantStatus(applicantId) {
+// Define the function directly on the window object
+window.am_updateApplicantStatus = function(applicantId) {
   var statusDropdown = document.getElementById('applicant_status_' + applicantId);
   if (!statusDropdown) return;
   
@@ -930,37 +591,1285 @@ function am_updateApplicantStatus(applicantId) {
   var applicant = AM.find(function(a) { return String(a.id) === String(applicantId); });
   if (!applicant) return;
   
-  // Update the applicant's status
-  applicant.status = newStatus;
-  
-  // Save to localStorage to persist the change
-  localStorage.setItem('careers_applications', JSON.stringify(AM)); // Use correct localStorage key
-  
-  // Debugging to ensure status update works
-  console.log('Applicant status updated:', applicantId, newStatus);
-  console.log('Updated applicant object:', applicant);
-  console.log('Updated applications array:', AM);
-  
-  // Show confirmation
-  am_toast('Status updated to ' + newStatus + ' for ' + (applicant.fname || '') + ' ' + (applicant.lname || ''));
-  
-  // Refresh the applications table
-  am_renderApps();
-  
-  // Update statistics
-  am_updateStats();
-  
-  // Refresh the applicant details view if it's open
-  var viewModal = document.getElementById('am_modal_view');
-  if (viewModal && viewModal.classList.contains('active')) {
-    var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
-    if (currentApplicantId === applicantId) {
-      am_viewApplicant(applicantId);
+  // Update applicant's status via API
+  fetch('../api/simple-api-new.php?action=update_status', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'id=' + applicantId + '&status=' + newStatus
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Update local data
+      applicant.status = newStatus;
+      
+      // Refresh applications table
+      am_render();
+      
+      // Update statistics
+      am_updateStats();
+      
+      // Show success message
+      console.log('Status updated successfully for applicant:', applicantId);
+      
+      // Refresh applicant details view if it's open
+      var viewModal = document.getElementById('am_modal_view');
+      if (viewModal && viewModal.classList.contains('active')) {
+        var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
+        if (currentApplicantId === applicantId) {
+          am_viewApplicant(applicantId);
+        }
+      }
+    } else {
+      console.error('Failed to update status:', data.error);
     }
-  }
+  })
+  .catch(error => {
+    console.error('Error updating status:', error);
+  });
+};
+
+// Also keep the regular function definition for backward compatibility
+function am_updateApplicantStatus(applicantId) {
+  return window.am_updateApplicantStatus(applicantId);
 }
 
+// Add event delegation for update status buttons
+document.addEventListener('click', function(e) {
+  console.log('Click event detected:', e.target);
+  console.log('Target classes:', e.target.className);
+  console.log('Has update-status-btn class:', e.target.classList.contains('update-status-btn'));
+  if (e.target.classList.contains('update-status-btn')) {
+    console.log('Update status button clicked!');
+    e.preventDefault();
+    const applicantId = e.target.dataset.applicantId;
+    console.log('Applicant ID:', applicantId);
+    if (applicantId) {
+      am_updateApplicantStatus(applicantId);
+    }
+  }
+});
+
+// Also add event delegation with a slight delay to ensure modal is rendered
+setTimeout(function() {
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('update-status-btn')) {
+      console.log('Update status button clicked (delayed)!');
+      e.preventDefault();
+      const applicantId = e.target.dataset.applicantId;
+      if (applicantId) {
+        am_updateApplicantStatus(applicantId);
+      }
+    }
+  });
+}, 100);
+
+/* ── SVG icons stored as variables (NEVER nest SVG strings inside other string literals) ── */
+
+var SVG = {
+
+  file: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+
+  resume:  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+
+  birth:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+
+  diploma: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>',
+
+  cover:   '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+
+};
+
+
+
+var FILE_CATS = [
+
+  { key: 'resume',  label: 'Resume / CV Library',       icon: 'resume'  },
+
+  { key: 'birth',   label: 'Birth Certificate Library', icon: 'birth'   },
+
+  { key: 'diploma', label: 'Diploma / TOR Library',     icon: 'diploma' },
+
+  { key: 'cover',   label: 'Cover Letter Library',      icon: 'cover'   }
+
+];
+
+
+
+/* ── Data ── */
+
+var AM = [], FILES = {}, ASSESS = [], COMM = [];
+
+
+
+/* ── Storage ── */
+
+async function am_load() {
+  console.log('Starting am_load function...');
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=get_applications');
+    const data = await response.json();
+    console.log('API Response:', data);
+    AM = data.error ? [] : data;
+    console.log('AM loaded:', AM);
+  } catch(e) {
+    console.error('Failed to load applicants:', e);
+    AM = [];
+  }
+  
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=get_assessments');
+    const data = await response.json();
+    console.log('Assessments API Response:', data);
+    ASSESS = data.error ? [] : data;
+    console.log('ASSESS loaded:', ASSESS);
+  } catch(e) {
+    console.error('Failed to load assessments:', e);
+    ASSESS = [];
+  }
+  
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=get_communications');
+    const data = await response.json();
+    console.log('Communications API Response:', data);
+    COMM = data.error ? [] : data;
+    console.log('COMM loaded:', COMM);
+  } catch(e) {
+    console.error('Failed to load communications:', e);
+    COMM = [];
+  }
+  
+  console.log('About to call am_render()...');
+  am_render();
+  console.log('am_render() called');
+}
+
+
+
+/* ── Init ── */
+
+
+
+(function init() {
+
+
+
+  try {
+
+
+
+    if (window.parent !== window)
+
+
+
+      document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
+
+
+
+  } catch(e) {}
+
+
+
+  am_load();
+
+
+
+  am_render();
+
+
+
+  am_updateStats();
+
+
+
+})();
+
+
+
+
+
+
+
+window.addEventListener('message', function(e) {
+
+
+
+  if (e.data && e.data.type === 'THEME') document.body.classList.toggle('dark-mode', e.data.dark);
+
+
+
+});
+
+
+
+
+
+
+
+/* ── Tabs ── */
+
+
+
+function am_tab(t, btn) {
+
+
+
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+
+
+
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+
+
+
+  document.getElementById('am_tab_' + t).classList.add('active');
+
+
+
+  if (btn) btn.classList.add('active');
+
+
+
+  if (t === 'resumes')       { am_load(); am_renderResumes(); }
+
+
+
+  if (t === 'assessments')   am_renderAssess();
+
+
+
+  if (t === 'communication') am_renderComms();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function am_render() {
+
+
+
+  var tbody = document.getElementById('am_tbody');
+
+
+
+  if (!tbody) return;
+
+
+
+  if (!AM.length) {
+
+
+
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-full">No applications yet. They will appear here after someone applies on the Careers website.</td></tr>';
+
+
+
+    return;
+
+
+
+  }
+
+
+
+  tbody.innerHTML = AM.map(function(a) {
+
+    var sk = (a.status || 'new').toLowerCase().replace(/ /g, '-');
+
+    return '<tr>' +
+
+      '<td>' + esc((a.first_name||'') + ' ' + (a.last_name||'')) + '</td>' +
+
+      '<td>' + esc(a.position||'') + '</td>' +
+
+      '<td>' + esc(a.department||'') + '</td>' +
+
+      '<td>' + esc(a.application_date||'') + '</td>' +
+
+      '<td><span class="badge bd-' + sk + '">' + esc(a.status||'New') + '</span></td>' +
+
+      '<td>' +
+
+        '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssess(this.dataset.id)">Assess</button> ' +
+
+        '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_viewApplicant(this.dataset.id)">View</button>' +
+
+      '</td></tr>';
+
+  }).join('');
+
+
+
+}
+
+
+
+
+
+/* ── Assessment ── */
+
+
+
+function am_openAssess(id) {
+
+
+
+  var a = AM.find(function(x) { return String(x.id) === String(id); });
+
+
+
+  if (!a) return;
+
+
+
+  document.getElementById('am_assess_name').value = (a.fname||'') + ' ' + (a.lname||'');
+
+
+
+  document.getElementById('am_assess_name').dataset.applicantId = id;
+
+
+
+  // Apply appropriate scrollbar styling based on current mode
+
+  var notesTextarea = document.getElementById('am_assess_notes');
+
+  if (notesTextarea) {
+
+    if (document.body.classList.contains('dark-mode')) {
+
+      // Dark mode scrollbar colors
+
+      notesTextarea.style.scrollbarWidth = 'thin';
+
+      notesTextarea.style.scrollbarColor = '#404040 #0a0a0a';
+
+    } else {
+
+      // Light mode scrollbar colors
+
+      notesTextarea.style.scrollbarWidth = 'thin';
+
+      notesTextarea.style.scrollbarColor = '#6b7280 #f8f9fa';
+
+    }
+
+  }
+
+
+
+  am_open('am_modal_assess');
+
+
+
+}
+
+
+
+function am_saveAssess() {
+  var id   = document.getElementById('am_assess_name').dataset.applicantId;
+  var name = g('am_assess_name');
+  var tech = parseInt(g('am_assess_tech')||5);
+  var comm = parseInt(g('am_assess_comm')||5);
+  var prob = parseInt(g('am_assess_prob')||5);
+  var fit  = parseInt(g('am_assess_fit')||5);
+  var notes = g('am_assess_notes');
+  
+  // Save assessment via API
+  fetch('../api/simple-api-new.php?action=save_assessment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      applicant_id: id,
+      tech: tech,
+      comm: comm,
+      prob: prob,
+      fit: fit,
+      notes: notes
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      am_close('am_modal_assess');
+      am_toast('Assessment saved for ' + name);
+      
+      // Reload assessments data
+      setTimeout(async function() {
+        try {
+          const response = await fetch('../api/simple-api-new.php?action=get_assessments');
+          const assessmentData = await response.json();
+          ASSESS = assessmentData.error ? [] : assessmentData;
+          console.log('ASSESS reloaded:', ASSESS);
+          
+          // Refresh assessment tools view
+          am_renderAssess();
+          
+          // Refresh applicant details view if it's open
+          var viewModal = document.getElementById('am_modal_view');
+          if (viewModal && viewModal.classList.contains('active')) {
+            var currentApplicantId = document.getElementById('am_assess_name').dataset.applicantId;
+            if (currentApplicantId === id) {
+              am_viewApplicant(id);
+            }
+          }
+        } catch(e) {
+          console.error('Failed to reload assessments:', e);
+        }
+      }, 500);
+    } else {
+      console.error('Failed to save assessment:', data.error);
+    }
+  })
+  .catch(error => {
+    console.error('Error saving assessment:', error);
+  });
+}
+
+
+
+
+
+
+
+/* ── View Applicant Details ── */
+
+
+
+function am_viewApplicant(id) {
+
+
+
+  var a = AM.find(function(x) { return String(x.id) === String(id); });
+
+
+
+  if (!a) return;
+
+
+
+  
+
+
+
+  var content = document.getElementById('am_view_content');
+
+
+
+  if (!content) return;
+
+
+
+  
+
+
+
+  // Get applicant files
+
+
+
+  var applicantFiles = [];
+
+
+
+  if (FILES[id]) {
+
+
+
+    FILE_CATS.forEach(function(cat) {
+
+
+
+      if (FILES[id][cat.key]) {
+
+
+
+        applicantFiles.push({
+
+
+
+          key: cat.key,
+
+
+
+          label: cat.label,
+
+
+
+          icon: cat.icon,
+
+
+
+          file: FILES[id][cat.key]
+
+
+
+        });
+
+
+
+      }
+
+
+
+    });
+
+
+
+  }
+
+
+
+  
+
+
+
+  // Get existing assessment
+
+
+
+  var existingAssessment = ASSESS.find(function(ass) { return String(ass.applicant_id) === String(id); });
+
+
+
+  
+
+
+
+  // Build HTML content
+
+
+
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">' +
+
+
+
+    '<div>' +
+
+
+
+      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Personal Information</h3>' +
+
+
+
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+
+
+
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Name:</strong> <span style="color:var(--text-primary);">' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</span></div>' +
+
+
+
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Email:</strong> <span style="color:var(--text-primary);">' + esc(a.email||'') + '</span></div>' +
+
+
+
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Phone:</strong> <span style="color:var(--text-primary);">' + esc(a.phone||'') + '</span></div>' +
+
+
+
+        '<div><strong style="color:var(--text-secondary);">Applied:</strong> <span style="color:var(--text-primary);">' + esc(a.application_date||'') + '</span></div>' +
+
+
+
+      '</div>' +
+
+
+
+    '</div>' +
+
+
+
+    '<div>' +
+
+
+
+      '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Application Details</h3>' +
+
+
+
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+
+
+
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Position:</strong> <span style="color:var(--text-primary);">' + esc(a.position||'') + '</span></div>' +
+
+
+
+        '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Department:</strong> <span style="color:var(--text-primary);">' + esc(a.dept||'') + '</span></div>' +
+
+
+
+        '<div><strong style="color:var(--text-secondary);">Status:</strong> <select id="applicant_status_' + a.id + '" class="status-dropdown" style="margin-left:8px;padding:4px 8px;border:1px solid var(--border-color);border-radius:6px;background:var(--background);color:var(--text-primary);"><option value="new" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'new' ? 'selected' : '') + '>New</option><option value="under-review" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'under-review' ? 'selected' : '') + '>Under Review</option><option value="shortlisted" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'shortlisted' ? 'selected' : '') + '>Shortlisted</option><option value="hired" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'hired' ? 'selected' : '') + '>Hired</option><option value="rejected" ' + ((a.status||'new').toLowerCase().replace(/ /g, '-') === 'rejected' ? 'selected' : '') + '>Rejected</option></select> <input type="button" value="Update Status" onclick="console.log(\'Direct click!\'); var status=document.getElementById(\'applicant_status_' + a.id + '\').value; console.log(\'Status:\', status); fetch(\'../api/simple-api-new.php?action=update_status\', {method:\'POST\', headers:{\'Content-Type\':\'application/x-www-form-urlencoded\'}, body:\'id=' + a.id + '&status=\'+status}).then(r=>r.json()).then(d=>{console.log(\'Response:\', d); if(d.success){console.log(\'SUCCESS! Status updated!\'); location.reload();}else{console.error(\'Failed:\', d.error); alert(\'Failed to update status: \' + d.error);}}).catch(e=>console.error(\'Error:\', e))" style="margin-left:64px;margin-top:8px;cursor:pointer;padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;background:rgba(44,160,120,.12);color:var(--brand-green);transition:all .2s;" onmouseover="this.style.background=\'var(--brand-green)\';this.style.color=\'#fff\';" onmouseout="this.style.background=\'rgba(44,160,120,.12)\';this.style.color=\'var(--brand-green)\';"></div>' +
+
+
+
+      '</div>' +
+
+
+
+    '</div>' +
+  '</div>';
+console.log('Modal HTML:', html);
+console.log('Applicant ID:', a.id);
+
+
+
+  // Application message
+
+
+  if (a.message) {
+
+
+
+    html += '<div style="margin-bottom:24px;">' +
+
+
+
+      '<h3 style="margin:0 0 12px 0;color:var(--text-primary);">Application Message</h3>' +
+
+
+
+      '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;">' +
+
+
+
+        '<p style="margin:0;color:var(--text-secondary);line-height:1.6;">' + esc(a.message) + '</p>' +
+
+
+
+      '</div>' +
+
+
+
+    '</div>';
+
+
+
+  }
+
+
+
+  
+
+
+
+  // Files section
+
+
+
+  html += '<div style="margin-bottom:24px;">' +
+
+
+
+    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Submitted Documents</h3>';
+
+
+
+  
+
+
+
+  if (applicantFiles.length > 0) {
+
+
+
+    // Group files by category
+
+
+
+    var filesByCategory = {};
+
+
+
+    applicantFiles.forEach(function(fileInfo) {
+
+
+
+      if (!filesByCategory[fileInfo.label]) {
+
+
+
+        filesByCategory[fileInfo.label] = [];
+
+
+
+      }
+
+
+
+      filesByCategory[fileInfo.label].push(fileInfo);
+
+
+
+    });
+
+
+
+    
+
+
+
+    // Display each category
+
+
+
+    Object.keys(filesByCategory).forEach(function(categoryLabel) {
+
+
+
+      html += '<div style="margin-bottom:20px;">' +
+
+
+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
+
+
+
+          SVG[applicantFiles.find(f => f.label === categoryLabel).icon] +
+
+
+
+          '<h4 style="margin:0;color:var(--text-primary);font-size:14px;font-weight:600;">' + esc(categoryLabel) + '</h4>' +
+
+
+
+        '</div>' +
+
+
+
+        '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:12px;">';
+
+
+
+      
+
+
+
+      filesByCategory[categoryLabel].forEach(function(fileInfo) {
+
+
+
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color);">' +
+
+
+
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+
+
+
+            '<div style="font-weight:600;color:var(--text-primary);">' + esc(fileInfo.file.fileName||'') + '</div>' +
+
+
+
+            '<div style="font-size:11px;color:var(--text-secondary);margin-left:8px;">' + esc(fileInfo.file.fileSize||'') + ' &bull; ' + esc(fileInfo.file.uploadedAt||'') + '</div>' +
+
+          '</div>' +
+
+
+
+          '<div style="display:flex;gap:6px;">' +
+
+
+
+            '<button class="btn-primary" style="padding:6px 12px;font-size:11px;" onclick="window.am_viewFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">View</button>' +
+
+
+
+            '<button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="window.am_downloadFile(\'' + esc(id) + '\',\'' + esc(fileInfo.key) + '\')">Download</button>' +
+
+
+
+          '</div>' +
+
+
+
+        '</div>';
+
+      });
+
+
+
+      
+
+
+
+      html += '</div></div>';
+
+
+
+    });
+
+
+
+  } else {
+
+
+
+    html += '<p style="color:var(--text-secondary);font-style:italic;">No documents submitted yet.</p>';
+
+
+
+  }
+
+
+
+  
+
+
+
+  html += '</div>';
+
+
+
+  
+
+
+
+  // Assessment section
+
+
+
+  html += '<div style="margin-bottom:24px;">' +
+
+
+
+    '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Qualification Assessment</h3>';
+
+
+
+  
+
+
+
+  if (existingAssessment) {
+
+
+
+    var avg = Math.round((existingAssessment.tech + existingAssessment.comm + existingAssessment.prob + existingAssessment.fit) / 4 * 10) / 10;
+
+
+
+    html += '<div class="assessment-card">' +
+
+
+
+      '<div style="margin-bottom:12px;">' +
+
+
+
+        '<div style="font-weight:700;font-size:16px;color:var(--text-primary);">Assessment Results</div>' +
+
+
+
+        '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + existingAssessment.assessedAt + '</div>' +
+
+
+
+      '</div>' +
+
+
+
+      '<div class="assess-score">' +
+
+
+
+        '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + existingAssessment.tech + '</div></div>' +
+
+
+
+        '<div class="score-item"><div class="score-lbl">Communication</div><div class="score-val">' + existingAssessment.comm + '</div></div>' +
+
+
+
+        '<div class="score-item"><div class="score-lbl">Problem Solving</div><div class="score-val">' + existingAssessment.prob + '</div></div>' +
+
+
+
+        '<div class="score-item"><div class="score-lbl">Cultural Fit</div><div class="score-val">' + existingAssessment.fit + '</div></div>' +
+
+
+
+        '<div class="score-item"><div class="score-lbl">Average</div><div class="score-val">' + avg + '</div></div>' +
+
+
+
+      '</div>' +
+
+
+
+      (existingAssessment.notes ? '<div style="margin-top:16px;padding:16px;background:var(--surface);border:2px solid var(--border-color);border-radius:10px;font-size:13px;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;"><strong style="color:var(--text-primary);display:block;margin-bottom:8px;">Notes:</strong> ' + esc(existingAssessment.notes) + '</div>' : '') +
+
+
+
+    '</div>';
+
+
+
+  } else {
+
+
+
+    html += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
+
+
+
+      '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
+
+
+
+    '</div>';
+
+
+
+  }
+
+
+
+  
+
+
+
+  html += '</div>';
+
+
+
+  
+
+
+
+  content.innerHTML = html;
+  
+  // Add event listener the simple way
+  setTimeout(function() {
+    var updateBtn = document.getElementById('update_status_btn_' + a.id);
+    if (updateBtn) {
+      console.log('Button found:', updateBtn);
+      updateBtn.addEventListener('click', function(e) {
+        console.log('Button clicked!', e);
+        e.preventDefault();
+        var statusDropdown = document.getElementById('applicant_status_' + a.id);
+        console.log('Status dropdown:', statusDropdown);
+        var newStatus = statusDropdown.value;
+        console.log('New status:', newStatus);
+        
+        fetch('../api/simple-api-new.php?action=update_status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'id=' + a.id + '&status=' + newStatus
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('API response:', data);
+          if (data.success) {
+            console.log('Status updated successfully for applicant:', a.id);
+            am_render();
+            am_updateStats();
+            am_viewApplicant(a.id);
+          } else {
+            console.error('Failed to update status:', data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating status:', error);
+        });
+      });
+      console.log('Event listener added to button:', updateBtn);
+    } else {
+      console.log('Button not found!');
+    }
+  }, 100);
+
+  am_open('am_modal_view');
+
+
+
+}
+
+
+
+
+
+
+
+/* ── Resume / File Management ── */
+
+
+
+function am_renderResumes() {
+
+
+
+  var el = document.getElementById('am_resumes');
+
+
+
+  if (!el) return;
+
+
+
+  var html = '';
+
+
+
+  FILE_CATS.forEach(function(cat) {
+
+
+
+    var rows = '';
+
+
+
+    Object.keys(FILES).forEach(function(appId) {
+
+
+
+      var bucket = FILES[appId];
+
+
+
+      if (!bucket || !bucket[cat.key]) return;
+
+
+
+      var f = bucket[cat.key];
+
+
+
+      /* Use data-* so onclick handlers NEVER contain nested quotes */
+
+
+
+      rows += '<div class="file-item">' +
+
+
+
+        '<div>' +
+
+
+
+          '<div class="file-name-wrap">' + SVG.file + esc(f.fileName||'') + '</div>' +
+
+
+
+          '<div class="file-meta">' + esc(f.applicantName||'') + ' &bull; ' + esc(f.fileSize||'') + ' &bull; ' + esc(f.uploadedAt||'') + '</div>' +
+
+
+
+        '</div>' +
+
+
+
+        '<div style="display:flex;gap:8px;">' +
+
+
+
+          '<button class="btn-sm bsm-blue"  data-aid="' + esc(appId) + '" data-key="' + esc(cat.key) + '" onclick="am_viewFile(this.dataset.aid,this.dataset.key)">View</button>' +
+
+
+
+          '<button class="btn-sm bsm-green" data-aid="' + esc(appId) + '" data-key="' + esc(cat.key) + '" onclick="am_downloadFile(this.dataset.aid,this.dataset.key)">Download</button>' +
+
+
+
+        '</div>' +
+
+
+
+      '</div>';
+
+
+
+    });
+
+
+
+    html += '<div class="cat-section">' +
+
+
+
+      '<div class="cat-heading">' + SVG[cat.icon] + cat.label + '</div>' +
+
+
+
+      (rows ? '<div class="file-list">' + rows + '</div>' : '<p class="empty-msg">No files in this category yet.</p>') +
+
+
+
+    '</div>';
+
+
+
+  });
+
+
+
+  el.innerHTML = html;
+
+
+
+}
+
+
+
+
+
+
+
+/* ── Assessment Tools ── */
+
+
+
+function am_renderAssess() {
+  var el = document.getElementById('am_assessments');
+  if (!el) return;
+
+  var assessments = ASSESS || [];
+  if (!assessments.length) {
+    el.innerHTML = '<h3 style="margin-bottom:16px;">Assessment Results</h3><p class="empty-full">No assessments completed yet.</p>';
+    return;
+  }
+
+  el.innerHTML = '<h3 style="margin-bottom:16px;">Assessment Results</h3>' +
+    assessments.map(function(a) {
+      var avg = Math.round((a.tech + a.comm + a.prob + a.fit) / 4 * 10) / 10;
+      return '<div class="assessment-card">' +
+        '<div style="margin-bottom:12px;">' +
+          '<div style="font-weight:700;font-size:16px;">' + esc(a.applicantName) + '</div>' +
+          '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + (a.assessedAt || 'N/A') + '</div>' +
+        '</div>' +
+        '<div class="assess-score">' +
+          '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + (a.tech || 0) + '</div></div>' +
+          '<div class="score-item"><div class="score-lbl">Communication</div><div class="score-val">' + (a.comm || 0) + '</div></div>' +
+          '<div class="score-item"><div class="score-lbl">Problem Solving</div><div class="score-val">' + (a.prob || 0) + '</div></div>' +
+          '<div class="score-item"><div class="score-lbl">Cultural Fit</div><div class="score-val">' + (a.fit || 0) + '</div></div>' +
+          '<div class="score-item"><div class="score-lbl">Average</div><div class="score-val">' + avg + '</div></div>' +
+        '</div>' +
+        (a.notes ? '<div style="margin-top:16px;padding:16px;background:var(--surface);border:2px solid var(--border-color);border-radius:10px;font-size:13px;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;"><strong style="color:var(--text-primary);display:block;margin-bottom:8px;">Notes:</strong> ' + esc(a.notes) + '</div>' : '') +
+      '</div>';
+    }).join('');
+}
+
+
+
+
+
+
+/* ── Communication ── */
+
+
+
+function am_renderComms() {
+
+
+
+  var el = document.getElementById('am_comms');
+
+
+
+  if (!el) return;
+
+
+
+  if (!COMM.length) {
+
+
+
+    el.innerHTML = '<h3 style="margin-bottom:16px;">Communication History</h3><p class="empty-full">No communications sent yet.</p>';
+
+
+
+    return;
+
+
+
+  }
+
+
+
+  el.innerHTML = '<h3 style="margin-bottom:16px;">Communication History</h3>' +
+
+
+
+    COMM.map(function(c) {
+
+
+
+      return '<div style="background:var(--background);border-left:3px solid var(--brand-green);border-radius:8px;padding:12px;margin-bottom:12px;">' +
+
+
+
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:var(--text-tertiary);">' +
+
+
+
+          '<span><strong>To:</strong> ' + esc(c.to) + '</span><span>' + c.sentAt + '</span>' +
+
+
+
+        '</div>' +
+
+
+
+        '<div style="font-weight:600;margin-bottom:4px;font-size:14px;">' + esc(c.subject) + '</div>' +
+
+
+
+        '<div style="font-size:13px;color:var(--text-secondary);">' + esc(c.message) + '</div>' +
+
+
+
+      '</div>';
+
+
+
+    }).join('');
+
+
+
+}
+
+
+
+/* ── Stats ── */
+
+function am_updateStats() {
+
+  try {
+
+    document.getElementById('am_s_total').textContent = AM.length;
+
+    document.getElementById('am_s_new').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'new'; }).length;
+
+    document.getElementById('am_s_review').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'under review'; }).length;
+
+    document.getElementById('am_s_short').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'shortlisted'; }).length;
+
+    document.getElementById('am_s_hired').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'hired'; }).length;
+
+  } catch(e) {}
+
+}
+
+
+
 /* ── Data Reset ── */
+
 function am_confirmReset() {
   var confirmed = window.confirm(
     'Are you sure you want to clear ALL data?\n\n' +
@@ -973,19 +1882,39 @@ function am_confirmReset() {
 
   if (!confirmed) return;
 
-  localStorage.removeItem('careers_applications');
-  localStorage.removeItem('careers_files');
-  localStorage.removeItem('careers_job_postings');
-
-  AM = []; FILES = {}; ASSESS = []; COMM = [];
-
-  am_render();
-  am_updateStats();
-  am_toast('All data cleared. You can now start fresh.');
+  // Clear data via API
+  fetch('../api/simple-api-new.php?action=clear_data', {
+    method: 'DELETE'
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Clear local data
+      AM = []; FILES = {}; ASSESS = []; COMM = [];
+      
+      // Refresh displays
+      am_render();
+      am_updateStats();
+      am_toast('All data cleared. You can now start fresh.');
+    } else {
+      console.error('Failed to clear data:', data.error);
+      am_toast('Failed to clear data');
+    }
+  })
+  .catch(error => {
+    console.error('Error clearing data:', error);
+    am_toast('Error clearing data');
+  });
 }
+
 
 </script>
 
+
+
 </body>
 
+
+
 </html>
+

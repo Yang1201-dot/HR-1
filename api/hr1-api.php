@@ -100,10 +100,23 @@ try {
                     jsonResponse($applications);
                 }
             } elseif ($method === 'POST') {
-                // Create new application
-                $data = getRequestData();
-                $id = $db->createApplication($data);
-                jsonResponse(['success' => true, 'id' => $id], 201);
+                $action = $_GET['action'] ?? '';
+                
+                if ($action === 'update_status') {
+                    $id = $_POST['id'] ?? '';
+                    $status = $_POST['status'] ?? '';
+                    $result = $db->updateApplicationStatus($id, $status, null);
+                    jsonResponse(['success' => true, 'message' => 'Status updated']);
+                } elseif ($action === 'assessments') {
+                    $data = getRequestData();
+                    $id = $db->createAssessment($data);
+                    jsonResponse(['success' => true, 'id' => $id], 201);
+                } else {
+                    // Create new application
+                    $data = getRequestData();
+                    $id = $db->createApplication($data);
+                    jsonResponse(['success' => true, 'id' => $id], 201);
+                }
             } elseif ($method === 'PUT') {
                 // Update application status
                 $id = $request[1];
@@ -113,6 +126,23 @@ try {
                     $db->updateApplicationStatus($id, $data['status'], $data['screened_by'] ?? null);
                     jsonResponse(['success' => true]);
                 }
+            } elseif ($method === 'DELETE') {
+                // Clear all data
+                $success = true;
+                $error = null;
+                
+                try {
+                    $pdo->exec("DELETE FROM applications");
+                    $pdo->exec("DELETE FROM assessments");
+                    $pdo->exec("DELETE FROM communications");
+                    $success = true;
+                    $message = 'All data cleared successfully';
+                } catch(PDOException $e) {
+                    $success = false;
+                    $error = $e->getMessage();
+                }
+                
+                jsonResponse(['success' => $success, 'message' => $message]);
             }
             break;
         
@@ -307,6 +337,27 @@ try {
                     $db->recordTransferAcknowledgment($id, $data['acknowledgment_data']);
                     jsonResponse(['success' => true]);
                 }
+            }
+            break;
+        
+        case 'clear-data':
+            if ($method === 'DELETE') {
+                // Clear all data
+                $success = true;
+                $error = null;
+                
+                try {
+                    $pdo->exec("DELETE FROM applications");
+                    $pdo->exec("DELETE FROM assessments");
+                    $pdo->exec("DELETE FROM communications");
+                    $success = true;
+                    $message = 'All data cleared successfully';
+                } catch(PDOException $e) {
+                    $success = false;
+                    $error = $e->getMessage();
+                }
+                
+                jsonResponse(['success' => $success, 'message' => $message]);
             }
             break;
         

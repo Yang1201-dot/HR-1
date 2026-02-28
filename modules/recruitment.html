@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Recruitment Management</title>
-  <link rel="stylesheet" href="css/recruitment.css">
+  <link rel="stylesheet" href="../css/recruitment.css">
 </head>
 <body>
 <div class="hr-content">
@@ -460,12 +460,12 @@ function r_viewDetails(jobId) {
                   ">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                       <div>
-                        <strong style="color: var(--text-primary);">${app.first_name} ${app.last_name}</strong><br>
+                        <strong style="color: var(--text-primary);">${(app.fname || '') + ' ' + (app.lname || '')}</strong><br>
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.email}</span><br>
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.phone}</span>
                       </div>
                       <div style="text-align: right;">
-                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.applied_date || 'N/A'}</span><br>
+                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.appliedAt || 'N/A'}</span><br>
                         <span style="color: var(--text-secondary); font-size: 12px;">ID: ${app.id}</span>
                       </div>
                     </div>

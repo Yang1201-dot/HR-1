@@ -1,0 +1,461 @@
+[28-Feb-2026 10:48:56 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:165
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(165): PDO->query('SELECT * FROM a...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 165
+[28-Feb-2026 10:48:56 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:48:56 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:48:57 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:165
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(165): PDO->query('SELECT * FROM a...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 165
+[28-Feb-2026 10:48:57 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:48:57 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:48:59 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:165
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(165): PDO->query('SELECT * FROM a...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 165
+[28-Feb-2026 10:48:59 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:48:59 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:55:25 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:55:25 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:55:25 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:55:25 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:55:25 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:55:25 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:55:26 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:55:26 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:55:26 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:55:26 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:55:26 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:55:26 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:55:27 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:55:27 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:55:27 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:55:27 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:55:27 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:55:27 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:57:46 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:57:47 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:57:47 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:57:47 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:57:47 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:57:47 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:57:47 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:57:47 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:57:47 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:57:47 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:57:47 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:57:47 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:58:03 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:58:03 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:58:03 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:58:03 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:58:03 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:58:03 Europe/Berlin] applicant_files data: []
+[28-Feb-2026 10:59:15 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:15 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:15 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:15 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:15 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:15 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 10:59:16 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:16 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:16 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:16 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:16 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:16 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 10:59:17 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:17 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:17 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:17 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:17 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:17 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 10:59:43 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:43 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:43 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:43 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:43 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:43 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 10:59:44 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:44 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:44 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:44 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:44 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:44 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 10:59:45 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 10:59:45 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 10:59:45 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 10:59:45 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 10:59:45 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 10:59:45 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:03:22 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:03:22 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:03:22 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:03:22 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:03:22 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:03:22 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:03:23 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:03:23 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:03:23 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:03:23 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:03:23 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:03:23 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:03:29 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:03:29 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:03:29 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:03:29 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:03:29 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:03:29 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:06:57 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:06:57 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:06:57 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:06:57 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:06:57 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:06:57 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:06:58 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:06:58 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:06:58 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:06:58 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:06:58 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:06:58 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:06:59 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:06:59 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:06:59 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:06:59 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:06:59 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:06:59 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:10:30 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:10:30 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:10:30 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:10:30 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:10:31 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:10:31 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:10:31 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:10:31 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:10:31 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:10:31 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:10:31 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:10:31 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:10:32 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:10:32 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:10:32 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:10:32 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:10:32 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:10:32 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:14:19 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:14:19 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:14:19 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:14:19 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:14:19 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:14:19 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:14:19 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:14:19 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:14:19 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:14:19 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:14:20 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:14:20 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:14:21 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:14:21 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:14:21 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:14:21 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:14:21 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:14:21 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:15:15 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:15:15 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:15:15 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:15:15 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:15:16 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:15:16 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:15:16 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:15:16 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:15:16 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:15:16 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:15:16 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:15:16 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 11:15:17 Europe/Berlin] Getting applications from hr_management database
+[28-Feb-2026 11:15:17 Europe/Berlin] applicants table columns: ["id","fname","lname","email","phone","position","dept","status","message","applied_at","updated_at"]
+[28-Feb-2026 11:15:17 Europe/Berlin] Applications SQL: SELECT * FROM applicants ORDER BY applied_at DESC
+[28-Feb-2026 11:15:17 Europe/Berlin] Applications query successful, count: 1
+[28-Feb-2026 11:15:17 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 11:15:17 Europe/Berlin] applicant_files data: [{"id":"1","applicant_id":"13","file_name":"sample_resume.pdf","file_type":"resume","file_size":null,"file_path":"..\/uploads\/resumes\/sample_resume.pdf","uploaded_at":"2026-02-28 10:58:48"}]
+[28-Feb-2026 12:01:35 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:01:35 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'hr_management.applications' doesn't exist in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:01:35 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:01:35 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'hr_management.applications' doesn't exist in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:01:46 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:01:46 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'hr_management.applications' doesn't exist in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:03:17 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:03:17 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'hr_management.applications' doesn't exist in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:06:52 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:06:52 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:07:14 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:07:14 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:07:15 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:07:15 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:07:18 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:07:18 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:08:33 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:08:33 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:27:48 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:27:48 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:27:49 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:27:49 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:28:31 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:28:31 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:28:31 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 18:44:29"}
+[28-Feb-2026 12:28:31 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:28:31 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:28:31 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 18:44:29"}
+[28-Feb-2026 12:29:14 Europe/Berlin] update_applicant_details called with method: GET
+[28-Feb-2026 12:29:14 Europe/Berlin] POST data: []
+[28-Feb-2026 12:29:14 Europe/Berlin] update_applicant_details called with wrong method: GET
+[28-Feb-2026 12:29:33 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:29:33 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:29:33 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 18:44:29"}
+[28-Feb-2026 12:29:33 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:29:33 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:29:33 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 18:44:29"}
+[28-Feb-2026 12:29:49 Europe/Berlin] update_applicant_details called with method: GET
+[28-Feb-2026 12:29:49 Europe/Berlin] GET data: {"action":"update_applicant_details","id":"13","position":"Software Developer","department":"IT"}
+[28-Feb-2026 12:29:49 Europe/Berlin] Updating applicant ID: 13 with position: Software Developer and department: IT
+[28-Feb-2026 12:29:54 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:29:54 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:29:54 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"Software Developer","department":"IT","application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 19:29:49"}
+[28-Feb-2026 12:29:55 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:29:55 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:29:55 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"Software Developer","department":"IT","application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 19:29:49"}
+[28-Feb-2026 12:29:57 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:29:57 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:29:57 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"Software Developer","department":"IT","application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 19:29:49"}
+[28-Feb-2026 12:30:04 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:30:04 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:30:04 Europe/Berlin] First applicant data: {"id":"13","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"Software Developer","department":"IT","application_date":"2026-02-27 20:41:04","status":"under-review","updated_at":"2026-02-28 19:29:49"}
+[28-Feb-2026 12:31:47 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 12:31:47 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 12:31:47 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 12:31:48 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 12:31:48 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 12:31:48 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 12:33:06 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:33:06 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:33:06 Europe/Berlin] First applicant data: {"id":"14","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:32:55","status":"new","updated_at":"2026-02-28 19:32:55"}
+[28-Feb-2026 12:33:14 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:33:14 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:33:14 Europe/Berlin] First applicant data: {"id":"14","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:32:55","status":"new","updated_at":"2026-02-28 19:32:55"}
+[28-Feb-2026 12:33:15 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:33:15 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:33:15 Europe/Berlin] First applicant data: {"id":"14","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:32:55","status":"new","updated_at":"2026-02-28 19:32:55"}
+[28-Feb-2026 12:33:17 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:33:17 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:33:17 Europe/Berlin] First applicant data: {"id":"14","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:32:55","status":"new","updated_at":"2026-02-28 19:32:55"}
+[28-Feb-2026 12:38:01 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:38:01 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:38:01 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:38:02 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:38:02 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:38:02 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:39:11 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:39:11 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:39:11 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:39:12 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:39:12 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:39:12 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:40:46 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:40:46 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:40:46 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:40:46 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:40:46 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:40:46 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:41:15 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:41:15 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:41:15 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:41:16 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:41:16 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:41:16 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:49:34 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 12:49:34 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 12:49:34 Europe/Berlin] First applicant data: {"id":"15","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:37:59","status":"new","updated_at":"2026-02-28 19:37:59"}
+[28-Feb-2026 12:52:31 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 12:52:31 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 12:52:31 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 12:53:04 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:53:04 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:53:04 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 12:53:14 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:53:14 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:53:14 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 12:55:04 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:55:04 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:55:04 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 12:57:05 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:57:05 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:57:05 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 12:58:21 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:58:21 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 12:58:21 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 12:58:47 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:58:47 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:58:48 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:58:48 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:52
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(52): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 52
+[28-Feb-2026 12:59:44 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:59:44 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 12:59:44 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 12:59:45 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 12:59:45 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 12:59:45 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 14:33:04 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:33:04 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 14:33:04 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 14:33:05 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:33:05 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 14:33:05 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 14:33:08 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:33:08 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 14:33:08 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 14:33:11 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:33:11 Europe/Berlin] Available tables: ["applicant_files","applicants","assessments","communications","jobs"]
+[28-Feb-2026 14:33:11 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.location' in 'field list' in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php:57
+Stack trace:
+#0 C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php(57): PDO->query('\n            SE...')
+#1 {main}
+  thrown in C:\xampp\htdocs\microfinance\HR-1\api\simple-api-new.php on line 57
+[28-Feb-2026 14:34:26 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:34:26 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:34:26 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:34:27 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:34:27 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:34:27 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:34:29 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:34:29 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:34:29 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:34:32 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:34:32 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:34:32 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:34:35 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:34:35 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:34:35 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:35:22 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:35:22 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:35:22 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:35:23 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:35:23 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:35:23 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:36:35 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:36:35 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:36:35 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"","department":null,"application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 19:53:00"}
+[28-Feb-2026 14:36:42 Europe/Berlin] update_applicant_details called with method: GET
+[28-Feb-2026 14:36:42 Europe/Berlin] GET data: {"action":"update_applicant_details","id":"16","position":"HR manager","department":"Human Resources"}
+[28-Feb-2026 14:36:42 Europe/Berlin] Updating applicant ID: 16 with position: HR manager and department: Human Resources
+[28-Feb-2026 14:36:56 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:36:56 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:36:56 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 14:36:57 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 14:36:57 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 14:36:57 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 15:07:49 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 15:07:49 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 15:07:49 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 15:07:50 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 15:07:50 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 15:07:50 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:26:10 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:26:10 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:26:10 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:26:10 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:26:10 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:26:10 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:26:10 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:26:10 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:26:10 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:27:37 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:27:37 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:27:37 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:27:37 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:27:37 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:27:37 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:29:26 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:29:26 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:29:26 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:29:27 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:29:27 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:29:27 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:34:03 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:34:03 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:34:03 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:34:04 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:34:04 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:34:04 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:37:18 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:37:18 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:37:18 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:37:19 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:37:19 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:37:19 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:40:20 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:40:20 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:40:20 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:40:20 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 21:40:20 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 21:40:20 Europe/Berlin] First applicant data: {"id":"16","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-02-28 19:53:00","status":"new","updated_at":"2026-02-28 21:36:42"}
+[28-Feb-2026 21:44:22 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 21:44:22 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 21:44:22 Europe/Berlin] First applicant data: {"id":"17","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09123245498","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 04:44:17","status":"new","updated_at":"2026-03-01 04:44:17"}
+[28-Feb-2026 21:44:23 Europe/Berlin] Total applicants in database: 2
+[28-Feb-2026 21:44:23 Europe/Berlin] Applications query returned: 2 rows
+[28-Feb-2026 21:44:23 Europe/Berlin] First applicant data: {"id":"17","first_name":"Diorena","last_name":"Juaneza","email":"daneenjuaneza.3@gmail.com","phone":"09123245498","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 04:44:17","status":"new","updated_at":"2026-03-01 04:44:17"}
+[28-Feb-2026 21:46:04 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:46:04 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:46:04 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:46:33 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:46:33 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:46:33 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:46:34 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:46:34 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:46:34 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
