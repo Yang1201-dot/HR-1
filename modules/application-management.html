@@ -452,7 +452,7 @@ function am_render() {
       '<td>' + esc((a.first_name||'') + ' ' + (a.last_name||'')) + '</td>' +
       '<td>' + esc(a.position||'') + '</td>' +
       '<td>' + esc(a.department||'') + '</td>' +
-      '<td>' + esc(a.application_date||'') + '</td>' +
+      '<td>' + esc((a.application_date||'').split(' ')[0]) + '</td>' +
       '<td><span class="badge bd-' + sk + '">' + esc(a.status||'New') + '</span></td>' +
       '<td>' +
         '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssess(this.dataset.id)">Assess</button> ' +
@@ -603,7 +603,7 @@ function am_viewApplicant(id) {
         '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Name:</strong> <span style="color:var(--text-primary);">' + esc((a.fname||'') + ' ' + (a.lname||'')) + '</span></div>' +
         '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Email:</strong> <span style="color:var(--text-primary);">' + esc(a.email||'') + '</span></div>' +
         '<div style="margin-bottom:12px;"><strong style="color:var(--text-secondary);">Phone:</strong> <span style="color:var(--text-primary);">' + esc(a.phone||'') + '</span></div>' +
-        '<div><strong style="color:var(--text-secondary);">Applied:</strong> <span style="color:var(--text-primary);">' + esc(a.application_date||'') + '</span></div>' +
+        '<div><strong style="color:var(--text-secondary);">Applied:</strong> <span style="color:var(--text-primary);">' + esc((a.application_date||'').split(' ')[0]) + '</span></div>' +
       '</div>' +
     '</div>' +
     '<div>' +

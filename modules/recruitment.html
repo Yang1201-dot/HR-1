@@ -692,7 +692,7 @@ function r_viewDetails(jobId) {
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.phone}</span>
                       </div>
                       <div style="text-align: right;">
-                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.application_date || 'N/A'}</span><br>
+                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${(app.application_date || 'N/A').split(' ')[0]}</span><br>
                         <span style="color: var(--text-secondary); font-size: 12px;">ID: ${app.id}</span>
                       </div>
                     </div>
@@ -792,7 +792,14 @@ function r_renderTalent() {
 
 /* ── Stats ── */
 function r_updateStats() {
-  function set(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+  function set(id, v) { 
+    var e = document.getElementById(id); 
+    if (e) {
+      // Convert to number to remove any leading zeros
+      var numValue = parseInt(v, 10) || 0;
+      e.textContent = numValue;
+    }
+  }
   set('r_s_active',     JOBS.filter(function(j) { return j.status === 'Active'; }).length);
   set('r_s_apps',       JOBS.reduce(function(sum, j) { return sum + (j.apps||0); }, 0));
   set('r_s_interviews', JOBS.reduce(function(sum, j) { return sum + (j.interviews||0); }, 0));
