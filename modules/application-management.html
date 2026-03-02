@@ -13,11 +13,7 @@
       <p class="page-sub">Track applications, manage resumes, conduct assessments, and communicate with applicants</p>
     </div>
   </div>
-  <!-- Data Reset Bar -->
-  <div class="reset-bar">
-    <p>Need to reset and redo the process? <strong>Clear all data</strong> below — this removes all applications, files, and job postings from storage.</p>
-    <button class="btn-sm bsm-red" onclick="am_confirmReset()">🗑 Clear All Data</button>
-  </div>
+              </div>
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num c-blue" id="am_s_total">0</div><div class="stat-label">Total</div></div>
     <div class="stat-card"><div class="stat-num c-blue" id="am_s_new">0</div><div class="stat-label">New</div></div>
@@ -33,7 +29,7 @@
   </div>
   <div class="tab-panel active" id="am_tab_applications">
     <table class="app-table">
-      <thead><tr><th>Applicant</th><th>Position</th><th>Department</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Applicant</th><th>Email</th><th>Position</th><th>Department</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody id="am_tbody"></tbody>
     </table>
   </div>
@@ -450,6 +446,7 @@ function am_render() {
     var sk = (a.status || 'new').toLowerCase().replace(/ /g, '-');
     return '<tr>' +
       '<td>' + esc((a.first_name||'') + ' ' + (a.last_name||'')) + '</td>' +
+      '<td>' + esc(a.email||'') + '</td>' +
       '<td>' + esc(a.position||'') + '</td>' +
       '<td>' + esc(a.department||'') + '</td>' +
       '<td>' + esc((a.application_date||'').split(' ')[0]) + '</td>' +

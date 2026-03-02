@@ -9,7 +9,6 @@
 <div class="hr-content">
   <div class="page-header">
     <div><h1 class="page-title">Recruitment Management</h1><p class="page-sub">Manage job postings, applications, interviews, and pre-employment processing</p></div>
-    <button class="btn-primary" onclick="r_openAdd()">+ Create Job Post</button>
   </div>
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num c-green" id="r_s_active">0</div><div class="stat-label">Active Posts</div></div>
@@ -25,7 +24,10 @@
     <button class="tab-btn" onclick="r_tab('communications',this)">Communications</button>
     <button class="tab-btn" onclick="r_tab('talent',this)">Talent Pool</button>
   </div>
-  <div class="tab-panel active" id="r_tab_jobs"><div class="job-grid" id="r_jobs"></div></div>
+  <div class="tab-panel active" id="r_tab_jobs">
+    <div style="margin-bottom:16px;text-align:right;"><button class="btn-primary" onclick="r_openAdd()">+ Create Job Post</button></div>
+    <div class="job-grid" id="r_jobs"></div>
+  </div>
   <div class="tab-panel" id="r_tab_interviews"><div id="r_interviews"></div></div>
   <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
   <div class="tab-panel" id="r_tab_communications"><div id="r_comms"></div></div>
