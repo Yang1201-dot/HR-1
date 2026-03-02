@@ -464,8 +464,26 @@ function am_render() {
 function am_openAssess(id) {
   var a = AM.find(function(x) { return String(x.id) === String(id); });
   if (!a) return;
-  document.getElementById('am_assess_name').value = (a.fname||'') + ' ' + (a.lname||'');
+  document.getElementById('am_assess_name').value = (a.first_name||'') + ' ' + (a.last_name||'');
   document.getElementById('am_assess_name').dataset.applicantId = id;
+  
+  // Find existing assessment and populate form
+  var existingAssessment = ASSESS.find(function(ass) { return String(ass.applicant_id) === String(id); });
+  if (existingAssessment) {
+    document.getElementById('am_assess_tech').value = existingAssessment.tech || 5;
+    document.getElementById('am_assess_comm').value = existingAssessment.comm || 5;
+    document.getElementById('am_assess_prob').value = existingAssessment.prob || 5;
+    document.getElementById('am_assess_fit').value = existingAssessment.fit || 5;
+    document.getElementById('am_assess_notes').value = existingAssessment.notes || '';
+  } else {
+    // Reset form to default values
+    document.getElementById('am_assess_tech').value = 5;
+    document.getElementById('am_assess_comm').value = 5;
+    document.getElementById('am_assess_prob').value = 5;
+    document.getElementById('am_assess_fit').value = 5;
+    document.getElementById('am_assess_notes').value = '';
+  }
+  
   // Apply appropriate scrollbar styling based on current mode
   var notesTextarea = document.getElementById('am_assess_notes');
   if (notesTextarea) {
@@ -658,7 +676,7 @@ console.log('Applicant ID:', a.id);
     '<h3 style="margin:0 0 16px 0;color:var(--text-primary);">Qualification Assessment</h3>';
   
   if (existingAssessment) {
-    var avg = Math.round((existingAssessment.tech + existingAssessment.comm + existingAssessment.prob + existingAssessment.fit) / 4 * 10) / 10;
+    var avg = Math.round((parseInt(existingAssessment.tech || 0) + parseInt(existingAssessment.comm || 0) + parseInt(existingAssessment.prob || 0) + parseInt(existingAssessment.fit || 0)) / 4 * 10) / 10;
     html += '<div class="assessment-card">' +
       '<div style="margin-bottom:12px;">' +
         '<div style="font-weight:700;font-size:16px;color:var(--text-primary);">Assessment Results</div>' +
@@ -778,7 +796,7 @@ function am_renderAssess() {
   }
   el.innerHTML = '<h3 style="margin-bottom:16px;">Assessment Results</h3>' +
     assessments.map(function(a) {
-      var avg = Math.round((a.tech + a.comm + a.prob + a.fit) / 4 * 10) / 10;
+      var avg = Math.round((parseInt(a.tech || 0) + parseInt(a.comm || 0) + parseInt(a.prob || 0) + parseInt(a.fit || 0)) / 4 * 10) / 10;
       return '<div class="assessment-card">' +
         '<div style="margin-bottom:12px;">' +
           '<div style="font-weight:700;font-size:16px;">' + esc(a.applicantName) + '</div>' +
