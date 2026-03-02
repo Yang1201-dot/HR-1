@@ -1418,3 +1418,9 @@ Stack trace:
 [02-Mar-2026 04:12:13 Europe/Berlin] Total applicants in database: 1
 [02-Mar-2026 04:12:13 Europe/Berlin] Applications query returned: 1 rows
 [02-Mar-2026 04:12:13 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 04:43:32 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 04:43:32 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 04:43:32 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 04:43:35 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 04:43:35 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 04:43:35 Europe/Berlin] Files query returned: 3 files
