@@ -1,0 +1,564 @@
+[01-Mar-2026 12:04:29 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[01-Mar-2026 12:04:29 Europe/Berlin] Request Method: POST
+[01-Mar-2026 12:04:29 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[01-Mar-2026 12:04:29 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[01-Mar-2026 12:04:29 Europe/Berlin] Applicant Data:
+[01-Mar-2026 12:04:29 Europe/Berlin]   Name: Althea Marie Buya
+[01-Mar-2026 12:04:29 Europe/Berlin]   Email: altheabuya68@gmail.com
+[01-Mar-2026 12:04:29 Europe/Berlin]   Phone: 09636379414
+[01-Mar-2026 12:04:29 Europe/Berlin]   Position: HR manager
+[01-Mar-2026 12:04:29 Europe/Berlin]   Department: Human Resources
+[01-Mar-2026 12:04:29 Europe/Berlin] Transaction started
+[01-Mar-2026 12:04:29 Europe/Berlin] Executing INSERT with values:
+[01-Mar-2026 12:04:29 Europe/Berlin]   fname: Althea Marie
+[01-Mar-2026 12:04:29 Europe/Berlin]   lname: Buya
+[01-Mar-2026 12:04:29 Europe/Berlin]   email: altheabuya68@gmail.com
+[01-Mar-2026 12:04:29 Europe/Berlin] ✓ Applicant inserted successfully with ID: 23
+[01-Mar-2026 12:04:29 Europe/Berlin] Processing file: resume
+[01-Mar-2026 12:04:29 Europe/Berlin]   File name: WORKFLOW.pdf
+[01-Mar-2026 12:04:29 Europe/Berlin]   File size: 719176 bytes
+[01-Mar-2026 12:04:29 Europe/Berlin]   File type: application/pdf
+[01-Mar-2026 12:04:29 Europe/Berlin]   ✓ File saved to applicant_files with ID: 2
+[01-Mar-2026 12:04:29 Europe/Berlin] Processing file: birth_certificate
+[01-Mar-2026 12:04:29 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[01-Mar-2026 12:04:29 Europe/Berlin]   File size: 198423 bytes
+[01-Mar-2026 12:04:29 Europe/Berlin]   File type: application/pdf
+[01-Mar-2026 12:04:29 Europe/Berlin]   ✓ File saved to applicant_files with ID: 3
+[01-Mar-2026 12:04:29 Europe/Berlin] Processing file: diploma
+[01-Mar-2026 12:04:29 Europe/Berlin]   File name: Dataflow.drawio.png
+[01-Mar-2026 12:04:29 Europe/Berlin]   File size: 208204 bytes
+[01-Mar-2026 12:04:29 Europe/Berlin]   File type: image/png
+[01-Mar-2026 12:04:29 Europe/Berlin]   ✓ File saved to applicant_files with ID: 4
+[01-Mar-2026 12:04:29 Europe/Berlin] File upload error for cover_letter: error code 4
+[01-Mar-2026 12:04:29 Europe/Berlin] ✓ Transaction committed successfully
+[01-Mar-2026 12:04:29 Europe/Berlin] Total files uploaded: 3
+[01-Mar-2026 12:04:29 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 00:12:00 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 00:12:00 Europe/Berlin] Request Method: POST
+[02-Mar-2026 00:12:00 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[02-Mar-2026 00:12:00 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 00:12:00 Europe/Berlin] Applicant Data:
+[02-Mar-2026 00:12:00 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 00:12:00 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 00:12:00 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 00:12:00 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 00:12:00 Europe/Berlin]   Department: Human Resources
+[02-Mar-2026 00:12:00 Europe/Berlin] Transaction started
+[02-Mar-2026 00:12:00 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 00:12:00 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 00:12:00 Europe/Berlin]   lname: Buya
+[02-Mar-2026 00:12:00 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 00:12:00 Europe/Berlin] ✓ Applicant inserted successfully with ID: 24
+[02-Mar-2026 00:12:00 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 00:12:00 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php77B2.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => DATAFLOW.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php77C2.tmp
+            [error] => 0
+            [size] => 806108
+        )
+
+    [diploma] => Array
+        (
+            [name] => Buya, Althea Marie.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php77D3.tmp
+            [error] => 0
+            [size] => 198423
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 00:12:00 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 00:12:00 Europe/Berlin] Processing file: resume
+[02-Mar-2026 00:12:00 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 00:12:00 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   ✓ File saved to applicant_files with ID: 5
+[02-Mar-2026 00:12:00 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 00:12:00 Europe/Berlin]   File name: DATAFLOW.pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   File size: 806108 bytes
+[02-Mar-2026 00:12:00 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   ✓ File saved to applicant_files with ID: 6
+[02-Mar-2026 00:12:00 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 00:12:00 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   File size: 198423 bytes
+[02-Mar-2026 00:12:00 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 00:12:00 Europe/Berlin]   ✓ File saved to applicant_files with ID: 7
+[02-Mar-2026 00:12:00 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 00:12:00 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 00:12:00 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 00:12:00 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 00:29:56 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 00:29:56 Europe/Berlin] Request Method: POST
+[02-Mar-2026 00:29:56 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[02-Mar-2026 00:29:56 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 00:29:56 Europe/Berlin] Applicant Data:
+[02-Mar-2026 00:29:56 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 00:29:56 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 00:29:56 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 00:29:56 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 00:29:56 Europe/Berlin]   Department: Human Resources
+[02-Mar-2026 00:29:56 Europe/Berlin] Transaction started
+[02-Mar-2026 00:29:56 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 00:29:56 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 00:29:56 Europe/Berlin]   lname: Buya
+[02-Mar-2026 00:29:56 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 00:29:56 Europe/Berlin] ✓ Applicant inserted successfully with ID: 25
+[02-Mar-2026 00:29:56 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 00:29:56 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\phpE332.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => DATAFLOW.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\phpE343.tmp
+            [error] => 0
+            [size] => 806108
+        )
+
+    [diploma] => Array
+        (
+            [name] => Dataflow.drawio.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpE344.tmp
+            [error] => 0
+            [size] => 208204
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 00:29:56 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 00:29:56 Europe/Berlin] Processing file: resume
+[02-Mar-2026 00:29:56 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 00:29:56 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 00:29:56 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 00:29:56 Europe/Berlin]   ✓ File saved to applicant_files with ID: 8
+[02-Mar-2026 00:29:56 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 00:29:56 Europe/Berlin]   File name: DATAFLOW.pdf
+[02-Mar-2026 00:29:56 Europe/Berlin]   File size: 806108 bytes
+[02-Mar-2026 00:29:56 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 00:29:56 Europe/Berlin]   ✓ File saved to applicant_files with ID: 9
+[02-Mar-2026 00:29:56 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 00:29:56 Europe/Berlin]   File name: Dataflow.drawio.png
+[02-Mar-2026 00:29:56 Europe/Berlin]   File size: 208204 bytes
+[02-Mar-2026 00:29:56 Europe/Berlin]   File type: image/png
+[02-Mar-2026 00:29:56 Europe/Berlin]   ✓ File saved to applicant_files with ID: 10
+[02-Mar-2026 00:29:56 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 00:29:56 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 00:29:56 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 00:29:56 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 01:05:23 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 01:05:23 Europe/Berlin] Request Method: POST
+[02-Mar-2026 01:05:23 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[02-Mar-2026 01:05:23 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 01:05:23 Europe/Berlin] Applicant Data:
+[02-Mar-2026 01:05:23 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 01:05:23 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 01:05:23 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 01:05:23 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 01:05:23 Europe/Berlin]   Department: Human Resources
+[02-Mar-2026 01:05:23 Europe/Berlin] Transaction started
+[02-Mar-2026 01:05:23 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 01:05:23 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 01:05:23 Europe/Berlin]   lname: Buya
+[02-Mar-2026 01:05:23 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 01:05:23 Europe/Berlin] ✓ Applicant inserted successfully with ID: 26
+[02-Mar-2026 01:05:23 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 01:05:23 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php579E.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => Buya, Althea Marie.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php57BF.tmp
+            [error] => 0
+            [size] => 198423
+        )
+
+    [diploma] => Array
+        (
+            [name] => FP.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php57C0.tmp
+            [error] => 0
+            [size] => 296155
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 01:05:23 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 01:05:23 Europe/Berlin] Processing file: resume
+[02-Mar-2026 01:05:23 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 01:05:23 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:05:23 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 01:05:23 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   File size: 198423 bytes
+[02-Mar-2026 01:05:23 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:05:23 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 01:05:23 Europe/Berlin]   File name: FP.pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   File size: 296155 bytes
+[02-Mar-2026 01:05:23 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:05:23 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:05:23 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 01:05:23 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 01:05:23 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 01:05:23 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 01:07:49 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 01:07:49 Europe/Berlin] Request Method: POST
+[02-Mar-2026 01:07:49 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[02-Mar-2026 01:07:49 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 01:07:49 Europe/Berlin] Applicant Data:
+[02-Mar-2026 01:07:49 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 01:07:49 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 01:07:49 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 01:07:49 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 01:07:49 Europe/Berlin]   Department: Human Resources
+[02-Mar-2026 01:07:49 Europe/Berlin] Transaction started
+[02-Mar-2026 01:07:49 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 01:07:49 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 01:07:49 Europe/Berlin]   lname: Buya
+[02-Mar-2026 01:07:49 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 01:07:49 Europe/Berlin] ✓ Applicant inserted successfully with ID: 27
+[02-Mar-2026 01:07:49 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 01:07:49 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php9405.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => Buya, Althea Marie.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php9425.tmp
+            [error] => 0
+            [size] => 198423
+        )
+
+    [diploma] => Array
+        (
+            [name] => FP.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php9426.tmp
+            [error] => 0
+            [size] => 296155
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 01:07:49 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 01:07:49 Europe/Berlin] Processing file: resume
+[02-Mar-2026 01:07:49 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 01:07:49 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:07:49 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 01:07:49 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   File size: 198423 bytes
+[02-Mar-2026 01:07:49 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:07:49 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 01:07:49 Europe/Berlin]   File name: FP.pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   File size: 296155 bytes
+[02-Mar-2026 01:07:49 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:07:49 Europe/Berlin]   ✗ Error saving file to applicant_files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_field' in 'field list'
+[02-Mar-2026 01:07:49 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 01:07:49 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 01:07:49 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 01:07:49 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 01:15:11 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 01:15:11 Europe/Berlin] Request Method: POST
+[02-Mar-2026 01:15:11 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1772279548699
+    [position] => HR manager
+    [department] => Human Resources
+    [location] => Main Branch
+    [employment_type] => Full-time
+    [salary] => 20000
+    [description] => professional
+)
+
+[02-Mar-2026 01:15:11 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 01:15:11 Europe/Berlin] Applicant Data:
+[02-Mar-2026 01:15:11 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 01:15:11 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 01:15:11 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 01:15:11 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 01:15:11 Europe/Berlin]   Department: Human Resources
+[02-Mar-2026 01:15:11 Europe/Berlin] Transaction started
+[02-Mar-2026 01:15:11 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 01:15:11 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 01:15:11 Europe/Berlin]   lname: Buya
+[02-Mar-2026 01:15:11 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 01:15:11 Europe/Berlin] ✓ Applicant inserted successfully with ID: 28
+[02-Mar-2026 01:15:11 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 01:15:11 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php523A.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => Buya, Althea Marie.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php524B.tmp
+            [error] => 0
+            [size] => 198423
+        )
+
+    [diploma] => Array
+        (
+            [name] => FP.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php524C.tmp
+            [error] => 0
+            [size] => 296155
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 01:15:11 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 01:15:11 Europe/Berlin] Processing file: resume
+[02-Mar-2026 01:15:11 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 01:15:11 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   ✓ File saved to applicant_files with ID: 11
+[02-Mar-2026 01:15:11 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 01:15:11 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   File size: 198423 bytes
+[02-Mar-2026 01:15:11 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   ✓ File saved to applicant_files with ID: 12
+[02-Mar-2026 01:15:11 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 01:15:11 Europe/Berlin]   File name: FP.pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   File size: 296155 bytes
+[02-Mar-2026 01:15:11 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 01:15:11 Europe/Berlin]   ✓ File saved to applicant_files with ID: 13
+[02-Mar-2026 01:15:11 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 01:15:11 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 01:15:11 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 01:15:11 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===

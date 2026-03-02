@@ -459,3 +459,525 @@ Stack trace:
 [28-Feb-2026 21:46:34 Europe/Berlin] Total applicants in database: 3
 [28-Feb-2026 21:46:34 Europe/Berlin] Applications query returned: 3 rows
 [28-Feb-2026 21:46:34 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:50:18 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:50:18 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:50:18 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:50:19 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:50:19 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:50:19 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:50:21 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:50:21 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:50:21 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57"}
+[28-Feb-2026 21:55:52 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:55:52 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:55:52 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57","resume_path":null,"birth_certificate_path":null,"diploma_path":null,"cover_letter_path":null}
+[28-Feb-2026 21:55:53 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:55:53 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:55:53 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57","resume_path":null,"birth_certificate_path":null,"diploma_path":null,"cover_letter_path":null}
+[28-Feb-2026 21:55:54 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 21:55:54 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 21:55:54 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57","resume_path":null,"birth_certificate_path":null,"diploma_path":null,"cover_letter_path":null}
+[28-Feb-2026 22:01:05 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 22:01:05 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 22:01:05 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57","resume_path":null,"birth_certificate_path":null,"diploma_path":null,"cover_letter_path":null}
+[28-Feb-2026 22:01:06 Europe/Berlin] Total applicants in database: 3
+[28-Feb-2026 22:01:06 Europe/Berlin] Applications query returned: 3 rows
+[28-Feb-2026 22:01:06 Europe/Berlin] First applicant data: {"id":"18","first_name":"Earl","last_name":"Alarcon","email":"earllaurencealarcon@gmail.com","phone":"0646941644","position":"Hr staff","department":"Human Resources","application_date":"2026-03-01 04:45:57","status":"new","updated_at":"2026-03-01 04:45:57","resume_path":null,"birth_certificate_path":null,"diploma_path":null,"cover_letter_path":null}
+[28-Feb-2026 22:01:42 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:01:42 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:01:42 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:01:42 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:01:42 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:01:42 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:02:30 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:02:30 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:02:30 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:02:31 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:02:31 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:02:31 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:05:03 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:05:03 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:05:03 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:05:04 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:05:04 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:05:04 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:05:06 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:05:06 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:05:06 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:08:27 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:08:27 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:08:27 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:08:28 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:08:28 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:08:28 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:11:51 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:11:51 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:11:51 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:11:52 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:11:52 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:11:52 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:11:53 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:11:53 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:11:53 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:14:39 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:14:39 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:14:39 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:14:40 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:14:40 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:14:40 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:14:48 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:14:48 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:14:48 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:14:49 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:14:49 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:14:49 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:15:28 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:15:28 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:15:28 Europe/Berlin] First applicant data: {"id":"19","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:15:25","status":"new","updated_at":"2026-03-01 05:15:25"}
+[28-Feb-2026 22:15:29 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:15:29 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:15:29 Europe/Berlin] First applicant data: {"id":"19","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:15:25","status":"new","updated_at":"2026-03-01 05:15:25"}
+[28-Feb-2026 22:18:47 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:18:47 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:18:47 Europe/Berlin] First applicant data: {"id":"19","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:15:25","status":"new","updated_at":"2026-03-01 05:15:25"}
+[28-Feb-2026 22:28:38 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:28:38 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:28:38 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:28:40 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 22:28:40 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 22:28:40 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 22:29:18 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:18 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:18 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:29:18 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:18 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:18 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:29:21 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:21 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:21 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:29:23 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:23 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:23 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:29:24 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:24 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:24 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:29:26 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:29:26 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:29:26 Europe/Berlin] First applicant data: {"id":"20","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:29:14","status":"new","updated_at":"2026-03-01 05:29:14","resume_path":"1772314154_resume_BPA LEVEL 2.pdf","birth_certificate_path":"1772314154_birth_certificate_Buya, Althea Marie.pdf","diploma_path":"1772314154_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:33:52 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:33:52 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:33:52 Europe/Berlin] First applicant data: {"id":"21","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:33:49","status":"new","updated_at":"2026-03-01 05:33:49","resume_path":"1772314429_resume_DATAFLOW.pdf","birth_certificate_path":"1772314429_birth_certificate_BPA LEVEL 2.pdf","diploma_path":"1772314429_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:33:52 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:33:52 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:33:52 Europe/Berlin] First applicant data: {"id":"21","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:33:49","status":"new","updated_at":"2026-03-01 05:33:49","resume_path":"1772314429_resume_DATAFLOW.pdf","birth_certificate_path":"1772314429_birth_certificate_BPA LEVEL 2.pdf","diploma_path":"1772314429_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 22:33:54 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 22:33:54 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 22:33:54 Europe/Berlin] First applicant data: {"id":"21","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 05:33:49","status":"new","updated_at":"2026-03-01 05:33:49","resume_path":"1772314429_resume_DATAFLOW.pdf","birth_certificate_path":"1772314429_birth_certificate_BPA LEVEL 2.pdf","diploma_path":"1772314429_diploma_FP.pdf","cover_letter_path":null}
+[28-Feb-2026 23:12:24 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 23:12:24 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 23:12:24 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 23:12:25 Europe/Berlin] Total applicants in database: 0
+[28-Feb-2026 23:12:25 Europe/Berlin] Applications query returned: 0 rows
+[28-Feb-2026 23:12:25 Europe/Berlin] First applicant data: "null"
+[28-Feb-2026 23:13:13 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:13 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:13 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"new","updated_at":"2026-03-01 06:13:11"}
+[28-Feb-2026 23:13:14 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:14 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:14 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"new","updated_at":"2026-03-01 06:13:11"}
+[28-Feb-2026 23:13:19 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:19 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:19 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[28-Feb-2026 23:13:20 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:20 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:20 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[28-Feb-2026 23:13:31 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:31 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:31 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[28-Feb-2026 23:13:32 Europe/Berlin] Total applicants in database: 1
+[28-Feb-2026 23:13:32 Europe/Berlin] Applications query returned: 1 rows
+[28-Feb-2026 23:13:32 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[01-Mar-2026 02:36:16 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:36:16 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:36:16 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[01-Mar-2026 02:36:19 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:36:19 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:36:19 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[01-Mar-2026 02:56:26 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:26 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:26 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[01-Mar-2026 02:56:28 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:28 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:28 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 06:13:19"}
+[01-Mar-2026 02:56:35 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:35 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:35 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"new","updated_at":"2026-03-01 09:56:35"}
+[01-Mar-2026 02:56:36 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:36 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:36 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"new","updated_at":"2026-03-01 09:56:35"}
+[01-Mar-2026 02:56:50 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:50 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:50 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 09:56:50"}
+[01-Mar-2026 02:56:50 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:56:50 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:56:50 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 09:56:50"}
+[01-Mar-2026 02:57:00 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 02:57:00 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 02:57:00 Europe/Berlin] First applicant data: {"id":"22","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 06:13:11","status":"under-review","updated_at":"2026-03-01 09:56:50"}
+[01-Mar-2026 03:01:04 Europe/Berlin] === New Application Submission ===
+[01-Mar-2026 03:01:04 Europe/Berlin] Name: Althea Marie  Buya
+[01-Mar-2026 03:01:04 Europe/Berlin] Email: altheabuya68@gmail.com
+[01-Mar-2026 03:01:04 Europe/Berlin] Position: HR manager
+[01-Mar-2026 03:01:04 Europe/Berlin] Error in transaction: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mname' in 'field list'
+[01-Mar-2026 03:01:04 Europe/Berlin] PDO Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mname' in 'field list'
+[01-Mar-2026 03:01:11 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:11 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:11 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 03:01:12 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:12 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:12 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 03:01:12 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:12 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:12 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 03:01:13 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:13 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:13 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 03:01:14 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:14 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:14 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 03:01:15 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 03:01:15 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 03:01:15 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:15:36 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:15:36 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:15:36 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:28:37 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:28:37 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:28:37 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:28:38 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:28:38 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:28:38 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:39:08 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:39:08 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:39:08 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:39:10 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:39:10 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:39:10 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:40:20 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:40:20 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:40:20 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:40:21 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:40:21 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:40:21 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:58:48 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:58:48 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:58:48 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:58:54 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:58:54 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:58:54 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:58:54 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:58:54 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:58:54 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:59:17 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:59:17 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:59:17 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 11:59:18 Europe/Berlin] Total applicants in database: 0
+[01-Mar-2026 11:59:18 Europe/Berlin] Applications query returned: 0 rows
+[01-Mar-2026 11:59:18 Europe/Berlin] First applicant data: "null"
+[01-Mar-2026 12:04:50 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:04:50 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:04:50 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"new","updated_at":"2026-03-01 19:04:29"}
+[01-Mar-2026 12:04:50 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:04:50 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:04:50 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"new","updated_at":"2026-03-01 19:04:29"}
+[01-Mar-2026 12:04:53 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:04:53 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:04:53 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"new","updated_at":"2026-03-01 19:04:29"}
+[01-Mar-2026 12:05:06 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:06 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:06 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"under-review","updated_at":"2026-03-01 19:05:06"}
+[01-Mar-2026 12:05:07 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:07 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:07 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"under-review","updated_at":"2026-03-01 19:05:06"}
+[01-Mar-2026 12:05:28 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:28 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:28 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"shortlisted","updated_at":"2026-03-01 19:05:28"}
+[01-Mar-2026 12:05:29 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:29 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:29 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"shortlisted","updated_at":"2026-03-01 19:05:28"}
+[01-Mar-2026 12:05:36 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:36 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:36 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"hired","updated_at":"2026-03-01 19:05:36"}
+[01-Mar-2026 12:05:36 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:36 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:36 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"hired","updated_at":"2026-03-01 19:05:36"}
+[01-Mar-2026 12:05:47 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:47 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:47 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 12:05:48 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:48 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:48 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 12:05:57 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:57 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:57 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 12:05:58 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:05:58 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:05:58 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 12:06:30 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 12:06:30 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 12:06:30 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 22:38:37 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 22:38:37 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 22:38:37 Europe/Berlin] First applicant data: {"id":"23","first_name":"Althea Marie","last_name":"Buya","email":"altheabuya68@gmail.com","phone":"09636379414","position":"HR manager","department":"Human Resources","application_date":"2026-03-01 19:04:29","status":"rejected","updated_at":"2026-03-01 19:05:47"}
+[01-Mar-2026 23:18:38 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:38 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:38 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:40 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:40 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:40 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:40 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:40 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:40 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:42 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:42 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:42 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:56 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:56 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:56 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:57 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:57 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:57 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:18:59 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:18:59 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:18:59 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:22:55 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:22:55 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:22:55 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:22:56 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:22:56 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:22:56 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:22:58 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:22:58 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:22:58 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:31 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:31 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:31 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:32 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:32 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:32 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:37 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:37 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:37 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:52 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:52 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:52 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:53 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:53 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:53 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:30:54 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:30:54 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:30:55 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:31:27 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:31:27 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:31:27 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:31:28 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:31:28 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:31:28 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:41:41 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:41:41 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:41:41 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:41:42 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:41:42 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:41:42 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:41:50 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:41:50 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:41:50 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:47:53 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:47:53 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:47:53 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:47:54 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:47:54 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:47:54 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:47:55 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:47:55 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:47:55 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:53:13 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:53:13 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:53:13 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:53:14 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:53:14 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:53:14 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:53:16 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:53:16 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:53:16 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:38 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:38 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:39 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:39 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:39 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:39 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:42 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:42 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:45 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:45 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:45 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:45 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:46 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:46 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:47 Europe/Berlin] Total applicants in database: 1
+[01-Mar-2026 23:58:47 Europe/Berlin] Applications query returned: 1 rows
+[01-Mar-2026 23:58:49 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:49 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:50 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:50 Europe/Berlin] Files query returned: 3 files
+[01-Mar-2026 23:58:50 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:09:34 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:09:34 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:09:34 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:09:35 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:09:35 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:09:35 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:09:37 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:09:37 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:09:37 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:09:47 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:09:47 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:09:47 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:11:08 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 00:11:08 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 00:11:08 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 00:11:09 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 00:11:09 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 00:11:09 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 00:12:03 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:03 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:03 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:04 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:04 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:04 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:06 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:06 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:06 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:11 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:11 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:11 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:13 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:13 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:13 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:14 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:14 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:14 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:12:15 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:12:15 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:12:16 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:15:30 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:15:30 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:15:30 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:15:31 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:15:31 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:15:31 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:17:03 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:17:03 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:17:03 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:17:04 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:17:04 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:17:04 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:17:05 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:17:05 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:17:05 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:18:28 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:18:28 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:18:28 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:34:00 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:34:00 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:34:00 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:34:01 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:34:01 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:34:01 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:34:03 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:34:03 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:34:03 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:35:48 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:35:48 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:35:48 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:35:49 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:35:49 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:35:49 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 00:35:50 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 00:35:50 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 00:35:50 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:03:25 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:03:25 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:03:25 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:03:26 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:03:26 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:03:26 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:03:27 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:03:27 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:03:27 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:05:42 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:05:42 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:05:42 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:05:43 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:05:43 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:05:43 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:05:45 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:05:45 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:05:45 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:07:08 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 01:07:08 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 01:07:08 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:07:09 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 01:07:09 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 01:07:09 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:09:15 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:09:15 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:09:15 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:09:16 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:09:16 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:09:16 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:09:21 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:09:21 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:09:21 Europe/Berlin] Error getting files: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'af.file_field' in 'field list'
+[02-Mar-2026 01:13:32 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:13:32 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:13:32 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 01:13:33 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:13:33 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:13:33 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 01:13:35 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:13:35 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:13:35 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 01:14:19 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 01:14:19 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 01:14:19 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 01:14:20 Europe/Berlin] Total applicants in database: 0
+[02-Mar-2026 01:14:20 Europe/Berlin] Applications query returned: 0 rows
+[02-Mar-2026 01:14:20 Europe/Berlin] Files query returned: 0 files
+[02-Mar-2026 01:15:41 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:15:41 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:15:41 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:15:42 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:15:42 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:15:42 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:15:44 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:15:44 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:15:44 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:09 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:09 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:09 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:10 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:10 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:10 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:17 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:17 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:17 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:47 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:47 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:47 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:48 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:48 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:48 Europe/Berlin] Files query returned: 3 files
+[02-Mar-2026 01:16:55 Europe/Berlin] Total applicants in database: 1
+[02-Mar-2026 01:16:55 Europe/Berlin] Applications query returned: 1 rows
+[02-Mar-2026 01:16:55 Europe/Berlin] Files query returned: 3 files

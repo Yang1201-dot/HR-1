@@ -318,8 +318,20 @@
 
   // ── INITIALIZE ROUTING ON PAGE LOAD ─────────────────────────────────
   // Check URL on initial load and route accordingly
+  // FIXED: Only route if we're not already on a plain dashboard
   setTimeout(function() {
-    routeFromUrl();
+    var path = window.location.pathname;
+    var fileName = path.split('/').pop();
+    var urlParams = new URLSearchParams(window.location.search);
+    var hasModuleParam = urlParams.has('module');
+    
+    // Only route if:
+    // 1. We have a module parameter (came from standalone page)
+    // 2. OR the filename is NOT dashboard.html (we're on a different page)
+    if (hasModuleParam || (fileName !== 'dashboard.html' && fileName !== '')) {
+      routeFromUrl();
+    }
+    // If we're on dashboard.html with no params, do nothing - we're already showing the dashboard
   }, 100);
 
   console.log('HR1 Navigation ready!');
