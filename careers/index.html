@@ -219,20 +219,20 @@
   <script src="../js/careers.js"></script>
 
   <script>
-    // ── Load job postings from localStorage (written by Recruitment module) ──
+    // ── Load job postings from API (same as Recruitment module) ──
     (function loadCareersJobs() {
       var listEl = document.getElementById('jobList');
       var noJobsEl = document.getElementById('noJobsMsg');
       if (!listEl) return;
 
-      var jobs = [];
-      try {
-        var stored = localStorage.getItem('careers_job_postings');
-        if (stored) jobs = JSON.parse(stored);
-      } catch(e) {}
-
-      // Only show Active jobs on the careers page
-      var activeJobs = jobs.filter(function(j) { return j.status === 'Active'; });
+      // Load from API instead of localStorage
+      fetch('../api/simple-api-new.php?action=get_job_postings')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var jobs = data.error ? [] : data;
+          
+          // Only show Active jobs on careers page
+          var activeJobs = jobs.filter(function(j) { return j.status === 'Active'; });
 
       if (activeJobs.length === 0) {
         listEl.style.display = 'none';
@@ -275,7 +275,13 @@
           if (submitBtn) submitBtn.textContent = 'Submit Application';
         });
       });
-    })();
-  </script>
+    }).catch(function(error) {
+      console.error('Error loading jobs:', error);
+      // Fallback to empty state
+      if (listEl) listEl.style.display = 'none';
+      if (noJobsEl) noJobsEl.style.display = 'block';
+    });
+  })();
+</script>
 </body>
 </html>

@@ -137,11 +137,169 @@ switch($action) {
         jsonResponse($stmt->fetchAll(PDO::FETCH_ASSOC));
         break;
         
+    case 'get_job_postings':
+        try {
+            // Create jobs table if it doesn't exist
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS jobs (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    department VARCHAR(255),
+                    location VARCHAR(255),
+                    employment_type VARCHAR(100),
+                    description TEXT,
+                    requirements TEXT,
+                    benefits TEXT,
+                    salary_range VARCHAR(100),
+                    status ENUM('Active', 'Draft', 'Closed') DEFAULT 'Active',
+                    posted_date DATE DEFAULT CURRENT_TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                )
+            ");
+            
+            // Add missing columns if they don't exist
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN employment_type VARCHAR(100) AFTER location");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN requirements TEXT AFTER description");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN benefits TEXT AFTER requirements");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN salary_range VARCHAR(100) AFTER benefits");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN posted_date DATE DEFAULT CURRENT_TIMESTAMP AFTER salary_range");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER posted_date");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            try {
+                $pdo->exec("ALTER TABLE jobs ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at");
+            } catch (Exception $e) {
+                // Column already exists, ignore error
+            }
+            
+            $stmt = $pdo->query("
+                SELECT 
+                    id, title, department, location, employment_type, 
+                    description, requirements, benefits, salary_range, status,
+                    posted_date, created_at, updated_at
+                FROM jobs 
+                ORDER BY created_at DESC
+            ");
+            $jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Count applicants for each job
+            foreach ($jobs as &$job) {
+                $countStmt = $pdo->prepare("
+                    SELECT COUNT(*) as count 
+                    FROM applicants 
+                    WHERE position = ?
+                ");
+                $countStmt->execute([$job['title']]);
+                $job['applicants_count'] = $countStmt->fetch(PDO::FETCH_ASSOC)['count'];
+                
+                // Get actual applicants for this job
+                $appsStmt = $pdo->prepare("
+                    SELECT 
+                        id, fname as first_name, lname as last_name, email, phone,
+                        applied_at as application_date, status
+                    FROM applicants 
+                    WHERE position = ?
+                    ORDER BY applied_at DESC
+                ");
+                $appsStmt->execute([$job['title']]);
+                $job['applicants'] = $appsStmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            
+            jsonResponse($jobs);
+        } catch(Exception $e) {
+            error_log("Error getting job postings: " . $e->getMessage());
+            jsonResponse(['error' => $e->getMessage()], 500);
+        }
+        break;
+        
+    case 'save_job_posting':
+        if ($method === 'POST') {
+            try {
+                $data = json_decode(file_get_contents('php://input'), true);
+                
+                $stmt = $pdo->prepare("
+                    INSERT INTO jobs (
+                        title, department, location, employment_type, 
+                        description, requirements, benefits, salary_range, status
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                
+                $stmt->execute([
+                    $data['title'],
+                    $data['department'],
+                    $data['location'],
+                    $data['employment_type'],
+                    $data['description'],
+                    $data['requirements'] ?? '',
+                    $data['benefits'] ?? '',
+                    $data['salary_range'] ?? '',
+                    $data['status'] ?? 'Active'
+                ]);
+                
+                $jobId = $pdo->lastInsertId();
+                jsonResponse(['success' => true, 'job_id' => $jobId]);
+            } catch(Exception $e) {
+                error_log("Error saving job posting: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
+        break;
+        
+    case 'delete_job_posting':
+        if ($method === 'DELETE') {
+            try {
+                $jobId = $_GET['id'] ?? '';
+                if (empty($jobId)) {
+                    jsonResponse(['error' => 'Job ID is required'], 400);
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("DELETE FROM jobs WHERE id = ?");
+                $stmt->execute([$jobId]);
+                
+                jsonResponse(['success' => true, 'message' => 'Job posting deleted']);
+            } catch(Exception $e) {
+                error_log("Error deleting job posting: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
+        break;
+        
     case 'clear_data':
         if ($method === 'DELETE') {
             $pdo->exec("DELETE FROM applicants");
             $pdo->exec("DELETE FROM assessments");
             $pdo->exec("DELETE FROM communications");
+            $pdo->exec("DELETE FROM jobs");
             jsonResponse(['success' => true, 'message' => 'All data cleared']);
         }
         break;

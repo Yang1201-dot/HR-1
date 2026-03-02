@@ -562,3 +562,104 @@
 [02-Mar-2026 01:15:11 Europe/Berlin] ✓ Transaction committed successfully
 [02-Mar-2026 01:15:11 Europe/Berlin] Total files uploaded: 3
 [02-Mar-2026 01:15:11 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===
+[02-Mar-2026 04:09:52 Europe/Berlin] === APPLICATION SUBMISSION START ===
+[02-Mar-2026 04:09:52 Europe/Berlin] Request Method: POST
+[02-Mar-2026 04:09:52 Europe/Berlin] POST Data: Array
+(
+    [role] => HR manager
+    [first_name] => Althea Marie
+    [middle_name] => 
+    [last_name] => Buya
+    [email] => altheabuya68@gmail.com
+    [phone] => 09636379414
+    [message] => 
+    [job_posting_id] => 1
+    [position] => HR manager
+    [department] => undefined
+    [location] => Main Branch
+    [employment_type] => undefined
+    [salary] => undefined
+    [description] => undefined
+)
+
+[02-Mar-2026 04:09:52 Europe/Berlin] FILES Data: Array
+(
+    [0] => resume
+    [1] => birth_certificate
+    [2] => diploma
+    [3] => cover_letter
+)
+
+[02-Mar-2026 04:09:52 Europe/Berlin] Applicant Data:
+[02-Mar-2026 04:09:52 Europe/Berlin]   Name: Althea Marie Buya
+[02-Mar-2026 04:09:52 Europe/Berlin]   Email: altheabuya68@gmail.com
+[02-Mar-2026 04:09:52 Europe/Berlin]   Phone: 09636379414
+[02-Mar-2026 04:09:52 Europe/Berlin]   Position: HR manager
+[02-Mar-2026 04:09:52 Europe/Berlin]   Department: undefined
+[02-Mar-2026 04:09:52 Europe/Berlin] Transaction started
+[02-Mar-2026 04:09:52 Europe/Berlin] Executing INSERT with values:
+[02-Mar-2026 04:09:52 Europe/Berlin]   fname: Althea Marie
+[02-Mar-2026 04:09:52 Europe/Berlin]   lname: Buya
+[02-Mar-2026 04:09:52 Europe/Berlin]   email: altheabuya68@gmail.com
+[02-Mar-2026 04:09:52 Europe/Berlin] ✓ Applicant inserted successfully with ID: 29
+[02-Mar-2026 04:09:52 Europe/Berlin] === FILE UPLOAD DEBUG ===
+[02-Mar-2026 04:09:52 Europe/Berlin] FILES array: Array
+(
+    [resume] => Array
+        (
+            [name] => DATAFLOW.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php3F86.tmp
+            [error] => 0
+            [size] => 806108
+        )
+
+    [birth_certificate] => Array
+        (
+            [name] => BPA LEVEL 2.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php3F96.tmp
+            [error] => 0
+            [size] => 1054650
+        )
+
+    [diploma] => Array
+        (
+            [name] => Buya, Althea Marie.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\xampp\tmp\php3FC6.tmp
+            [error] => 0
+            [size] => 198423
+        )
+
+    [cover_letter] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[02-Mar-2026 04:09:52 Europe/Berlin] Expected file fields: resume, birth_certificate, diploma, cover_letter
+[02-Mar-2026 04:09:52 Europe/Berlin] Processing file: resume
+[02-Mar-2026 04:09:52 Europe/Berlin]   File name: DATAFLOW.pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   File size: 806108 bytes
+[02-Mar-2026 04:09:52 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   ✓ File saved to applicant_files with ID: 14
+[02-Mar-2026 04:09:52 Europe/Berlin] Processing file: birth_certificate
+[02-Mar-2026 04:09:52 Europe/Berlin]   File name: BPA LEVEL 2.pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   File size: 1054650 bytes
+[02-Mar-2026 04:09:52 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   ✓ File saved to applicant_files with ID: 15
+[02-Mar-2026 04:09:52 Europe/Berlin] Processing file: diploma
+[02-Mar-2026 04:09:52 Europe/Berlin]   File name: Buya, Althea Marie.pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   File size: 198423 bytes
+[02-Mar-2026 04:09:52 Europe/Berlin]   File type: application/pdf
+[02-Mar-2026 04:09:52 Europe/Berlin]   ✓ File saved to applicant_files with ID: 16
+[02-Mar-2026 04:09:52 Europe/Berlin] File upload error for cover_letter: error code 4
+[02-Mar-2026 04:09:52 Europe/Berlin] ✓ Transaction committed successfully
+[02-Mar-2026 04:09:52 Europe/Berlin] Total files uploaded: 3
+[02-Mar-2026 04:09:52 Europe/Berlin] === APPLICATION SUBMISSION SUCCESS ===

@@ -21,26 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Global Variables ─────────────────────────────────────
   var JOBS = [];
 
-  // ── Load job postings from localStorage (written by Recruitment module) ──
+  // ── Load job postings from API (same as Recruitment module) ──
   (function loadCareersJobs() {
-    console.log('Loading jobs from storage...');
-    try {
-      var jobs = [];
-      var stored = localStorage.getItem('careers_job_postings');
-      if (stored) jobs = JSON.parse(stored);
-      console.log('Loaded jobs:', jobs);
-      JOBS = jobs;
-      
-      // Populate job dropdown
-      var jobSelect = document.getElementById('jobTitle');
-      if (jobSelect) {
-        jobSelect.innerHTML = '<option value="">Select a position</option>' + 
-          jobs.map(job => '<option value="' + esc(job.title) + '">' + esc(job.title) + '</option>').join('');
-      }
-    } catch(e) {
-      console.error('Error loading jobs:', e);
-      JOBS = [];
-    }
+    console.log('Loading jobs from API...');
+    
+    // Load from API instead of localStorage
+    fetch('../api/simple-api-new.php?action=get_job_postings')
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        var jobs = data.error ? [] : data;
+        console.log('Loaded jobs:', jobs);
+        JOBS = jobs;
+        
+        // Populate job dropdown
+        var jobSelect = document.getElementById('jobTitle');
+        if (jobSelect) {
+          jobSelect.innerHTML = '<option value="">Select a position</option>' + 
+            jobs.map(job => '<option value="' + esc(job.title) + '">' + esc(job.title) + '</option>').join('');
+        }
+      })
+      .catch(function(error) {
+        console.error('Error loading jobs:', error);
+        JOBS = [];
+      });
   })();
 
   // ── Remove duplicate "Choose File" buttons ─────────────────────────────

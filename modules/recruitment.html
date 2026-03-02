@@ -177,27 +177,107 @@ var ICO = {
 };
 
 /* ── Load from localStorage on init ── */
-function r_loadFromStorage() {
-  console.log('Loading from storage...');
+async function r_loadFromStorage() {
+  console.log('Loading jobs from API...');
   try {
-    var j = localStorage.getItem(KEY_JOBS);
-    console.log('Raw jobs data:', j);
-    JOBS = j ? JSON.parse(j) : [];
-    console.log('Parsed JOBS:', JOBS);
+    const response = await fetch('../api/simple-api-new.php?action=get_job_postings');
+    const data = await response.json();
+    console.log('Jobs API Response:', data);
+    
+    if (data.error) {
+      console.error('Error loading jobs:', data.error);
+      JOBS = [];
+    } else {
+      // Check if we need to migrate from localStorage
+      var localJobs = [];
+      try {
+        var j = localStorage.getItem(KEY_JOBS);
+        localJobs = j ? JSON.parse(j) : [];
+        console.log('Found localStorage jobs:', localJobs.length);
+        if (localJobs.length > 0) {
+          console.log('Sample localStorage job:', localJobs[0]);
+        }
+      } catch(e) {
+        console.log('No localStorage jobs found:', e);
+      }
+      
+      // If database is empty but localStorage has jobs, migrate them
+      if (data.length === 0 && localJobs.length > 0) {
+        console.log('Database is empty, localStorage has jobs. Starting migration...');
+        await r_migrateJobsToDatabase(localJobs);
+        
+        // Reload from database after migration
+        console.log('Reloading from database after migration...');
+        const migrationResponse = await fetch('../api/simple-api-new.php?action=get_job_postings');
+        const migrationData = await migrationResponse.json();
+        console.log('Migration reload response:', migrationData);
+        if (!migrationData.error) {
+          data = migrationData;
+        }
+      }
+      
+      JOBS = data.map(function(job) {
+        return {
+          id: job.id,
+          title: job.title,
+          dept: job.department,
+          location: job.location,
+          emptype: job.employment_type,
+          desc: job.description,
+          requirements: job.requirements,
+          benefits: job.benefits,
+          salary: job.salary_range,
+          status: job.status,
+          posted: job.posted_date,
+          apps: job.applicants_count || 0,
+          interviews: 0, // TODO: Calculate from interviews table
+          applicants: job.applicants || []
+        };
+      });
+      console.log('Processed JOBS:', JOBS);
+    }
   } catch(e) { 
     console.error('Error loading jobs:', e);
     JOBS = []; 
   }
-  try {
-    var a = localStorage.getItem(KEY_APPS);
-    var apps = a ? JSON.parse(a) : [];
-    // Sync application counts from real applications
-    JOBS.forEach(function(job) {
-      job.apps = apps.filter(function(app) {
-        return app.position === job.title;
-      }).length;
-    });
-  } catch(e) {}
+}
+
+async function r_migrateJobsToDatabase(localJobs) {
+  console.log('Starting migration of', localJobs.length, 'jobs...');
+  
+  for (var i = 0; i < localJobs.length; i++) {
+    var job = localJobs[i];
+    try {
+      const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          title: job.title,
+          department: job.dept,
+          location: job.location,
+          employment_type: job.emptype,
+          description: job.desc,
+          salary_range: job.salary || '',
+          status: job.status || 'Active'
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        console.log('Migrated job:', job.title);
+      } else {
+        console.error('Failed to migrate job:', job.title, data.error);
+      }
+    } catch(e) {
+      console.error('Error migrating job:', job.title, e);
+    }
+  }
+  
+  console.log('Migration completed. Clearing localStorage...');
+  localStorage.removeItem(KEY_JOBS);
 }
 
 function r_saveJobs() {
@@ -208,6 +288,115 @@ function r_saveJobs() {
   } catch(e) { 
     console.error('Error saving jobs:', e);
   }
+}
+
+// Manual migration function
+async function r_manualMigrate() {
+  console.log('Manual migration triggered...');
+  
+  // Check localStorage first
+  var localJobs = [];
+  try {
+    var j = localStorage.getItem(KEY_JOBS);
+    localJobs = j ? JSON.parse(j) : [];
+    console.log('Found localStorage jobs:', localJobs.length);
+  } catch(e) {
+    console.log('No localStorage jobs found:', e);
+  }
+  
+  if (localJobs.length > 0) {
+    console.log('Migrating localStorage jobs...');
+    await r_migrateJobsToDatabase(localJobs);
+    await r_loadFromStorage();
+    r_render();
+    r_updateStats();
+    r_toast('Jobs migrated successfully!');
+  } else {
+    console.log('No localStorage jobs found, creating sample jobs...');
+    await r_createSampleJobs();
+    await r_loadFromStorage();
+    r_render();
+    r_updateStats();
+    r_toast('Sample jobs created!');
+  }
+}
+
+// Create sample jobs if none exist
+async function r_createSampleJobs() {
+  console.log('Creating sample jobs...');
+  
+  var sampleJobs = [
+    {
+      title: 'Loan Officer',
+      department: 'Lending Operations',
+      location: 'Main Branch',
+      employment_type: 'Full-time',
+      description: 'Responsible for processing loan applications, assessing creditworthiness, and providing excellent customer service to clients seeking financial assistance.',
+      salary_range: '₱20,000 - ₱25,000',
+      status: 'Active'
+    },
+    {
+      title: 'Customer Service Representative',
+      department: 'Customer Service',
+      location: 'Main Branch',
+      employment_type: 'Full-time',
+      description: 'Handle customer inquiries, resolve complaints, and provide information about products and services. Maintain high level of customer satisfaction.',
+      salary_range: '₱15,000 - ₱18,000',
+      status: 'Active'
+    },
+    {
+      title: 'Accountant',
+      department: 'Finance & Accounting',
+      location: 'Head Office',
+      employment_type: 'Full-time',
+      description: 'Manage financial records, prepare financial statements, handle tax compliance, and provide financial analysis and reporting.',
+      salary_range: '₱25,000 - ₱30,000',
+      status: 'Active'
+    },
+    {
+      title: 'IT Support Specialist',
+      department: 'Information Technology',
+      location: 'Head Office',
+      employment_type: 'Full-time',
+      description: 'Provide technical support to staff, maintain IT infrastructure, troubleshoot hardware and software issues, and ensure system security.',
+      salary_range: '₱18,000 - ₱22,000',
+      status: 'Active'
+    },
+    {
+      title: 'HR Assistant',
+      department: 'Human Resources',
+      location: 'Main Branch',
+      employment_type: 'Full-time',
+      description: 'Assist with recruitment, employee relations, payroll processing, and maintain HR records. Support various HR functions and initiatives.',
+      salary_range: '₱16,000 - ₱20,000',
+      status: 'Active'
+    }
+  ];
+  
+  for (var i = 0; i < sampleJobs.length; i++) {
+    var job = sampleJobs[i];
+    try {
+      const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(job)
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        console.log('Created sample job:', job.title);
+      } else {
+        console.error('Failed to create sample job:', job.title, data.error);
+      }
+    } catch(e) {
+      console.error('Error creating sample job:', job.title, e);
+    }
+  }
+  
+  console.log('Sample jobs creation completed');
 }
 
 /* ── Init ── */
@@ -281,19 +470,46 @@ function g(id) { var e = document.getElementById(id); return e ? e.value.trim() 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* ── Save new job post ── */
-function r_save() {
+async function r_save() {
   var title = g('r_title'), desc = g('r_desc');
   if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
-  JOBS.push({
-    id: Date.now(), title: title, dept: g('r_dept'), location: g('r_location'),
-    emptype: g('r_emptype'), salary: g('r_salary'), desc: desc,
-    status: 'Active', posted: new Date().toLocaleDateString(), apps: 0, interviews: 0
-  });
-  r_close('r_modal_add');
-  ['r_title','r_location','r_salary','r_desc'].forEach(function(id) { var e = document.getElementById(id); if (e) e.value = ''; });
-  r_saveJobs();
-  r_render(); r_updateStats();
-  r_toast('Job posted! Now live on Careers page.');
+  
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        title: title,
+        department: g('r_dept'),
+        location: g('r_location'),
+        employment_type: g('r_emptype'),
+        description: desc,
+        salary_range: g('r_salary'),
+        status: 'Active'
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      r_close('r_modal_add');
+      ['r_title','r_dept','r_location','r_emptype','r_salary','r_desc'].forEach(function(id) { 
+        var e = document.getElementById(id); 
+        if (e) e.value = ''; 
+      });
+      await r_loadFromStorage();
+      r_render(); 
+      r_updateStats();
+      r_toast('Job posted successfully!');
+    } else {
+      r_toast('Error posting job: ' + (data.error || 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    console.error('Error saving job:', e);
+    r_toast('Error posting job', 'error');
+  }
 }
 
 /* ── Render job cards ── */
@@ -327,10 +543,27 @@ function r_render() {
   }).join('');
 }
 
-function r_deleteJob(id) {
-  JOBS = JOBS.filter(function(j) { return j.id != id; });
-  r_saveJobs(); r_render(); r_updateStats();
-  r_toast('Job posting removed.');
+async function r_deleteJob(id) {
+  if (!confirm('Are you sure you want to delete this job posting?')) return;
+  
+  try {
+    const response = await fetch(`../api/simple-api-new.php?action=delete_job_posting&id=${id}`, {
+      method: 'DELETE'
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      await r_loadFromStorage();
+      r_render(); 
+      r_updateStats();
+      r_toast('Job posting removed successfully!');
+    } else {
+      r_toast('Error deleting job: ' + (data.error || 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    console.error('Error deleting job:', e);
+    r_toast('Error deleting job', 'error');
+  }
 }
 
 function r_viewDetails(jobId) {
@@ -349,19 +582,8 @@ function r_viewDetails(jobId) {
   
   console.log('Found job:', job);
   
-  // Get applications for this job from localStorage
-  var applications = [];
-  try {
-    applications = JSON.parse(localStorage.getItem('careers_applications') || '[]');
-    console.log('Total applications loaded:', applications.length);
-  } catch(e) {
-    console.error('Error loading applications:', e);
-  }
-  
-  // Filter applications for this specific job
-  var jobApplications = applications.filter(function(app) { 
-    return app.position.toLowerCase() === job.title.toLowerCase(); 
-  });
+  // Use the applicants data already loaded from API
+  var jobApplications = job.applicants || [];
   console.log('Applications for this job:', jobApplications.length);
   
   // Create modal HTML
@@ -439,8 +661,13 @@ function r_viewDetails(jobId) {
         </div>
         
         <div style="margin-bottom: 25px;">
-          <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Requirements</h3>
-          <p style="margin: 0; line-height: 1.6; color: var(--text-secondary);">${job.requirements}</p>
+          <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Application Requirements</h3>
+          <ul style="margin: 0; line-height: 1.6; color: var(--text-secondary); padding-left: 20px;">
+            <li>Updated Resume/CV</li>
+            <li>Birth Certificate</li>
+            <li>Diploma/TOR</li>
+            <li>Cover Letter (optional)</li>
+          </ul>
         </div>
         
         <div style="margin-bottom: 20px;">
@@ -460,12 +687,12 @@ function r_viewDetails(jobId) {
                   ">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                       <div>
-                        <strong style="color: var(--text-primary);">${(app.fname || '') + ' ' + (app.lname || '')}</strong><br>
+                        <strong style="color: var(--text-primary);">${(app.first_name || '') + ' ' + (app.last_name || '')}</strong><br>
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.email}</span><br>
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.phone}</span>
                       </div>
                       <div style="text-align: right;">
-                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.appliedAt || 'N/A'}</span><br>
+                        <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${app.application_date || 'N/A'}</span><br>
                         <span style="color: var(--text-secondary); font-size: 12px;">ID: ${app.id}</span>
                       </div>
                     </div>
