@@ -28,7 +28,7 @@
     <div style="margin-bottom:16px;text-align:right;"><button class="btn-primary" onclick="r_openAdd()">+ Create Job Post</button></div>
     <div class="job-grid" id="r_jobs"></div>
   </div>
-  <div class="tab-panel" id="r_tab_interviews"><div id="r_interviews"></div></div>
+  <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:right;"><button class="btn-primary" onclick="r_openInterview()">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
   <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
   <div class="tab-panel" id="r_tab_communications"><div id="r_comms"></div></div>
   <div class="tab-panel" id="r_tab_talent"><div id="r_talent"></div></div>
@@ -93,8 +93,58 @@
 </div>
 </div>
 
+<!-- Modal: Schedule Interview -->
+<div class="modal-overlay" id="r_modal_interview">
+<div class="modal-box">
+  <button class="modal-close" onclick="r_close('r_modal_interview')">&times;</button>
+  <h2 id="r_interview_modal_title">Schedule Interview</h2>
+  <div class="form-group"><label>Applicant Name <span class="req">*</span></label><input type="text" id="r_interview_applicant" placeholder="e.g., Juan Dela Cruz">
+      </div>
+      <input type="hidden" id="r_interview_id">
+  <div class="form-group"><label>Interview Date <span class="req">*</span></label><input type="date" id="r_interview_date"></div>
+  <div class="form-group"><label>Interview Time <span class="req">*</span></label><input type="time" id="r_interview_time"></div>
+  <div class="form-group"><label>Interview Type <span class="req">*</span></label>
+    <select id="r_interview_type">
+      <option value="Phone Screen">Phone Screen</option>
+      <option value="Video Interview">Video Interview</option>
+      <option value="In-Person Interview">In-Person Interview</option>
+      <option value="Technical Assessment">Technical Assessment</option>
+    </select>
+  </div>
+  <div class="form-group"><label>Notes</label><textarea id="r_interview_notes" placeholder="Additional notes about the interview..."></textarea></div>
+  <button class="btn-submit" onclick="r_saveInterview()">Schedule Interview</button>
+  <button class="btn-cancel-modal" onclick="r_close('r_modal_interview')">Cancel</button>
+</div>
+</div>
+
 <script>
-var JOBS = [], OFFERS = [], COMMS = [];
+var JOBS = [], OFFERS = [], COMMS = [], INTERVIEWS = [];
+
+/* ── Utility functions ── */
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m];
+  });
+}
+
+function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+function formatTime(time) {
+  if (!time) return 'No time';
+  var [hours, minutes] = time.split(':');
+  var hour = parseInt(hours);
+  var ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  hour = hour === 0 ? 12 : hour;
+  return hour + ':' + minutes + ' ' + ampm;
+}
 
 // Standalone redirect detection
 (function() {
@@ -411,8 +461,23 @@ async function r_createSampleJobs() {
   // Ensure DOM is ready before loading
   function delayedInit() {
     r_loadFromStorage();
-    r_render();
-    r_updateStats();
+    r_loadInterviews().then(() => {
+      console.log(' Interviews loaded, now rendering...');
+      r_render();
+      console.log(' About to call r_renderInterviews()...');
+      console.log(' r_renderInterviews function exists:', typeof r_renderInterviews);
+      console.log(' Calling r_renderInterviews() directly...');
+      setTimeout(() => {
+        console.log(' Timeout: Calling r_renderInterviews() after delay...');
+        try {
+          r_renderInterviews();
+          console.log(' r_renderInterviews() executed successfully');
+        } catch(e) {
+          console.error(' r_renderInterviews() failed:', e);
+        }
+      }, 100);
+      r_updateStats();
+    });
   }
   
   // Try immediate init first
@@ -462,16 +527,197 @@ function r_close(id) {
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
   var m = document.getElementById(id); if (m) m.classList.remove('active');
 }
+
 function r_toast(msg, type) {
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
 }
+
 function r_openAdd()  { r_open('r_modal_add'); }
 function r_openOffer(){ r_open('r_modal_offer'); }
 function r_openComm() { r_open('r_modal_comm'); }
-function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function r_openInterview() { 
+  document.getElementById('r_interview_modal_title').textContent = 'Schedule Interview';
+  r_open('r_modal_interview'); 
+}
+async function r_saveInterview() {
+  var applicantId = document.getElementById('r_interview_applicant').value;
+  var date = document.getElementById('r_interview_date').value;
+  var time = document.getElementById('r_interview_time').value;
+  var type = document.getElementById('r_interview_type').value;
+  var notes = document.getElementById('r_interview_notes').value;
+  
+  if (!applicantId || !date || !time || !type) {
+    r_toast('Please fill all required fields', 'error');
+    return;
+  }
+  
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        id: document.getElementById('r_interview_id')?.value || null,
+        applicant_id: applicantId,
+        interview_date: date,
+        interview_time: time,
+        interview_type: type,
+        notes: notes
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      r_close('r_modal_interview');
+      // Clear form
+      document.getElementById('r_interview_applicant').value = '';
+      document.getElementById('r_interview_date').value = '';
+      document.getElementById('r_interview_time').value = '';
+      document.getElementById('r_interview_type').value = 'Phone Screen';
+      document.getElementById('r_interview_notes').value = '';
+      document.getElementById('r_interview_id').value = '';
+      
+      var message = document.getElementById('r_interview_id')?.value ? 'Interview updated successfully!' : 'Interview scheduled successfully!';
+      r_toast(message);
+      // Add small delay to ensure database update completes
+      setTimeout(async () => {
+        await r_loadInterviews();
+        r_renderInterviews();
+        r_updateStats();
+      }, 200);
+    } else {
+      r_toast('Error scheduling interview: ' + (data.error || 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    console.error('Error saving interview:', e);
+    r_toast('Error scheduling interview', 'error');
+  }
+}
 
-/* ── Save new job post ── */
+async function r_loadInterviews() {
+  console.log('Loading interviews from database...');
+  try {
+    const response = await fetch('../api/simple-api-new.php?action=get_interviews');
+    const data = await response.json();
+    console.log('Interviews API Response:', data);
+    
+    if (data.error) {
+      console.error('Error loading interviews:', data.error);
+      INTERVIEWS = [];
+    } else {
+      INTERVIEWS = data;
+      console.log('Processed INTERVIEWS:', INTERVIEWS);
+    }
+  } catch(e) { 
+    console.error('Error loading interviews:', e);
+    INTERVIEWS = []; 
+  }
+}
+
+window.r_renderInterviews = function() {
+  try {
+    console.log('Rendering interviews:', INTERVIEWS.length);
+        
+    var el = document.getElementById('r_interviews'); 
+    console.log('  - Element found:', !!el);
+    
+    if (!el) {
+      console.error(' r_interviews element not found!');
+      return;
+    }
+    
+    if (!INTERVIEWS.length) {
+      console.log(' No interviews to display, showing empty state');
+      el.innerHTML = '<div class="empty-state">No interviews scheduled yet. Click <strong>+ Schedule Interview</strong> to get started.</div>';
+      return;
+    }
+    
+    console.log(' Rendering', INTERVIEWS.length, 'interviews');
+    
+    el.innerHTML = INTERVIEWS.map(function(interview) {
+      console.log('  Rendering interview:', interview.applicant_name);
+      var interviewDate = interview.interview_date ? interview.interview_date.split('-').reverse().join('/') : 'No date';
+      var interviewTime = interview.interview_time ? formatTime(interview.interview_time) : 'No time';
+      var applicantName = interview.applicant_name || 'Unknown Applicant';
+      var interviewType = interview.interview_type || 'Unknown Type';
+      var interviewNotes = interview.notes || '';
+      
+      return '<div class="interview-card">' +
+        '<div class="interview-header">' +
+          '<div class="interview-info">' +
+            '<h3>' + applicantName + '</h3>' +
+            '<p>' + interviewType + '</p>' +
+          '</div>' +
+          '<span class="badge bd-scheduled">Scheduled</span>' +
+        '</div>' +
+        '<div class="interview-details">' +
+          '<p><strong>Date:</strong> ' + interviewDate + '<br><strong>Time:</strong> ' + interviewTime + 
+          (interviewNotes ? '<br><strong>Notes:</strong> ' + interviewNotes : '') +
+          '</p>' +
+        '</div>' +
+        '<div class="interview-actions">' +
+          '<button class="btn-sm bsm-blue" onclick="r_editInterview(\'' + interview.id + '\')">Edit</button>' +
+          '<button class="btn-sm bsm-red" onclick="r_deleteInterview(\'' + interview.id + '\')">Delete</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    
+    console.log(' r_renderInterviews() completed');
+  } catch(e) {
+    console.error(' Error in r_renderInterviews():', e);
+    console.error('❌ Error in r_renderInterviews():', e);
+    console.error('Error stack:', e.stack);
+  }
+}
+
+async function r_editInterview(id) {
+  // Find the interview to edit
+  var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
+  if (!interview) {
+    r_toast('Interview not found', 'error');
+    return;
+  }
+  
+  // Populate the modal with existing data
+  document.getElementById('r_interview_applicant').value = interview.applicant_name || '';
+  document.getElementById('r_interview_date').value = interview.interview_date || '';
+  document.getElementById('r_interview_time').value = interview.interview_time || '';
+  document.getElementById('r_interview_type').value = interview.interview_type || 'Phone Screen';
+  document.getElementById('r_interview_notes').value = interview.notes || '';
+  document.getElementById('r_interview_id').value = interview.id || '';
+  
+  // Change modal title for editing
+  document.getElementById('r_interview_modal_title').textContent = 'Edit Interview';
+  
+  // Open the modal for editing
+  r_open('r_modal_interview');
+}
+
+async function r_deleteInterview(id) {
+  try {
+    // Direct deletion without confirmation
+    
+    const response = await fetch(`../api/simple-api-new.php?action=delete_interview&id=${id}`, {
+      method: 'DELETE'
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      await r_loadInterviews();
+      r_renderInterviews(); 
+      r_updateStats();
+      r_toast('Interview deleted successfully!');
+    } else {
+      r_toast('Error deleting interview: ' + (data.error || 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    console.error('Error deleting interview:', e);
+    r_toast('Error deleting interview', 'error');
+  }
+}
+
 async function r_save() {
   var title = g('r_title'), desc = g('r_desc');
   if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
@@ -804,7 +1050,7 @@ function r_updateStats() {
   }
   set('r_s_active',     JOBS.filter(function(j) { return j.status === 'Active'; }).length);
   set('r_s_apps',       JOBS.reduce(function(sum, j) { return sum + (j.apps||0); }, 0));
-  set('r_s_interviews', JOBS.reduce(function(sum, j) { return sum + (j.interviews||0); }, 0));
+  set('r_s_interviews', INTERVIEWS.length);
   set('r_s_offers',     OFFERS.length);
   set('r_s_hired',      OFFERS.filter(function(o) { return o.status === 'Accepted'; }).length);
 }

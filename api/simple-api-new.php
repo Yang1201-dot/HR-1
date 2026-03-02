@@ -294,12 +294,134 @@ switch($action) {
         }
         break;
         
+    case 'save_interview':
+        if ($method === 'POST') {
+            try {
+                // Create interviews table if it doesn't exist
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS interviews (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        applicant_name VARCHAR(255) NOT NULL,
+                        interview_date DATE NOT NULL,
+                        interview_time TIME NOT NULL,
+                        interview_type VARCHAR(100) NOT NULL,
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                
+                $input = json_decode(file_get_contents('php://input'), true);
+                $interviewId = $input['id'] ?? null;
+                
+                if ($interviewId) {
+                    // Update existing interview
+                    $stmt = $pdo->prepare("
+                        UPDATE interviews 
+                        SET applicant_name = ?, interview_date = ?, interview_time = ?, interview_type = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+                        WHERE id = ?
+                    ");
+                    $stmt->execute([
+                        $input['applicant_id'],
+                        $input['interview_date'],
+                        $input['interview_time'],
+                        $input['interview_type'],
+                        $input['notes'] ?? '',
+                        $interviewId
+                    ]);
+                    error_log("Interview updated with ID: " . $interviewId);
+                    jsonResponse([
+                        'success' => true, 
+                        'message' => 'Interview updated successfully',
+                        'interview_id' => $interviewId
+                    ]);
+                } else {
+                    // Create new interview
+                    $stmt = $pdo->prepare("
+                        INSERT INTO interviews (applicant_name, interview_date, interview_time, interview_type, notes) 
+                        VALUES (?, ?, ?, ?, ?)
+                    ");
+                    $stmt->execute([
+                        $input['applicant_id'],
+                        $input['interview_date'],
+                        $input['interview_time'],
+                        $input['interview_type'],
+                        $input['notes'] ?? ''
+                    ]);
+                    $interviewId = $pdo->lastInsertId();
+                    error_log("Interview saved with ID: " . $interviewId);
+                    jsonResponse([
+                        'success' => true, 
+                        'message' => 'Interview scheduled successfully',
+                        'interview_id' => $interviewId
+                    ]);
+                }
+            } catch(Exception $e) {
+                error_log("Error saving interview: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
+        break;
+        
+    case 'get_interviews':
+        try {
+            // Create interviews table if it doesn't exist
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS interviews (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    applicant_name VARCHAR(255) NOT NULL,
+                    interview_date DATE NOT NULL,
+                    interview_time TIME NOT NULL,
+                    interview_type VARCHAR(100) NOT NULL,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                )
+            ");
+            
+            $stmt = $pdo->query("
+                SELECT 
+                    id, applicant_name, interview_date, interview_time, 
+                    interview_type, notes, created_at, updated_at
+                FROM interviews 
+                ORDER BY created_at DESC
+            ");
+            $interviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Interviews query returned: " . count($interviews) . " rows");
+            jsonResponse($interviews);
+        } catch(Exception $e) {
+            error_log("Error getting interviews: " . $e->getMessage());
+            jsonResponse(['error' => $e->getMessage()], 500);
+        }
+        break;
+        
+    case 'delete_interview':
+        if ($method === 'DELETE') {
+            try {
+                $interviewId = $_GET['id'] ?? '';
+                if (empty($interviewId)) {
+                    jsonResponse(['error' => 'Interview ID is required'], 400);
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("DELETE FROM interviews WHERE id = ?");
+                $stmt->execute([$interviewId]);
+                
+                jsonResponse(['success' => true, 'message' => 'Interview deleted']);
+            } catch(Exception $e) {
+                error_log("Error deleting interview: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
+        break;
+        
     case 'clear_data':
         if ($method === 'DELETE') {
             $pdo->exec("DELETE FROM applicants");
             $pdo->exec("DELETE FROM assessments");
             $pdo->exec("DELETE FROM communications");
             $pdo->exec("DELETE FROM jobs");
+            $pdo->exec("DELETE FROM interviews");
             jsonResponse(['success' => true, 'message' => 'All data cleared']);
         }
         break;
