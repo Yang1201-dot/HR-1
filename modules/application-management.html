@@ -411,20 +411,13 @@ async function am_load() {
   console.log('About to call am_render()...');
   am_render();
   console.log('am_render() called');
-}
-/* ── Init ── */
-(function init() {
-  try {
-    if (window.parent !== window)
-      document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
-  } catch(e) {}
-  am_load();
-  am_render();
+  document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
+  console.log('Updating statistics after data load...');
   am_updateStats();
-})();
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.type === 'THEME') document.body.classList.toggle('dark-mode', e.data.dark);
-});
+}
+am_load();
+am_render();
+am_updateStats();
 /* ── Tabs ── */
 function am_tab(t, btn) {
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -832,12 +825,30 @@ function am_renderComms() {
 /* ── Stats ── */
 function am_updateStats() {
   try {
+    console.log('Updating application stats with AM array:', AM);
+    console.log('AM length:', AM.length);
+    
+    // Debug: Log all application statuses
+    AM.forEach(function(a) {
+      console.log('Application ID:', a.id, 'Status:', a.status, 'Status (lowercase):', (a.status||'new').toLowerCase());
+    });
+    
     document.getElementById('am_s_total').textContent = AM.length;
     document.getElementById('am_s_new').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'new'; }).length;
-    document.getElementById('am_s_review').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'under review'; }).length;
+    document.getElementById('am_s_review').textContent = AM.filter(function(a) { 
+      var status = (a.status||'new').toLowerCase();
+      return status === 'under review' || status === 'under-review'; 
+    }).length;
     document.getElementById('am_s_short').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'shortlisted'; }).length;
     document.getElementById('am_s_hired').textContent = AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'hired'; }).length;
-  } catch(e) {}
+    
+    console.log('Stats updated - Total:', AM.length, 'New:', AM.filter(function(a) { return (a.status||'new').toLowerCase() === 'new'; }).length, 'Under Review:', AM.filter(function(a) { 
+      var status = (a.status||'new').toLowerCase();
+      return status === 'under review' || status === 'under-review'; 
+    }).length);
+  } catch(e) {
+    console.error('Error updating application stats:', e);
+  }
 }
 /* ── Data Reset ── */
 function am_confirmReset() {

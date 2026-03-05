@@ -322,7 +322,7 @@ switch($action) {
                         WHERE id = ?
                     ");
                     $stmt->execute([
-                        $input['applicant_id'],
+                        $input['applicant_name'],
                         $input['interview_date'],
                         $input['interview_time'],
                         $input['interview_type'],
@@ -342,7 +342,7 @@ switch($action) {
                         VALUES (?, ?, ?, ?, ?)
                     ");
                     $stmt->execute([
-                        $input['applicant_id'],
+                        $input['applicant_name'],
                         $input['interview_date'],
                         $input['interview_time'],
                         $input['interview_type'],
