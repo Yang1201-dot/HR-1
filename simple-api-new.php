@@ -50,8 +50,7 @@ switch($action) {
         $stmt = $pdo->query("
             SELECT 
                 id, fname as first_name, lname as last_name, email, phone, position,
-                dept as department, applied_at as application_date, status, updated_at,
-                resume_path, birth_certificate_path, diploma_path, cover_letter_path
+                dept as department, applied_at as application_date, status, updated_at
             FROM applicants 
             ORDER BY applied_at DESC
         ");
