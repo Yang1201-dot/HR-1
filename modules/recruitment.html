@@ -159,7 +159,121 @@
     </select>
   </div>
   <div class="form-group"><label>Notes</label><textarea id="r_interview_notes" placeholder="Additional notes about the interview..."></textarea></div>
-  <button class="btn btn-primary" onclick="r_saveInterview()">Schedule Interview</button>
+  <button class="btn btn-primary" onclick="
+  (async function() {
+    try {
+      var dropdown = document.getElementById('r_interview_applicant');
+      var applicantDisplay = document.getElementById('r_interview_applicant_display');
+      var applicantId, applicantName;
+
+      // Check if we're in editing mode (dropdown is hidden, display is shown)
+      if (dropdown.style.display === 'none' && applicantDisplay.style.display === 'block') {
+        // Use stored applicant data for editing
+        applicantId = dropdown.dataset.currentApplicantId || '';
+        applicantName = dropdown.dataset.currentApplicantName || '';
+      } else {
+        // Normal mode - get from dropdown selection
+        applicantId = dropdown.value;
+        var selectedOption = dropdown.options[dropdown.selectedIndex];
+        applicantName = selectedOption ? selectedOption.dataset.applicantName : '';
+      }
+      var position = document.getElementById('r_interview_position').value;
+      var date = document.getElementById('r_interview_date').value;
+      var time = document.getElementById('r_interview_time').value;
+      var type = document.getElementById('r_interview_type').value;
+      var notes = document.getElementById('r_interview_notes').value;
+
+      // Get position from dropdown selection if not already set (only in normal mode)
+      if (!position && applicantName && !dropdown.disabled) {
+        if (selectedOption && selectedOption.dataset.position) {
+          position = selectedOption.dataset.position;
+          document.getElementById('r_interview_position').value = position;
+        }
+      }
+
+      if (!applicantName || !date || !time || !type) {
+        alert('Please fill all required fields');
+        return;
+      }
+
+      var interviewId = document.getElementById('r_interview_id')?.value || null;
+      var finalNotes = notes;
+
+      // If editing an existing interview, add back the original status
+      if (interviewId) {
+        var dropdown = document.getElementById('r_interview_applicant');
+        var originalStatus = dropdown.dataset.originalStatus || 'Scheduled';
+
+        // Add the status back to the notes
+        if (finalNotes && !finalNotes.match(/Status:\s*.+/)) {
+          finalNotes = finalNotes + (finalNotes ? '\n\n' : '') + 'Status: ' + originalStatus;
+        } else if (!finalNotes) {
+          finalNotes = 'Status: ' + originalStatus;
+        }
+      }
+
+      var apiPayload = {
+        id: interviewId,
+        applicant_name: applicantName,
+        applicant_id: applicantId,
+        interview_date: date,
+        interview_time: time,
+        interview_type: type,
+        notes: finalNotes
+      };
+
+      const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(apiPayload)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Determine message before clearing the form
+        var message = interviewId ? 'Interview updated successfully!' : 'Interview scheduled successfully!';
+
+        // Close modal
+        var modal = document.getElementById('r_modal_interview');
+        if (modal) modal.classList.remove('active');
+        
+        // Clear form
+        document.getElementById('r_interview_position').value = '';
+        document.getElementById('r_interview_date').value = '';
+        document.getElementById('r_interview_time').value = '';
+        document.getElementById('r_interview_type').value = 'Phone Screen';
+        document.getElementById('r_interview_notes').value = '';
+        document.getElementById('r_interview_id').value = '';
+
+        alert(message);
+        // Add small delay to ensure database update completes
+        setTimeout(async () => {
+          // Try to reload data if functions are available
+          if (typeof r_loadInterviews === 'function') {
+            await r_loadInterviews();
+            if (typeof r_renderInterviews === 'function') r_renderInterviews();
+            if (typeof r_loadFromStorage === 'function') await r_loadFromStorage();
+            if (typeof r_render === 'function') r_render();
+            if (typeof r_updateStats === 'function') r_updateStats();
+          } else {
+            // Fallback: reload page
+            window.location.reload();
+          }
+        }, 200);
+      } else {
+        console.error('API Error:', data);
+        alert('Error scheduling interview: ' + (data.error || 'Unknown error'));
+      }
+    } catch(e) {
+      console.error('Error saving interview:', e);
+      alert('Error scheduling interview');
+    }
+  })();
+  ">Schedule Interview</button>
   <button class="btn btn-secondary" onclick="r_close('r_modal_interview')">Cancel</button>
 </div>
 </div>
@@ -178,13 +292,136 @@
     </select>
   </div>
   <input type="hidden" id="r_status_interview_id">
-  <button class="btn btn-primary" onclick="r_saveInterviewStatus()">Update Status</button>
+  <button class="btn btn-primary" onclick="
+  // Simple API call to update interview status
+  (function() {
+    var interviewId = document.getElementById('r_status_interview_id').value;
+    var newStatus = document.getElementById('r_interview_status').value;
+    
+    if (!interviewId || !newStatus) {
+      alert('Please select a status');
+      return;
+    }
+    
+    // Show loading state
+    var btn = event.target;
+    var originalText = btn.textContent;
+    btn.textContent = 'Updating...';
+    btn.disabled = true;
+    
+    // Update interview status via new API
+    fetch('../api/simple-api-new.php?action=update_interview_status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        id: interviewId,
+        status: newStatus
+      })
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      // Restore button state
+      btn.textContent = originalText;
+      btn.disabled = false;
+      
+      if (data.success) {
+        // Close modal using multiple methods
+        var modal = document.getElementById('r_modal_status');
+        if (modal) {
+          modal.classList.remove('active');
+        }
+        
+        alert('Interview status updated successfully!');
+        
+        // Reload data and refresh display
+        setTimeout(function() {
+          // Try multiple reload methods
+          if (typeof window.r_loadInterviews === 'function') {
+            window.r_loadInterviews().then(function() {
+              if (typeof window.r_renderInterviews === 'function') {
+                window.r_renderInterviews();
+              }
+              if (typeof window.r_updateStats === 'function') {
+                window.r_updateStats();
+              }
+            });
+          } else {
+            // Fallback: force page reload
+            window.location.reload();
+          }
+        }, 200);
+      } else {
+        console.error('API Error:', data);
+        alert('Error updating interview status: ' + (data.error || 'Unknown error'));
+      }
+    })
+    .catch(function(e) {
+      console.error('Fetch Error:', e);
+      btn.textContent = originalText;
+      btn.disabled = false;
+      alert('Error updating interview status');
+    });
+  })();
+">Update Status</button>
   <button class="btn btn-secondary" onclick="r_close('r_modal_status')">Cancel</button>
 </div>
 </div>
  
-<script src="recruitment-applicant-helper.js"></script>
+<script src="recruitment-applicant-helper.js?v=1772790200010"></script>
+<script src="interview-status-update.js?v=1772790200010"></script>
 <script>
+// Ensure interview status column exists
+fetch('../api/simple-api-new.php?action=ensure_interview_status_column', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+})
+.then(function(response) {
+  return response.json();
+})
+.then(function(data) {
+  console.log('Interview status column check:', data);
+})
+.catch(function(e) {
+  console.error('Error ensuring status column:', e);
+});
+
+// Debug: Check if function is accessible
+console.log('Script loading - checking function accessibility...');
+  
+  // Persistence check - ensure functions remain available
+  setInterval(function() {
+    if (typeof window.r_saveInterviewStatus !== 'function') {
+      console.error('⚠️ r_saveInterviewStatus was lost, reassigning...');
+      window.r_saveInterviewStatus = r_saveInterviewStatus;
+    }
+    if (typeof window.r_saveInterview !== 'function') {
+      console.error('⚠️ r_saveInterview was lost, reassigning...');
+      window.r_saveInterview = r_saveInterview;
+    }
+    if (typeof window.r_close !== 'function') {
+      console.error('⚠️ r_close was lost, reassigning...');
+      window.r_close = r_close;
+    }
+  }, 1000);
+  
+  setTimeout(function() {
+    console.log('r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
+    console.log('window.r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
+    if (typeof window.r_saveInterviewStatus === 'function') {
+      console.log('✅ r_saveInterviewStatus is properly defined and accessible');
+    } else {
+      console.error('❌ r_saveInterviewStatus is NOT accessible');
+    }
+  }, 1000);
+
 var JOBS = [], OFFERS = [], COMMS = [], INTERVIEWS = [];
  
 /* ── Utility functions ── */
@@ -777,22 +1014,16 @@ function r_renderInterviews() {
           position = applicant.position;
         }
       }
- 
-      // Extract status from notes if available
-      var status = 'Scheduled'; // Default status
-      if (interview.notes) {
-        var statusMatch = interview.notes.match(/Status:\s*(.+)/);
-        if (statusMatch) {
-          status = statusMatch[1].trim();
-        }
-      }
- 
+
+      // Use dedicated status field instead of parsing from notes
+      var status = interview.status || 'Scheduled'; // Default status
+
       // Determine status badge class
       var statusBadgeClass = 'bd-scheduled'; // Default
       if (status.toLowerCase() === 'passed') statusBadgeClass = 'bd-accepted';
       else if (status.toLowerCase() === 'failed') statusBadgeClass = 'bd-rejected';
       else if (status.toLowerCase() === 'on-going') statusBadgeClass = 'bd-pending';
- 
+
       return '<div class="interview-card">' +
         '<div class="interview-header">' +
           '<div class="interview-info">' +
@@ -1159,7 +1390,8 @@ function r_close(id) {
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
   var m = document.getElementById(id); if (m) m.classList.remove('active');
 }
- 
+window.r_close = r_close;
+
 function r_toast(msg, type) {
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
   alert(msg);
@@ -1171,7 +1403,7 @@ function r_openInterview() {
   // Reset ALL form fields for new interview
   var dropdown = document.getElementById('r_interview_applicant');
   var applicantDisplay = document.getElementById('r_interview_applicant_display');
- 
+
   // Show dropdown and hide display input for new interviews
   dropdown.style.display = 'block';
   applicantDisplay.style.display = 'none';
@@ -1180,7 +1412,7 @@ function r_openInterview() {
   delete dropdown.dataset.currentApplicantId;
   delete dropdown.dataset.currentApplicantName;
   delete dropdown.dataset.originalStatus;
- 
+
   // Reset all form fields
   document.getElementById('r_interview_position').value = '';
   document.getElementById('r_interview_date').value = '';
@@ -1188,8 +1420,14 @@ function r_openInterview() {
   document.getElementById('r_interview_type').value = 'Phone Screen';
   document.getElementById('r_interview_notes').value = '';
   document.getElementById('r_interview_id').value = '';
- 
+
   document.getElementById('r_interview_modal_title').textContent = 'Schedule Interview';
+  
+  // Populate applicant dropdown
+  if (typeof r_populateApplicantDropdownForInterview === 'function') {
+    r_populateApplicantDropdownForInterview();
+  }
+  
   r_open('r_modal_interview'); 
 }
  
@@ -1297,7 +1535,10 @@ async function r_saveInterview() {
     r_toast('Error scheduling interview', 'error');
   }
 }
- 
+
+// Make r_saveInterview globally available immediately after definition
+window.r_saveInterview = r_saveInterview;
+
 async function r_editInterview(id) {
   // Find the interview to edit
   var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
@@ -1439,8 +1680,8 @@ async function r_saveInterviewStatus() {
     // Use the current applicant name from the interview data
     var storedAppName = interview.applicant_name || '';
  
-    // Update interview with new status
-    const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+    // Update interview status directly via new API
+    const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1448,11 +1689,7 @@ async function r_saveInterviewStatus() {
       },
       body: JSON.stringify({
         id: interviewId,
-        applicant_name: storedAppName,
-        interview_date: interview.interview_date,
-        interview_time: interview.interview_time,
-        interview_type: interview.interview_type,
-        notes: updatedNotes
+        status: newStatus
       })
     });
  
@@ -1475,7 +1712,10 @@ async function r_saveInterviewStatus() {
     r_toast('Error updating interview status', 'error');
   }
 }
- 
+
+// Make function globally accessible
+window.r_saveInterviewStatus = r_saveInterviewStatus;
+
 async function r_deleteInterview(id) {
   try {
     const response = await fetch(`../api/simple-api-new.php?action=delete_interview&id=${id}`, {

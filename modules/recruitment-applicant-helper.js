@@ -1,5 +1,5 @@
-// Helper function to populate applicant dropdown with names and positions
-function r_populateApplicantDropdown() {
+// Function to populate applicant dropdown (called by main r_openInterview function)
+function r_populateApplicantDropdownForInterview() {
   var dropdown = document.getElementById('r_interview_applicant');
   if (!dropdown) return;
   
@@ -64,19 +64,9 @@ function r_populateJobPosition() {
 document.addEventListener('DOMContentLoaded', function() {
   var applicantDropdown = document.getElementById('r_interview_applicant');
   if (applicantDropdown) {
-    // Populate dropdown when page loads
-    r_populateApplicantDropdown();
-    
     // Update job position when selection changes
     applicantDropdown.addEventListener('change', function() {
       r_populateJobPosition();
     });
   }
 });
-
-// Also populate dropdown when interview modal is opened
-function r_openInterview() { 
-  document.getElementById('r_interview_modal_title').textContent = 'Schedule Interview';
-  r_populateApplicantDropdown(); // Refresh dropdown each time modal opens
-  r_open('r_modal_interview'); 
-}

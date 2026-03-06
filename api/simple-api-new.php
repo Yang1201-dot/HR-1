@@ -292,6 +292,106 @@ switch($action) {
                 jsonResponse(['error' => $e->getMessage()], 500);
             }
         }
+    case 'ensure_interview_status_column':
+        if ($method === 'POST') {
+            try {
+                // Create interviews table if it doesn't exist
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS interviews (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        applicant_name VARCHAR(255) NOT NULL,
+                        interview_date DATE NOT NULL,
+                        interview_time TIME NOT NULL,
+                        interview_type VARCHAR(100) NOT NULL,
+                        status VARCHAR(50) DEFAULT 'Scheduled',
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                
+                // Add status column if it doesn't exist (multiple attempts)
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
+                    error_log("Status column added successfully");
+                } catch (Exception $e) {
+                    error_log("Status column might already exist: " . $e->getMessage());
+                }
+                
+                // Try alternative column name if needed
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
+                } catch (Exception $e) {
+                    error_log("Interview_status column might already exist: " . $e->getMessage());
+                }
+                
+                jsonResponse([
+                    'success' => true, 
+                    'message' => 'Interview status column ensured',
+                    'columns_checked' => 'status and interview_status'
+                ]);
+            } catch(Exception $e) {
+                error_log("Error ensuring interview status column: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
+        break;
+        
+    case 'update_interview_status':
+        if ($method === 'POST') {
+            try {
+                // Get JSON input
+                $input = json_decode(file_get_contents('php://input'), true);
+                $interviewId = $input['id'] ?? '';
+                $newStatus = $input['status'] ?? '';
+                
+                if (empty($interviewId) || empty($newStatus)) {
+                    jsonResponse(['error' => 'Interview ID and status are required'], 400);
+                    break;
+                }
+                
+                // Create interviews table if it doesn't exist
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS interviews (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        applicant_name VARCHAR(255) NOT NULL,
+                        interview_date DATE NOT NULL,
+                        interview_time TIME NOT NULL,
+                        interview_type VARCHAR(100) NOT NULL,
+                        status VARCHAR(50) DEFAULT 'Scheduled',
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                
+                // Add status column if it doesn't exist
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
+                } catch (Exception $e) {
+                    // Column already exists, ignore error
+                }
+                
+                // Update interview status directly
+                $stmt = $pdo->prepare("
+                    UPDATE interviews 
+                    SET status = ?, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = ?
+                ");
+                $stmt->execute([$newStatus, $interviewId]);
+                
+                error_log("Interview status updated: ID $interviewId, Status: $newStatus");
+                jsonResponse([
+                    'success' => true, 
+                    'message' => 'Interview status updated successfully',
+                    'interview_id' => $interviewId,
+                    'new_status' => $newStatus
+                ]);
+            } catch(Exception $e) {
+                error_log("Error updating interview status: " . $e->getMessage());
+                jsonResponse(['error' => $e->getMessage()], 500);
+            }
+        }
         break;
         
     case 'save_interview':
@@ -305,11 +405,19 @@ switch($action) {
                         interview_date DATE NOT NULL,
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
+                        status VARCHAR(50) DEFAULT 'Scheduled',
                         notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
                 ");
+                
+                // Add status column if it doesn't exist
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
+                } catch (Exception $e) {
+                    // Column already exists, ignore error
+                }
                 
                 $input = json_decode(file_get_contents('php://input'), true);
                 $interviewId = $input['id'] ?? null;
@@ -382,7 +490,7 @@ switch($action) {
             $stmt = $pdo->query("
                 SELECT 
                     id, applicant_name, interview_date, interview_time, 
-                    interview_type, notes, created_at, updated_at
+                    interview_type, status, notes, created_at, updated_at
                 FROM interviews 
                 ORDER BY created_at DESC
             ");
