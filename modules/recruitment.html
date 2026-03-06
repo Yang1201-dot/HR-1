@@ -249,7 +249,13 @@
         document.getElementById('r_interview_notes').value = '';
         document.getElementById('r_interview_id').value = '';
 
-        alert(message);
+        // Show toast notification instead of alert
+        if (typeof r_toast === 'function') {
+          r_toast(message, 'success');
+        } else {
+          // Fallback to console if toast function not available
+          console.log(message);
+        }
         // Add small delay to ensure database update completes
         setTimeout(async () => {
           // Try to reload data if functions are available
@@ -336,7 +342,13 @@
           modal.classList.remove('active');
         }
         
-        alert('Interview status updated successfully!');
+        // Show toast notification instead of alert
+        if (typeof r_toast === 'function') {
+          r_toast('Interview status updated successfully!', 'success');
+        } else {
+          // Fallback to console if toast function not available
+          console.log('Interview status updated successfully!');
+        }
         
         // Reload data and refresh display
         setTimeout(function() {
@@ -372,8 +384,8 @@
 </div>
 </div>
  
-<script src="recruitment-applicant-helper.js?v=1772790200010"></script>
-<script src="interview-status-update.js?v=1772790200010"></script>
+<script src="recruitment-applicant-helper.js?v=1772790300011"></script>
+<script src="interview-status-update.js?v=1772790300011"></script>
 <script>
 // Ensure interview status column exists
 fetch('../api/simple-api-new.php?action=ensure_interview_status_column', {
