@@ -199,18 +199,8 @@
       var interviewId = document.getElementById('r_interview_id')?.value || null;
       var finalNotes = notes;
 
-      // If editing an existing interview, add back the original status
-      if (interviewId) {
-        var dropdown = document.getElementById('r_interview_applicant');
-        var originalStatus = dropdown.dataset.originalStatus || 'Scheduled';
-
-        // Add the status back to the notes
-        if (finalNotes && !finalNotes.match(/Status:\s*.+/)) {
-          finalNotes = finalNotes + (finalNotes ? '\n\n' : '') + 'Status: ' + originalStatus;
-        } else if (!finalNotes) {
-          finalNotes = 'Status: ' + originalStatus;
-        }
-      }
+      // Don't add status to notes anymore - we have dedicated status column
+      // Keep notes clean and separate from status
 
       var apiPayload = {
         id: interviewId,
@@ -384,8 +374,8 @@
 </div>
 </div>
  
-<script src="recruitment-applicant-helper.js?v=1772790300011"></script>
-<script src="interview-status-update.js?v=1772790300011"></script>
+<script src="recruitment-applicant-helper.js?v=1772790400012"></script>
+<script src="interview-status-update.js?v=1772790400012"></script>
 <script>
 // Ensure interview status column exists
 fetch('../api/simple-api-new.php?action=ensure_interview_status_column', {
