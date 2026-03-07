@@ -1,8 +1,0 @@
--- Manual SQL command to drop the status column
--- Run this manually in your MySQL client:
-
-USE hr_management;
-ALTER TABLE interviews DROP COLUMN IF EXISTS status;
-
--- Verify the column is gone:
-DESCRIBE interviews;
