@@ -359,24 +359,18 @@ switch($action) {
                         interview_date DATE NOT NULL,
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
-                        status VARCHAR(50) DEFAULT 'Scheduled',
+                        interview_status VARCHAR(50) DEFAULT 'Scheduled',
                         notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
                 ");
                 
-                // Add status column if it doesn't exist
-                try {
-                    $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
-                } catch (Exception $e) {
-                    // Column already exists, ignore error
-                }
-                
-                // Update interview status directly
+                // Add interview_status column if it doesn't exist
+                try { $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_status VARCHAR(50) DEFAULT 'Scheduled'"); } catch(Exception $ignored) {}
                 $stmt = $pdo->prepare("
                     UPDATE interviews 
-                    SET status = ?, updated_at = CURRENT_TIMESTAMP
+                    SET interview_status = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE id = ?
                 ");
                 $stmt->execute([$newStatus, $interviewId]);
@@ -406,35 +400,41 @@ switch($action) {
                         interview_date DATE NOT NULL,
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
-                        status VARCHAR(50) DEFAULT 'Scheduled',
+                        interview_status VARCHAR(50) DEFAULT 'Scheduled',
                         notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
                 ");
                 
-                // Add status column if it doesn't exist
-                try {
-                    $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(50) DEFAULT 'Scheduled' AFTER interview_type");
-                } catch (Exception $e) {
-                    // Column already exists, ignore error
-                }
+                // Add interview_status column if it doesn't exist
+                try { $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_status VARCHAR(50) DEFAULT 'Scheduled'"); } catch(Exception $ignored) {}
                 
                 $input = json_decode(file_get_contents('php://input'), true);
                 $interviewId = $input['id'] ?? null;
                 
                 if ($interviewId) {
-                    // Update existing interview
-                    $stmt = $pdo->prepare("
-                        UPDATE interviews 
-                        SET applicant_name = ?, interview_date = ?, interview_time = ?, interview_type = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
-                        WHERE id = ?
-                    ");
+                    $position    = $input['position']     ?? '';
+                    $applicantId = $input['applicant_id'] ?? null;
+                    if (empty($position) || empty($applicantId)) {
+                        try {
+                            $appStmt = $pdo->prepare("SELECT id, position FROM applicants WHERE CONCAT(fname, ' ', lname) = ? LIMIT 1");
+                            $appStmt->execute([$input['applicant_name'] ?? '']);
+                            $appRow = $appStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($appRow) {
+                                if (empty($position))    $position    = $appRow['position'] ?? '';
+                                if (empty($applicantId)) $applicantId = $appRow['id'];
+                            }
+                        } catch(Exception $ignored) {}
+                    }
+                    $stmt = $pdo->prepare("UPDATE interviews SET applicant_name = ?, applicant_id = ?, interview_date = ?, interview_time = ?, interview_type = ?, position = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
                     $stmt->execute([
                         $input['applicant_name'],
+                        $applicantId ? (int)$applicantId : null,
                         $input['interview_date'],
                         $input['interview_time'],
                         $input['interview_type'],
+                        $position,
                         $input['notes'] ?? '',
                         $interviewId
                     ]);
@@ -445,16 +445,30 @@ switch($action) {
                         'interview_id' => $interviewId
                     ]);
                 } else {
-                    // Create new interview
-                    $stmt = $pdo->prepare("
-                        INSERT INTO interviews (applicant_name, interview_date, interview_time, interview_type, notes) 
-                        VALUES (?, ?, ?, ?, ?)
-                    ");
+                    foreach (["applicant_id INT NULL", "position VARCHAR(255) NULL"] as $colDef) {
+                        try { $pdo->exec("ALTER TABLE interviews ADD COLUMN $colDef"); } catch(Exception $ignored) {}
+                    }
+                    $position    = $input['position']     ?? '';
+                    $applicantId = $input['applicant_id'] ?? null;
+                    if (empty($position) || empty($applicantId)) {
+                        try {
+                            $appStmt = $pdo->prepare("SELECT id, position FROM applicants WHERE CONCAT(fname, ' ', lname) = ? LIMIT 1");
+                            $appStmt->execute([$input['applicant_name'] ?? '']);
+                            $appRow = $appStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($appRow) {
+                                if (empty($position))    $position    = $appRow['position'] ?? '';
+                                if (empty($applicantId)) $applicantId = $appRow['id'];
+                            }
+                        } catch(Exception $ignored) {}
+                    }
+                    $stmt = $pdo->prepare("INSERT INTO interviews (applicant_name, applicant_id, interview_date, interview_time, interview_type, position, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     $stmt->execute([
                         $input['applicant_name'],
+                        $applicantId ? (int)$applicantId : null,
                         $input['interview_date'],
                         $input['interview_time'],
                         $input['interview_type'],
+                        $position,
                         $input['notes'] ?? ''
                     ]);
                     $interviewId = $pdo->lastInsertId();
@@ -474,27 +488,30 @@ switch($action) {
         
     case 'get_interviews':
         try {
-            // Create interviews table if it doesn't exist
-            $pdo->exec("
-                CREATE TABLE IF NOT EXISTS interviews (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    applicant_name VARCHAR(255) NOT NULL,
-                    interview_date DATE NOT NULL,
-                    interview_time TIME NOT NULL,
-                    interview_type VARCHAR(100) NOT NULL,
-                    notes TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                )
-            ");
-            
-            $stmt = $pdo->query("
-                SELECT 
-                    id, applicant_name, interview_date, interview_time, 
-                    interview_type, status, notes, created_at, updated_at
-                FROM interviews 
-                ORDER BY created_at DESC
-            ");
+            $pdo->exec("CREATE TABLE IF NOT EXISTS interviews (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                applicant_name VARCHAR(255) NOT NULL,
+                applicant_id INT NULL,
+                interview_date DATE NOT NULL,
+                interview_time TIME NOT NULL,
+                interview_type VARCHAR(100) NOT NULL,
+                position VARCHAR(255) NULL,
+                interview_status VARCHAR(50) DEFAULT 'Scheduled',
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )");
+            foreach (["interview_status VARCHAR(50) DEFAULT 'Scheduled'", "applicant_id INT NULL", "position VARCHAR(255) NULL"] as $colDef) {
+                try { $pdo->exec("ALTER TABLE interviews ADD COLUMN $colDef"); } catch(Exception $ignored) {}
+            }
+            // One-time migration: copy old status -> interview_status then drop
+            try {
+                if ($pdo->query("SHOW COLUMNS FROM interviews LIKE 'status'")->rowCount() > 0) {
+                    $pdo->exec("UPDATE interviews SET interview_status = status WHERE (interview_status IS NULL OR interview_status = 'Scheduled') AND status IS NOT NULL AND status != ''");
+                    $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+                }
+            } catch(Exception $ignored) {}
+            $stmt = $pdo->query("SELECT id, applicant_name, applicant_id, interview_date, interview_time, interview_type, position, interview_status, notes, created_at, updated_at FROM interviews ORDER BY created_at DESC");
             $interviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("Interviews query returned: " . count($interviews) . " rows");
             jsonResponse($interviews);

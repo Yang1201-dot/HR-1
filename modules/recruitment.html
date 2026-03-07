@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
@@ -295,6 +295,8 @@
 </div>
 
       <input type="hidden" id="r_interview_id">
+  <input type="hidden" id="r_interview_applicant_id_hidden">
+  <input type="hidden" id="r_interview_applicant_name_hidden">
 
   <input type="hidden" id="r_interview_position">
 
@@ -352,7 +354,7 @@
 
         var selectedOption = dropdown.options[dropdown.selectedIndex];
 
-        applicantName = selectedOption ? selectedOption.dataset.applicantName : '';
+        applicantName = selectedOption ? (selectedOption.dataset.name || selectedOption.textContent.split(' — ')[0].trim() || selectedOption.value) : '';
 
       }
 
@@ -477,6 +479,15 @@
         document.getElementById('r_interview_notes').value = '';
 
         document.getElementById('r_interview_id').value = '';
+  var hn = document.getElementById('r_interview_applicant_name_hidden');
+  var hi = document.getElementById('r_interview_applicant_id_hidden');
+  if (hn) hn.value = '';
+  if (hi) hi.value = '';
+  // Show dropdown, hide display
+  var aDropEl = document.getElementById('r_interview_applicant');
+  var aDispEl = document.getElementById('r_interview_applicant_display');
+  if (aDropEl) aDropEl.style.display = '';
+  if (aDispEl) { aDispEl.style.display = 'none'; aDispEl.disabled = false; aDispEl.readOnly = false; }
 
 
 
@@ -872,7 +883,7 @@ body.dark-mode #r_interview_applicant option,
 
 
 
-<!-- recruitment-applicant-helper.js removed: functionality inlined below -->
+
 
 <script src="interview-status-update.js?v=1772790400012"></script>
 
@@ -2110,17 +2121,7 @@ function r_renderInterviews() {
 
       var interviewNotes = interview.notes || '';
 
-      // Clean notes for display (remove status and status notes)
-
-      var displayNotes = interviewNotes.replace(/Status:\s*.+?$/gm, '').trim();
-
-      displayNotes = displayNotes.replace(/Status:\s*.+?\n/gm, '').trim();
-
-      displayNotes = displayNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
-
-      displayNotes = displayNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
-
-      displayNotes = displayNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
+      var displayNotes = interviewNotes || '';
 
  
 
@@ -2160,7 +2161,7 @@ function r_renderInterviews() {
 
       // Use dedicated status field instead of parsing from notes
 
-      var status = interview.status || 'Scheduled'; // Default status
+      var status = interview.interview_status || 'Scheduled'; // Default status
 
 
 
@@ -2893,15 +2894,21 @@ function r_tab(t, btn) {
 /* ── Modal helpers ── */
 
 function r_open(id) {
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); } } catch(e) {}
+
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
+
   var m = document.getElementById(id); if (m) m.classList.add('active');
+
 }
-window.r_open = r_open;
 
 function r_close(id) {
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); } } catch(e) {}
+
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
+
   var m = document.getElementById(id); if (m) m.classList.remove('active');
+
 }
+
 window.r_close = r_close;
 
 
@@ -2968,41 +2975,46 @@ function r_openInterview() {
 
   
 
+  // Open modal FIRST so dropdown has proper dimensions
+
   r_open('r_modal_interview');
 
-  // Inline fetch - no external helper dependency
-  (function() {
-    var drop = document.getElementById('r_interview_applicant');
-    if (!drop) return;
-    drop.innerHTML = '<option value="">Loading applicants...</option>';
-    drop.disabled = true;
-    fetch('../api/simple-api-new.php?action=get_applications')
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        drop.innerHTML = '<option value="">Select an applicant...</option>';
-        if (Array.isArray(data) && data.length > 0) {
-          data.forEach(function(a) {
-            var name = ((a.first_name||'') + ' ' + (a.last_name||'')).trim();
-            var pos = a.position || '';
-            var st  = a.status   || '';
-            var opt = document.createElement('option');
-            opt.value = a.id;
-            opt.textContent = name + (pos?' - '+pos:'') + (st?' ('+st+')':'');
-            opt.dataset.position = pos;
-            opt.dataset.applicantName = name;
-            drop.appendChild(opt);
-          });
-        } else {
-          drop.innerHTML = '<option value="">No applicants found</option>';
-        }
-        drop.disabled = false;
-      })
-      .catch(function(e) {
-        console.error('get_applications failed:', e);
-        drop.innerHTML = '<option value="">Error - check console</option>';
-        drop.disabled = false;
-      });
-  })();
+  
+
+  // Then populate applicant dropdown after modal is fully visible
+
+  if (typeof r_populateApplicantDropdownForInterview === 'function') {
+
+    // Wait longer and check if modal is actually visible before populating
+
+    setTimeout(function() {
+
+      var modal = document.getElementById('r_modal_interview');
+
+      if (modal && getComputedStyle(modal).display !== 'none') {
+
+        console.log('✅ Modal is visible, now populating dropdown');
+
+        r_populateApplicantDropdownForInterview();
+
+      } else {
+
+        console.log('⚠️ Modal still not visible, retrying...');
+
+        // Retry after another delay
+
+        setTimeout(function() {
+
+          r_populateApplicantDropdownForInterview();
+
+        }, 200);
+
+      }
+
+    }, 300); // Increased delay to 300ms
+
+  }
+
 }
 
  
@@ -3017,26 +3029,27 @@ async function r_saveInterview() {
 
  
 
-  // Check if we're in editing mode (dropdown is hidden, display is shown)
+  // PRIORITY: read from hidden fields written by the overlay before calling us
+  var hiddenNameEl = document.getElementById('r_interview_applicant_name_hidden');
+  var hiddenIdEl   = document.getElementById('r_interview_applicant_id_hidden');
 
-  if (dropdown.style.display === 'none' && applicantDisplay.style.display === 'block') {
-
-    // Use stored applicant data for editing
-
-    applicantId = dropdown.dataset.currentApplicantId || '';
-
-    applicantName = dropdown.dataset.currentApplicantName || '';
-
+  if (hiddenNameEl && hiddenNameEl.value && hiddenNameEl.value.trim() !== '') {
+    // Overlay wrote these — most reliable path
+    applicantName = hiddenNameEl.value.trim();
+    applicantId   = hiddenIdEl ? hiddenIdEl.value : '';
+  } else if (dropdown.style.display === 'none' && applicantDisplay && applicantDisplay.style.display === 'block') {
+    // Edit mode fallback: strip " — Position" suffix if present
+    applicantName = applicantDisplay.value.split(' — ')[0].trim();
+    applicantId   = hiddenIdEl ? hiddenIdEl.value : '';
   } else {
-
-    // Normal mode - get from dropdown selection
-
-    applicantId = dropdown.value;
-
+    // New interview inline mode
     var selectedOption = dropdown.options[dropdown.selectedIndex];
-
-    applicantName = selectedOption ? selectedOption.dataset.applicantName : '';
-
+    if (selectedOption && selectedOption.value && selectedOption.value !== '') {
+      applicantName = selectedOption.dataset.name
+                   || selectedOption.textContent.split(' — ')[0].trim()
+                   || selectedOption.value;
+      applicantId   = selectedOption.dataset.id || '';
+    }
   }
 
   var position = document.getElementById('r_interview_position').value;
@@ -3053,16 +3066,9 @@ async function r_saveInterview() {
 
   // Get position from dropdown selection if not already set (only in normal mode)
 
-  if (!position && applicantName && !dropdown.disabled) {
-
-    if (selectedOption && selectedOption.dataset.position) {
-
-      position = selectedOption.dataset.position;
-
-      document.getElementById('r_interview_position').value = position;
-
-    }
-
+  if (!position && typeof selectedOption !== 'undefined' && selectedOption && selectedOption.dataset && selectedOption.dataset.position) {
+    position = selectedOption.dataset.position;
+    document.getElementById('r_interview_position').value = position;
   }
 
  
@@ -3080,36 +3086,8 @@ async function r_saveInterview() {
   try {
 
     var interviewId = document.getElementById('r_interview_id')?.value || null;
-
-    var finalNotes = notes;
-
- 
-
-    // If editing an existing interview, add back the original status
-
-    if (interviewId) {
-
-      var dropdown = document.getElementById('r_interview_applicant');
-
-      var originalStatus = dropdown.dataset.originalStatus || 'Scheduled';
-
- 
-
-      // Add the status back to the notes
-
-      if (finalNotes && !finalNotes.match(/Status:\s*.+/)) {
-
-        finalNotes = finalNotes + (finalNotes ? '\n\n' : '') + 'Status: ' + originalStatus;
-
-      } else if (!finalNotes) {
-
-        finalNotes = 'Status: ' + originalStatus;
-
-      }
-
-    }
-
- 
+    
+    var finalNotes = notes; // Use notes as-is without automatic status insertion
 
     var apiPayload = {
 
@@ -3224,164 +3202,73 @@ window.r_saveInterview = r_saveInterview;
 
 
 async function r_editInterview(id) {
-
-  // Find the interview to edit
-
   var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
-
-  if (!interview) {
-
-    r_toast('Interview not found', 'error');
-
-    return;
-
-  }
-
- 
-
-  // Get the applicant dropdown and display input
+  if (!interview) { r_toast('Interview not found', 'error'); return; }
 
   var applicantDropdown = document.getElementById('r_interview_applicant');
-
-  var applicantDisplay = document.getElementById('r_interview_applicant_display');
-
- 
-
-  // Find and set the current applicant
-
-  var currentApplicantId = interview.applicant_id || '';
+  var applicantDisplay  = document.getElementById('r_interview_applicant_display');
 
   var currentApplicantName = interview.applicant_name || '';
+  var currentApplicantId   = String(interview.applicant_id || '');
+  var currentPosition      = interview.position || '';
 
- 
-
-  // If applicant_name is an ID, get the actual name from cache
-
-  if (currentApplicantName && /^\d+$/.test(currentApplicantName)) {
-
-    var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === currentApplicantName; });
-
-    if (applicant) {
-
-      currentApplicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
-
-      currentApplicantId = currentApplicantName;
-
+  // Look up position/id from cache if missing
+  if (typeof APPLICATIONS_CACHE !== 'undefined' && APPLICATIONS_CACHE && APPLICATIONS_CACHE.length) {
+    var appMatch = APPLICATIONS_CACHE.find(function(a) {
+      var full = ((a.first_name||a.fname||'') + ' ' + (a.last_name||a.lname||'')).trim();
+      return full === currentApplicantName || String(a.id) === currentApplicantId;
+    });
+    if (appMatch) {
+      if (!currentPosition)    currentPosition    = appMatch.position || appMatch.applied_position || '';
+      if (!currentApplicantId) currentApplicantId = String(appMatch.id || '');
     }
-
   }
 
- 
-
-  // Hide dropdown and show display input for editing
-
-  applicantDropdown.style.display = 'none';
-
-  applicantDisplay.style.display = 'block';
-
-  applicantDisplay.value = currentApplicantName;
-
- 
-
-  // Store the current applicant data for saving
-
-  applicantDropdown.dataset.currentApplicantId = currentApplicantId;
-
-  applicantDropdown.dataset.currentApplicantName = currentApplicantName;
-
- 
-
-  // Extract and store the original status before cleaning notes
-
-  var originalStatus = 'Scheduled';
-
-  if (interview.notes) {
-
-    var statusMatch = interview.notes.match(/Status:\s*(.+)/);
-
-    if (statusMatch) {
-
-      originalStatus = statusMatch[1].trim();
-
-    }
-
+  // Hide dropdown, show readonly display
+  if (applicantDropdown) {
+    applicantDropdown.style.display = 'none';
+    applicantDropdown.dataset.currentApplicantId   = currentApplicantId;
+    applicantDropdown.dataset.currentApplicantName = currentApplicantName;
+  }
+  if (applicantDisplay) {
+    applicantDisplay.style.display = 'block';
+    applicantDisplay.disabled = true;
+    applicantDisplay.readOnly = true;
+    applicantDisplay.style.background = '#f3f4f6';
+    applicantDisplay.style.cursor = 'not-allowed';
+    applicantDisplay.value = currentApplicantName + (currentPosition ? ' — ' + currentPosition : '');
   }
 
-  // Store the original status in the dropdown dataset for use when saving
+  // Set hidden fields
+  var hidN = document.getElementById('r_interview_applicant_name_hidden');
+  var hidI = document.getElementById('r_interview_applicant_id_hidden');
+  if (hidN) hidN.value = currentApplicantName;
+  if (hidI) hidI.value = currentApplicantId;
 
-  applicantDropdown.dataset.originalStatus = originalStatus;
-
- 
-
-  // Clean notes by removing status information
-
+  // Fill other fields
   var cleanNotes = interview.notes || '';
-
-  cleanNotes = cleanNotes.replace(/Status:\s*.+?$/gm, '').trim();
-
-  cleanNotes = cleanNotes.replace(/Status:\s*.+?\n/gm, '').trim();
-
-  cleanNotes = cleanNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
-
-  cleanNotes = cleanNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
-
-  cleanNotes = cleanNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
-
- 
-
-  // Populate other modal fields
-
-  document.getElementById('r_interview_position').value = interview.position || '';
-
-  document.getElementById('r_interview_date').value = interview.interview_date || '';
-
-  document.getElementById('r_interview_time').value = interview.interview_time || '';
-
- 
-
-  // Set interview type dropdown value with proper matching
-
-  var interviewTypeDropdown = document.getElementById('r_interview_type');
-
-  var savedInterviewType = interview.interview_type || 'Phone Screen';
-
- 
-
-  // Find the matching option and set it as selected
-
-  for (var i = 0; i < interviewTypeDropdown.options.length; i++) {
-
-    if (interviewTypeDropdown.options[i].value === savedInterviewType) {
-
-      interviewTypeDropdown.selectedIndex = i;
-
-      break;
-
+  var pos = document.getElementById('r_interview_position');
+  if (pos) pos.value = currentPosition || interview.position || '';
+  var dt  = document.getElementById('r_interview_date');
+  if (dt)  dt.value  = interview.interview_date  || '';
+  var tm  = document.getElementById('r_interview_time');
+  if (tm)  tm.value  = interview.interview_time  || '';
+  var nt  = document.getElementById('r_interview_notes');
+  if (nt)  nt.value  = cleanNotes;
+  var iid = document.getElementById('r_interview_id');
+  if (iid) iid.value = interview.id || '';
+  var ttl = document.getElementById('r_interview_modal_title');
+  if (ttl) ttl.textContent = 'Edit Interview';
+  var tp  = document.getElementById('r_interview_type');
+  if (tp) {
+    var saved = interview.interview_type || 'Phone Screen';
+    for (var i = 0; i < tp.options.length; i++) {
+      if (tp.options[i].value === saved) { tp.selectedIndex = i; break; }
     }
-
   }
-
- 
-
-  document.getElementById('r_interview_notes').value = cleanNotes;
-
-  document.getElementById('r_interview_id').value = interview.id || '';
-
- 
-
-  // Change modal title for editing
-
-  document.getElementById('r_interview_modal_title').textContent = 'Edit Interview';
-
- 
-
-  // Open the modal for editing
-
   r_open('r_modal_interview');
-
 }
 
- 
 
 async function r_changeInterviewStatus(id) {
 
@@ -3399,21 +3286,9 @@ async function r_changeInterviewStatus(id) {
 
  
 
-  // Extract current status from notes
-
-  var currentStatus = 'Scheduled';
-
-  if (interview.notes) {
-
-    var statusMatch = interview.notes.match(/Status:\s*(.+)/);
-
-    if (statusMatch) {
-
-      currentStatus = statusMatch[1].trim();
-
-    }
-
-  }
+  // Use dedicated status field instead of parsing from notes
+  
+  var currentStatus = interview.interview_status || 'Scheduled';
 
  
 
@@ -3473,38 +3348,6 @@ async function r_saveInterviewStatus() {
 
  
 
-    // Extract existing notes and update status
-
-    var existingNotes = interview.notes || '';
-
- 
-
-    // Remove existing status from notes
-
-    existingNotes = existingNotes.replace(/Status:\s*.+?$/gm, '').trim();
-
-    existingNotes = existingNotes.replace(/Status:\s*.+?\n/gm, '').trim();
-
-    existingNotes = existingNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
-
-    existingNotes = existingNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
-
-    existingNotes = existingNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
-
- 
-
-    // Add new status to notes
-
-    var updatedNotes = existingNotes + (existingNotes ? '\n\n' : '') + 'Status: ' + newStatus;
-
- 
-
-    // Use the current applicant name from the interview data
-
-    var storedAppName = interview.applicant_name || '';
-
- 
-
     // Update interview status directly via new API
 
     const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
@@ -3539,19 +3382,26 @@ async function r_saveInterviewStatus() {
 
       r_toast('Interview status updated successfully!');
 
+      // Immediately update local array for instant badge
+      var interviewIdForSync = document.getElementById('r_status_interview_id') ? document.getElementById('r_status_interview_id').value : null;
+      var newStatusForSync   = document.getElementById('r_interview_status') ? document.getElementById('r_interview_status').value : null;
+      if (interviewIdForSync && newStatusForSync) {
+        var localI = INTERVIEWS.find(function(i) { return String(i.id) === String(interviewIdForSync); });
+        if (localI) { 
+          localI.interview_status = newStatusForSync; 
+          // Update only interview_status field
+        }
+        r_renderInterviews(); // Immediate UI update
+      }
+
  
 
-      // Reload interviews and re-render
-
+      // Reload interviews and re-render after delay to ensure database persistence
       setTimeout(async () => {
-
         await r_loadInterviews();
-
         r_renderInterviews();
-
         await r_updateStats();
-
-      }, 200);
+      }, 500); // Slightly longer delay for database commit
 
     } else {
 
@@ -3787,23 +3637,7 @@ function r_loadCandidatesForOffer() {
 
   var passedCandidates = INTERVIEWS.filter(function(interview) {
 
-    var status = 'Scheduled';
-
-    if (interview.interview_status) {
-
-      status = interview.interview_status;
-
-    } else if (interview.notes) {
-
-      var statusMatch = interview.notes.match(/Status:\s*(.+)/);
-
-      if (statusMatch) {
-
-        status = statusMatch[1].trim();
-
-      }
-
-    }
+    var status = interview.interview_status || 'Scheduled';
 
     console.log('Interview ID:', interview.id, 'Status:', status);
 
@@ -3961,23 +3795,7 @@ function r_loadCandidatesForOffer() {
 
       option.value = interview.id;
 
-      var status = 'Scheduled';
-
-      if (interview.interview_status) {
-
-        status = interview.interview_status;
-
-      } else if (interview.notes) {
-
-        var statusMatch = interview.notes.match(/Status:\s*(.+)/);
-
-        if (statusMatch) {
-
-          status = statusMatch[1].trim();
-
-        }
-
-      }
+      var status = interview.interview_status || 'Scheduled';
 
       option.textContent = applicantName + ' - ' + (interview.position || 'Position not specified') + ' [' + status + ']';
 
@@ -4517,274 +4335,6 @@ function r_generateOfferPDF() {
 
  
 
-  // Wait a bit for the content to load, then trigger print
-
-  setTimeout(function() {
-
-    printWindow.print();
-
-    printWindow.close();
-
-  }, 500);
-
- 
-
-  r_close('r_modal_offer');
-
-  r_renderOffers();
-
-  r_toast('Offer document generated successfully!');
-
-}
-
- 
-
-function r_saveOffer() {
-
-  var pos = g('r_off_pos'), sal = g('r_off_salary');
-
-  if (!pos || !sal) { r_toast('Fill required fields', 'error'); return; }
-
-  OFFERS.unshift({
-
-    id:Date.now(),
-
-    position:pos,
-
-    salary:sal,
-
-    startDate:g('r_off_start'),
-
-    details:g('r_off_details'),
-
-    status:g('r_off_status'),
-
-    extendedAt:new Date().toLocaleString()
-
-  });
-
-  r_close('r_modal_offer');
-
-  ['r_off_pos','r_off_salary','r_off_start','r_off_details'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
-
-  r_renderOffers(); r_toast('Offer extended');
-
-}
-
- 
-
-function r_reprintOffer(offerId) {
-
-  var offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
-
-  if (!offer || !offer.pdfGenerated || !offer.terms) {
-
-    r_toast('Cannot reprint this offer', 'error');
-
-    return;
-
-  }
-
- 
-
-  // Generate PDF using existing terms
-
-  var previewContent = `
-
-    <div class="offer-document-preview" style="
-
-      background: white; 
-
-      border: none; 
-
-      padding: 30px; 
-
-      font-family: 'Times New Roman', serif;
-
-      line-height: 1.6;
-
-    ">
-
-      <div style="text-align: center; margin-bottom: 30px;">
-
-        <h2 style="margin: 0; color: #2c3e50;">EMPLOYMENT OFFER LETTER</h2>
-
-        <p style="margin: 5px 0; color: #7f8c8d;">${offer.terms.offerDate}</p>
-
-      </div>
-
- 
-
-      <div style="margin-bottom: 20px;">
-
-        <p style="margin: 0;">Dear <strong>${offer.terms.candidateName}</strong>,</p>
-
-      </div>
-
- 
-
-      <div style="margin-bottom: 20px;">
-
-        <p>We are pleased to offer you the position of <strong>${offer.terms.position}</strong> in our <strong>${offer.terms.department}</strong> department. This offer is contingent upon your acceptance of the terms and conditions outlined below.</p>
-
-      </div>
-
- 
-
-      <div style="margin-bottom: 20px;">
-
-        <h4 style="margin: 0 0 10px 0;">EMPLOYMENT TERMS:</h4>
-
-        <ul style="margin: 0; padding-left: 20px;">
-
-          <li><strong>Position:</strong> ${offer.terms.position}</li>
-
-          <li><strong>Department:</strong> ${offer.terms.department}</li>
-
-          <li><strong>Employment Type:</strong> ${offer.terms.employmentType}</li>
-
-          <li><strong>Salary:</strong> ${offer.terms.salary}</li>
-
-          <li><strong>Start Date:</strong> ${offer.terms.startDate}</li>
-
-          <li><strong>Work Schedule:</strong> ${offer.terms.schedule || 'To be discussed'}</li>
-
-          <li><strong>Work Location:</strong> ${offer.terms.location || 'Main Branch'}</li>
-
-          <li><strong>Probation Period:</strong> ${offer.terms.probation}</li>
-
-          <li><strong>Reporting To:</strong> ${offer.terms.reporting || 'Department Manager'}</li>
-
-        </ul>
-
-      </div>
-
- 
-
-      ${offer.terms.benefits ? `
-
-      <div style="margin-bottom: 20px;">
-
-        <h4 style="margin: 0 0 10px 0;">BENEFITS & COMPENSATION:</h4>
-
-        <p style="margin: 0;">${offer.terms.benefits}</p>
-
-      </div>
-
-      ` : ''}
-
- 
-
-      ${offer.terms.conditions ? `
-
-      <div style="margin-bottom: 20px;">
-
-        <h4 style="margin: 0 0 10px 0;">SPECIAL CONDITIONS:</h4>
-
-        <p style="margin: 0;">${offer.terms.conditions}</p>
-
-      </div>
-
-      ` : ''}
-
- 
-
-      <div style="margin-bottom: 20px;">
-
-        <p>This offer is valid until <strong>${offer.terms.validity || 'To be discussed'}</strong>. Please sign and return a copy of this letter to indicate your acceptance of these terms.</p>
-
-      </div>
-
- 
-
-      <div style="margin-top: 40px;">
-
-        <div style="display: flex; justify-content: space-between;">
-
-          <div>
-
-            <p style="margin: 0;">_________________________</p>
-
-            <p style="margin: 0;">Company Representative</p>
-
-            <p style="margin: 0;">Date: _________________</p>
-
-          </div>
-
-          <div>
-
-            <p style="margin: 0;">_________________________</p>
-
-            <p style="margin: 0;">${offer.terms.candidateName}</p>
-
-            <p style="margin: 0;">Date: _________________</p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
- 
-
-  var printWindow = window.open('', '_blank');
-
-  printWindow.document.write(`
-
-    <!DOCTYPE html>
-
-    <html>
-
-    <head>
-
-      <title>Employment Offer - ${offer.terms.candidateName}</title>
-
-      <style>
-
-        body { font-family: 'Times New Roman', serif; margin: 20px; }
-
-        .offer-document-preview { 
-
-          background: white; 
-
-          border: none; 
-
-          padding: 0; 
-
-          max-width: 100%;
-
-        }
-
-        @media print {
-
-          body { margin: 0; }
-
-        }
-
-      </style>
-
-    </head>
-
-    <body>
-
-      ${previewContent}
-
-    </body>
-
-    </html>
-
-  `);
-
-  printWindow.document.close();
-
-  printWindow.focus();
-
- 
-
   setTimeout(function() {
 
     printWindow.print();
@@ -4877,6 +4427,277 @@ function r_saveComm() {
 
   r_renderComms(); r_toast('Message sent to ' + to);
 
+}
+
+ 
+
+function r_openAdd()  { r_open('r_modal_add'); }
+
+function r_openComm() { r_open('r_modal_comm'); }
+
+function r_openInterview() { 
+
+  // Reset ALL form fields for new interview
+
+  var dropdown = document.getElementById('r_interview_applicant');
+
+  var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
+
+
+  // Show dropdown and hide display input for new interviews
+
+  dropdown.style.display = 'block';
+
+  applicantDisplay.style.display = 'none';
+
+  dropdown.disabled = false;
+
+  dropdown.value = '';
+
+  delete dropdown.dataset.currentApplicantId;
+
+  delete dropdown.dataset.currentApplicantName;
+
+  delete dropdown.dataset.originalStatus;
+
+
+
+  // Reset all form fields
+
+  document.getElementById('r_interview_position').value = '';
+
+  document.getElementById('r_interview_date').value = '';
+
+  document.getElementById('r_interview_time').value = '';
+
+  document.getElementById('r_interview_type').value = 'Phone Screen';
+
+  document.getElementById('r_interview_notes').value = '';
+
+  document.getElementById('r_interview_id').value = '';
+
+
+
+  document.getElementById('r_interview_modal_title').textContent = 'Schedule Interview';
+
+  
+
+  // Open modal FIRST so dropdown has proper dimensions
+
+  r_open('r_modal_interview');
+
+  
+
+  // Then populate applicant dropdown after modal is fully visible
+
+  if (typeof r_populateApplicantDropdownForInterview === 'function') {
+
+    // Wait longer and check if modal is actually visible before populating
+
+    setTimeout(function() {
+
+      var modal = document.getElementById('r_modal_interview');
+
+      if (modal && getComputedStyle(modal).display !== 'none') {
+
+        console.log('✅ Modal is visible, now populating dropdown');
+
+        r_populateApplicantDropdownForInterview();
+
+      } else {
+
+        console.log('⚠️ Modal still not visible, retrying...');
+
+        // Retry after another delay
+
+        setTimeout(function() {
+
+          r_populateApplicantDropdownForInterview();
+
+        }, 200);
+
+      }
+
+    }, 300); // Increased delay to 300ms
+
+  }
+
+}
+
+ 
+
+async function r_saveInterview() {
+
+  var dropdown = document.getElementById('r_interview_applicant');
+
+  var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
+  var applicantId, applicantName;
+
+ 
+
+  // PRIORITY: read from hidden fields written by the overlay before calling us
+  var hiddenNameEl = document.getElementById('r_interview_applicant_name_hidden');
+  var hiddenIdEl   = document.getElementById('r_interview_applicant_id_hidden');
+
+  if (hiddenNameEl && hiddenNameEl.value && hiddenNameEl.value.trim() !== '') {
+    // Overlay wrote these — most reliable path
+    applicantName = hiddenNameEl.value.trim();
+    applicantId   = hiddenIdEl ? hiddenIdEl.value : '';
+  } else if (dropdown.style.display === 'none' && applicantDisplay && applicantDisplay.style.display === 'block') {
+    // Edit mode fallback: strip " — Position" suffix if present
+    applicantName = applicantDisplay.value.split(' — ')[0].trim();
+    applicantId   = hiddenIdEl ? hiddenIdEl.value : '';
+  } else {
+    // New interview inline mode
+    var selectedOption = dropdown.options[dropdown.selectedIndex];
+    if (selectedOption && selectedOption.value && selectedOption.value !== '') {
+      applicantName = selectedOption.dataset.name
+                   || selectedOption.textContent.split(' — ')[0].trim()
+                   || selectedOption.value;
+      applicantId   = selectedOption.dataset.id || '';
+    }
+  }
+
+  var position = document.getElementById('r_interview_position').value;
+
+  var date = document.getElementById('r_interview_date').value;
+
+  var time = document.getElementById('r_interview_time').value;
+
+  var type = document.getElementById('r_interview_type').value;
+
+  var notes = document.getElementById('r_interview_notes').value;
+
+ 
+
+  // Get position from dropdown selection if not already set (only in normal mode)
+
+  if (!position && typeof selectedOption !== 'undefined' && selectedOption && selectedOption.dataset && selectedOption.dataset.position) {
+    position = selectedOption.dataset.position;
+    document.getElementById('r_interview_position').value = position;
+  }
+
+ 
+
+  if (!applicantName || !date || !time || !type) {
+
+    r_toast('Please fill all required fields', 'error');
+
+    return;
+
+  }
+
+ 
+
+  try {
+
+    var interviewId = document.getElementById('r_interview_id')?.value || null;
+
+    var finalNotes = notes;
+
+    var apiPayload = {
+
+      id: interviewId,
+
+      applicant_name: applicantName,
+
+      applicant_id: applicantId,
+
+      interview_date: date,
+
+      interview_time: time,
+
+      interview_type: type,
+
+      notes: finalNotes
+
+    };
+
+ 
+
+    const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'Accept': 'application/json'
+
+      },
+
+      body: JSON.stringify(apiPayload)
+
+    });
+
+ 
+
+    const data = await response.json();
+
+ 
+
+    if (data.success) {
+
+      // Determine message before clearing the form
+
+      var message = interviewId ? 'Interview updated successfully!' : 'Interview scheduled successfully!';
+
+ 
+
+      r_close('r_modal_interview');
+
+      // Clear form
+
+      document.getElementById('r_interview_position').value = '';
+
+      document.getElementById('r_interview_date').value = '';
+
+      document.getElementById('r_interview_time').value = '';
+
+      document.getElementById('r_interview_type').value = 'Phone Screen';
+
+      document.getElementById('r_interview_notes').value = '';
+
+      document.getElementById('r_interview_id').value = '';
+
+ 
+
+      r_toast(message);
+
+      // Add small delay to ensure database update completes
+
+      setTimeout(async () => {
+
+        await r_loadInterviews();
+
+        await r_loadFromStorage(); // Reload jobs to update interview counts
+
+        r_renderInterviews();
+
+        r_render(); // Re-render job cards with updated counts
+
+        r_updateStats();
+
+      }, 200);
+
+    } else {
+
+      console.error('API Error:', data);
+
+      r_toast('Error scheduling interview: ' + (data.error || 'Unknown error'), 'error');
+
+    }
+
+  } catch(e) {
+
+    console.error('Error saving interview:', e);
+
+    r_toast('Error scheduling interview', 'error');
+
+  }
 }
 
 </script>

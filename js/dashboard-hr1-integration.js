@@ -84,36 +84,80 @@
   });
 
   function openOverlay(iframeEl, modalId) {
-    // Clone the modal from the iframe's DOM
     try {
-      var iDoc = iframeEl.contentWindow.document;
+      var iWin = iframeEl.contentWindow;
+      var iDoc = iWin.document;
       var modal = iDoc.getElementById(modalId);
-      if (!modal) return;
+      if (!modal) { console.warn('Modal not found:', modalId); return; }
       var box = modal.querySelector('.modal-box');
-      if (!box) return;
-
-      // Deep clone
+      if (!box) { console.warn('No .modal-box in:', modalId); return; }
       var clone = box.cloneNode(true);
 
-      // Rewire buttons: close buttons → close overlay, action buttons → exec in iframe
-      clone.querySelectorAll('.modal-close, .btn-cancel-modal').forEach(function(btn) {
+      // Sync non-hidden inputs from overlay clone → iframe
+      function syncToIframe() {
+        clone.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(function(el) {
+          if (!el.id) return;
+          var iEl = iDoc.getElementById(el.id);
+          if (iEl) iEl.value = el.value;
+        });
+      }
+
+      // Close buttons
+      clone.querySelectorAll('.modal-close, .btn-cancel-modal, .btn-secondary').forEach(function(btn) {
         btn.onclick = null;
         btn.addEventListener('click', closeOverlay);
       });
 
-      clone.querySelectorAll('.btn-submit').forEach(function(btn) {
-        var origOnclick = btn.getAttribute('onclick');
+      // Action buttons — btn-submit AND btn-primary (but not cancel/secondary)
+      clone.querySelectorAll('.btn-submit, .btn-primary').forEach(function(btn) {
+        if (btn.classList.contains('btn-secondary') || btn.classList.contains('btn-cancel-modal')) return;
         btn.removeAttribute('onclick');
+        btn.onclick = null;
         btn.addEventListener('click', function() {
-          // Sync form values from parent clone back to iframe
-          clone.querySelectorAll('input,select,textarea').forEach(function(el) {
-            if (!el.id) return;
-            var iEl = iDoc.getElementById(el.id);
-            if (iEl) iEl.value = el.value;
-          });
-          // Execute original function in iframe
-          if (origOnclick) {
-            try { iframeEl.contentWindow.eval(origOnclick); } catch(err) { console.warn('exec err', err); }
+          syncToIframe();
+
+          if (modalId === 'r_modal_interview') {
+            // Determine selected applicant from overlay
+            var overlaySelect  = clone.querySelector('#r_interview_applicant');
+            var overlayDisplay = clone.querySelector('#r_interview_applicant_display');
+            var applicantName  = '';
+            var applicantId    = '';
+            var position       = '';
+
+            var isEditMode = overlayDisplay
+              && (overlayDisplay.style.display === 'block' || overlayDisplay.style.display !== 'none')
+              && overlayDisplay.value
+              && overlayDisplay.value !== '';
+
+            if (!isEditMode && overlaySelect && overlaySelect.style.display !== 'none' && overlaySelect.value) {
+              // New interview: read from overlay dropdown
+              var sel = overlaySelect.selectedOptions[0];
+              if (sel && sel.value) {
+                applicantName = sel.dataset.name     || sel.textContent.split(' — ')[0].trim();
+                applicantId   = sel.dataset.id       || '';
+                position      = sel.dataset.position || '';
+              }
+            } else if (isEditMode) {
+              // Edit mode: name is in display input, id is already in iframe hidden field
+              applicantName = overlayDisplay.value.split(' — ')[0].trim();
+              var existingId = iDoc.getElementById('r_interview_applicant_id_hidden');
+              applicantId   = existingId ? existingId.value : '';
+            }
+
+            // Write directly into iframe hidden fields
+            var iHidName = iDoc.getElementById('r_interview_applicant_name_hidden');
+            var iHidId   = iDoc.getElementById('r_interview_applicant_id_hidden');
+            var iPos     = iDoc.getElementById('r_interview_position');
+            if (iHidName) iHidName.value = applicantName;
+            if (iHidId && applicantId)   iHidId.value  = applicantId;
+            if (iPos   && position)      iPos.value    = position;
+
+            console.log('[overlay] Calling r_saveInterview — applicantName:', applicantName, 'applicantId:', applicantId);
+            try { iWin.r_saveInterview(); } catch(err) { console.warn('r_saveInterview err', err); }
+
+          } else if (modalId === 'r_modal_status') {
+            console.log('[overlay] Calling r_saveInterviewStatus');
+            try { iWin.r_saveInterviewStatus(); } catch(err) { console.warn('r_saveInterviewStatus err', err); }
           }
         });
       });
@@ -123,43 +167,43 @@
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
 
-      // If this is the interview modal, populate the applicant dropdown
+      // Populate applicant dropdown in overlay for NEW interview
       if (modalId === 'r_modal_interview') {
-        var drop = clone.querySelector('#r_interview_applicant');
-        if (drop) {
-          drop.innerHTML = '<option value="">Loading applicants...</option>';
-          drop.disabled = true;
-          fetch('../api/simple-api-new.php?action=get_applications')
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-              drop.innerHTML = '<option value="">Select an applicant...</option>';
-              if (Array.isArray(data) && data.length > 0) {
-                data.forEach(function(a) {
-                  var name = ((a.first_name||'') + ' ' + (a.last_name||'')).trim();
-                  var pos = a.position || '';
-                  var st  = a.status   || '';
-                  var opt = document.createElement('option');
-                  opt.value = a.id;
-                  opt.textContent = name + (pos?' - '+pos:'') + (st?' ('+st+')':'');
-                  drop.appendChild(opt);
+        var iApplicantSel  = iDoc.getElementById('r_interview_applicant');
+        var isEditModeNow  = iApplicantSel && iApplicantSel.style.display === 'none';
+
+        if (!isEditModeNow) {
+          var overlaySelectEl = clone.querySelector('#r_interview_applicant');
+          if (overlaySelectEl) {
+            // Clear hidden name so fresh selection is used
+            var iHN = iDoc.getElementById('r_interview_applicant_name_hidden');
+            if (iHN) iHN.value = '';
+
+            fetch('/microfinance/HR-1/api/simple-api-new.php?action=get_applications')
+              .then(function(r) { return r.json(); })
+              .then(function(data) {
+                var apps = Array.isArray(data) ? data : (data && data.data ? data.data : []);
+                overlaySelectEl.innerHTML = '<option value="">Select an applicant...</option>';
+                apps.forEach(function(app) {
+                  var fname    = app.first_name || app.fname || '';
+                  var lname    = app.last_name  || app.lname || '';
+                  var fullName = (fname + ' ' + lname).trim();
+                  var pos      = app.position || app.applied_position || '';
+                  var opt      = document.createElement('option');
+                  opt.value          = fullName;
+                  opt.textContent    = fullName + (pos ? ' — ' + pos : '');
+                  opt.dataset.id       = String(app.id || '');
+                  opt.dataset.position = pos;
+                  opt.dataset.name     = fullName;
+                  overlaySelectEl.appendChild(opt);
                 });
-              } else {
-                drop.innerHTML = '<option value="">No applicants found</option>';
-              }
-              drop.disabled = false;
-            })
-            .catch(function() {
-              drop.innerHTML = '<option value="">Error loading applicants</option>';
-              drop.disabled = false;
-            });
+              })
+              .catch(function(e) { console.warn('applicant fetch failed', e); });
+          }
         }
       }
-
-    } catch(err) {
-      console.warn('overlay error:', err);
-    }
+    } catch(err) { console.warn('overlay error:', err); }
   }
-
   function closeOverlay() {
     overlay.style.display = 'none';
     overlay.innerHTML = '';
