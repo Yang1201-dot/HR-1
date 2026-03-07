@@ -122,6 +122,39 @@
       overlay.appendChild(clone);
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+
+      // If this is the interview modal, populate the applicant dropdown
+      if (modalId === 'r_modal_interview') {
+        var drop = clone.querySelector('#r_interview_applicant');
+        if (drop) {
+          drop.innerHTML = '<option value="">Loading applicants...</option>';
+          drop.disabled = true;
+          fetch('../api/simple-api-new.php?action=get_applications')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+              drop.innerHTML = '<option value="">Select an applicant...</option>';
+              if (Array.isArray(data) && data.length > 0) {
+                data.forEach(function(a) {
+                  var name = ((a.first_name||'') + ' ' + (a.last_name||'')).trim();
+                  var pos = a.position || '';
+                  var st  = a.status   || '';
+                  var opt = document.createElement('option');
+                  opt.value = a.id;
+                  opt.textContent = name + (pos?' - '+pos:'') + (st?' ('+st+')':'');
+                  drop.appendChild(opt);
+                });
+              } else {
+                drop.innerHTML = '<option value="">No applicants found</option>';
+              }
+              drop.disabled = false;
+            })
+            .catch(function() {
+              drop.innerHTML = '<option value="">Error loading applicants</option>';
+              drop.disabled = false;
+            });
+        }
+      }
+
     } catch(err) {
       console.warn('overlay error:', err);
     }

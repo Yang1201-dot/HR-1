@@ -1,2374 +1,4886 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+
   <title>Recruitment Management</title>
+
   <link rel="stylesheet" href="../css/recruitment.css">
+
 </head>
+
 <body>
+
 <div class="hr-content">
+
   <div class="page-header">
+
     <div><h1 class="page-title">Recruitment Management</h1><p class="page-sub">Manage job postings, applications, interviews, and pre-employment processing</p></div>
+
   </div>
+
   <div class="stats-row">
+
     <div class="stat-card"><div class="stat-num c-green" id="r_s_active">0</div><div class="stat-label">Active Posts</div></div>
+
     <div class="stat-card"><div class="stat-num c-blue" id="r_s_apps">0</div><div class="stat-label">Applications</div></div>
+
     <div class="stat-card"><div class="stat-num c-purple" id="r_s_interviews">0</div><div class="stat-label">Interviews</div></div>
+
     <div class="stat-card"><div class="stat-num c-amber" id="r_s_offers">0</div><div class="stat-label">Offers Extended</div></div>
+
     <div class="stat-card"><div class="stat-num c-green" id="r_s_hired">0</div><div class="stat-label">Hired</div></div>
+
   </div>
+
   <div class="tab-bar">
+
     <button class="tab-btn active" onclick="r_tab('jobs',this)">Job Postings</button>
+
     <button class="tab-btn" onclick="r_tab('interviews',this)">Interview Scheduling</button>
+
     <button class="tab-btn" onclick="r_tab('offers',this)">Pre-Employment Processing</button>
+
     <button class="tab-btn" onclick="r_tab('communications',this)">Communications</button>
+
     <button class="tab-btn" onclick="r_tab('talent',this)">Talent Pool</button>
+
   </div>
+
   <div class="tab-panel active" id="r_tab_jobs">
+
     <div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openAdd()">+ Create Job Post</button></div>
+
     <div class="job-grid" id="r_jobs"></div>
+
   </div>
+
   <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openInterview()">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
+
   <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
+
   <div class="tab-panel" id="r_tab_communications"><div id="r_comms"></div></div>
+
   <div class="tab-panel" id="r_tab_talent"><div id="r_talent"></div></div>
+
 </div>
+
  
+
 <!-- Modal: Create Job Post -->
+
 <div class="modal-overlay" id="r_modal_add">
+
 <div class="modal-box">
+
   <button class="modal-close" onclick="r_close('r_modal_add')">&times;</button>
+
   <h2>Create Job Posting</h2>
+
   <div class="form-group"><label>Job Title <span class="req">*</span></label><input type="text" id="r_title" placeholder="e.g., Loan Officer"></div>
+
   <div class="form-row">
+
     <div class="form-group"><label>Department</label>
+
       <select id="r_dept"><option>Lending Operations</option><option>Customer Service</option><option>Finance &amp; Accounting</option><option>Information Technology</option><option>Human Resources</option><option>Marketing</option></select>
+
     </div>
+
     <div class="form-group"><label>Location</label><input type="text" id="r_location" placeholder="e.g., Main Branch"></div>
+
   </div>
+
   <div class="form-row">
+
     <div class="form-group"><label>Employment Type</label>
+
       <select id="r_emptype"><option>Full-time</option><option>Part-time</option><option>Contract</option></select>
+
     </div>
+
     <div class="form-group"><label>Salary Range</label><input type="text" id="r_salary" placeholder="e.g., ₱20,000 - ₱25,000"></div>
+
   </div>
+
   <div class="form-group"><label>Description <span class="req">*</span></label><textarea id="r_desc" placeholder="Job responsibilities, requirements, qualifications..."></textarea></div>
+
   <button class="btn btn-primary" onclick="r_save()">Post Job</button>
+
   <button class="btn btn-secondary" onclick="r_close('r_modal_add')">Cancel</button>
+
 </div>
+
 </div>
+
  
+
 <!-- Modal: Pre-Employment Processing -->
+
 <div class="modal-overlay" id="r_modal_offer">
+
 <div class="modal-box" style="max-width: 900px;">
+
   <button class="modal-close" onclick="r_close('r_modal_offer')">&times;</button>
+
   <h2>Pre-Employment Processing</h2>
+
  
+
   <div class="form-group">
+
     <label>Select Candidate <span class="req">*</span></label>
+
     <select id="r_off_candidate">
+
       <option value="">Choose a candidate...</option>
+
     </select>
+
     <button type="button" onclick="console.log('Manual test button clicked'); if(typeof window.r_populateCandidateData === 'function') { window.r_populateCandidateData(); } else { console.error('Function not available'); }" class="btn btn-sm btn-blue" style="margin-top: 5px;">🔧 Test Auto-fill</button>
+
   </div>
+
  
+
   <div class="form-row">
+
         <div class="form-group"><label>Position</label><input type="text" id="r_off_pos" readonly></div>
+
     <div class="form-group"><label>Department</label><input type="text" id="r_off_dept" readonly></div>
+
   </div>
+
  
+
   <div class="form-row">
+
     <div class="form-group"><label>Employment Type</label><input type="text" id="r_off_emptype" readonly></div>
+
     <div class="form-group"><label>Expected Salary</label><input type="text" id="r_off_expected_salary" readonly placeholder="From application"></div>
+
   </div>
+
  
+
   <div class="form-row">
+
     <div class="form-group"><label>Salary Offered <span class="req">*</span></label><input type="text" id="r_off_salary" placeholder="₱25,000"></div>
+
     <div class="form-group"><label>Start Date <span class="req">*</span></label><input type="date" id="r_off_start"></div>
+
   </div>
+
  
+
   <div class="form-row">
+
     <div class="form-group"><label>Work Schedule</label><input type="text" id="r_off_schedule" placeholder="Monday-Friday, 8:00 AM - 5:00 PM"></div>
+
     <div class="form-group"><label>Work Location</label><input type="text" id="r_off_location" placeholder="Main Branch"></div>
+
   </div>
+
  
+
   <div class="form-group"><label>Benefits & Compensation</label>
+
   <textarea id="r_off_benefits" placeholder="Health insurance, 13th month pay, vacation leaves, etc..." rows="3"></textarea>
+
  
+
   <div class="form-row">
+
     <div class="form-group"><label>Probation Period</label>
+
       <select id="r_off_probation">
+
         <option value="3 months">3 months</option>
+
         <option value="6 months">6 months</option>
+
         <option value="No probation">No probation</option>
+
       </select>
+
     </div>
+
     <div class="form-group"><label>Reporting To</label><input type="text" id="r_off_reporting" placeholder="Department Manager"></div>
+
   </div>
+
  
+
   <div class="form-group"><label>Special Conditions</label><textarea id="r_off_conditions" placeholder="Any special terms or conditions..." rows="2"></textarea></div>
+
  
+
   <div class="form-group"><label>Offer Valid Until</label><input type="date" id="r_off_validity"></div>
+
  
+
   <div class="form-group">
+
     <label>Offer Preview</label>
+
     <div id="offer_preview" class="offer-preview" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; background: var(--surface);"></div>
+
   </div>
+
  
+
   <div class="form-row" style="margin-top: 20px;">
+
     <button class="btn btn-secondary" onclick="r_close('r_modal_offer')">Cancel</button>
+
     <button class="btn btn-primary" onclick="r_generateOfferPDF()" id="generate_pdf_btn" disabled>📄 Generate PDF</button>
+
   </div>
+
 </div>
+
 </div>
+
  
+
 <!-- Modal: Send Communication -->
+
 <div class="modal-overlay" id="r_modal_comm">
+
 <div class="modal-box">
+
   <button class="modal-close" onclick="r_close('r_modal_comm')">&times;</button>
+
   <h2>Send Communication</h2>
+
   <div class="form-group"><label>Recipient <span class="req">*</span></label><input type="text" id="r_comm_to" placeholder="Applicant name or email"></div>
+
   <div class="form-group"><label>Subject <span class="req">*</span></label><input type="text" id="r_comm_subj" placeholder="Email subject"></div>
+
   <div class="form-group"><label>Message <span class="req">*</span></label><textarea id="r_comm_msg" placeholder="Your message..."></textarea></div>
+
   <button class="btn btn-primary" onclick="r_saveComm()">Send Message</button>
+
   <button class="btn btn-secondary" onclick="r_close('r_modal_comm')">Cancel</button>
+
 </div>
+
 </div>
+
  
+
 <!-- Modal: Schedule Interview -->
+
 <div class="modal-overlay" id="r_modal_interview">
+
 <div class="modal-box">
+
   <button class="modal-close" onclick="r_close('r_modal_interview')">&times;</button>
+
   <h2 id="r_interview_modal_title">Schedule Interview</h2>
+
   <div class="form-group"><label>Applicant Name <span class="req">*</span></label>
-    <select id="r_interview_applicant" placeholder="Select an applicant">
+
+    <select id="r_interview_applicant" placeholder="Select an applicant" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #ccc); border-radius: 4px; background: var(--surface, white); color: var(--text-primary, #333); font-family: inherit; font-size: 14px;">
+
       <option value="">Select an applicant...</option>
+
     </select>
+
     <input type="text" id="r_interview_applicant_display" style="display:none;" disabled placeholder="Applicant Name">
+
 </div>
+
       <input type="hidden" id="r_interview_id">
+
   <input type="hidden" id="r_interview_position">
+
   <div class="form-group"><label>Interview Date <span class="req">*</span></label><input type="date" id="r_interview_date"></div>
+
   <div class="form-group"><label>Interview Time <span class="req">*</span></label><input type="time" id="r_interview_time"></div>
+
   <div class="form-group"><label>Interview Type <span class="req">*</span></label>
+
     <select id="r_interview_type">
+
       <option value="Phone Screen">Phone Screen</option>
+
       <option value="Video Interview">Video Interview</option>
+
       <option value="In-Person Interview">In-Person Interview</option>
+
       <option value="Technical Assessment">Technical Assessment</option>
+
     </select>
+
   </div>
+
   <div class="form-group"><label>Notes</label><textarea id="r_interview_notes" placeholder="Additional notes about the interview..."></textarea></div>
+
   <button class="btn btn-primary" onclick="
+
   (async function() {
+
     try {
+
       var dropdown = document.getElementById('r_interview_applicant');
+
       var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
       var applicantId, applicantName;
 
+
+
       // Check if we're in editing mode (dropdown is hidden, display is shown)
+
       if (dropdown.style.display === 'none' && applicantDisplay.style.display === 'block') {
+
         // Use stored applicant data for editing
+
         applicantId = dropdown.dataset.currentApplicantId || '';
+
         applicantName = dropdown.dataset.currentApplicantName || '';
+
       } else {
+
         // Normal mode - get from dropdown selection
+
         applicantId = dropdown.value;
+
         var selectedOption = dropdown.options[dropdown.selectedIndex];
+
         applicantName = selectedOption ? selectedOption.dataset.applicantName : '';
+
       }
+
       var position = document.getElementById('r_interview_position').value;
+
       var date = document.getElementById('r_interview_date').value;
+
       var time = document.getElementById('r_interview_time').value;
+
       var type = document.getElementById('r_interview_type').value;
+
       var notes = document.getElementById('r_interview_notes').value;
 
+
+
       // Get position from dropdown selection if not already set (only in normal mode)
+
       if (!position && applicantName && !dropdown.disabled) {
+
         if (selectedOption && selectedOption.dataset.position) {
+
           position = selectedOption.dataset.position;
+
           document.getElementById('r_interview_position').value = position;
+
         }
+
       }
+
+
 
       if (!applicantName || !date || !time || !type) {
+
         alert('Please fill all required fields');
+
         return;
+
       }
+
+
 
       var interviewId = document.getElementById('r_interview_id')?.value || null;
+
       var finalNotes = notes;
 
+
+
       // Don't add status to notes anymore - we have dedicated status column
+
       // Keep notes clean and separate from status
 
+
+
       var apiPayload = {
+
         id: interviewId,
+
         applicant_name: applicantName,
+
         applicant_id: applicantId,
+
         interview_date: date,
+
         interview_time: time,
+
         interview_type: type,
+
         notes: finalNotes
+
       };
 
+
+
       const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+
         method: 'POST',
+
         headers: {
+
           'Content-Type': 'application/json',
+
           'Accept': 'application/json'
+
         },
+
         body: JSON.stringify(apiPayload)
+
       });
+
+
 
       const data = await response.json();
 
+
+
       if (data.success) {
+
         // Determine message before clearing the form
+
         var message = interviewId ? 'Interview updated successfully!' : 'Interview scheduled successfully!';
 
+
+
         // Close modal
+
         var modal = document.getElementById('r_modal_interview');
+
         if (modal) modal.classList.remove('active');
+
         
+
         // Clear form
+
         document.getElementById('r_interview_position').value = '';
+
         document.getElementById('r_interview_date').value = '';
+
         document.getElementById('r_interview_time').value = '';
+
         document.getElementById('r_interview_type').value = 'Phone Screen';
+
         document.getElementById('r_interview_notes').value = '';
+
         document.getElementById('r_interview_id').value = '';
 
+
+
         // Show toast notification instead of alert
+
         if (typeof r_toast === 'function') {
+
           r_toast(message, 'success');
+
         } else {
+
           // Fallback to console if toast function not available
+
           console.log(message);
+
         }
+
         // Add small delay to ensure database update completes
+
         setTimeout(async () => {
+
           // Try to reload data if functions are available
+
           if (typeof r_loadInterviews === 'function') {
+
             await r_loadInterviews();
+
             if (typeof r_renderInterviews === 'function') r_renderInterviews();
+
             if (typeof r_loadFromStorage === 'function') await r_loadFromStorage();
+
             if (typeof r_render === 'function') r_render();
+
             if (typeof r_updateStats === 'function') r_updateStats();
+
           } else {
+
             // Fallback: reload page
+
             window.location.reload();
+
           }
+
         }, 200);
+
       } else {
+
         console.error('API Error:', data);
+
         alert('Error scheduling interview: ' + (data.error || 'Unknown error'));
+
       }
+
     } catch(e) {
+
       console.error('Error saving interview:', e);
+
       alert('Error scheduling interview');
+
     }
+
   })();
+
   ">Schedule Interview</button>
+
   <button class="btn btn-secondary" onclick="r_close('r_modal_interview')">Cancel</button>
+
 </div>
+
 </div>
+
  
+
 <!-- Modal: Change Interview Status -->
+
 <div class="modal-overlay" id="r_modal_status">
+
 <div class="modal-box">
+
   <button class="modal-close" onclick="r_close('r_modal_status')">&times;</button>
+
   <h2>Change Interview Status</h2>
+
   <div class="form-group"><label>Interview Status <span class="req">*</span></label>
+
     <select id="r_interview_status">
+
       <option value="Scheduled">Scheduled</option>
+
       <option value="On-going">On-going</option>
+
       <option value="Passed">Passed</option>
+
       <option value="Failed">Failed</option>
+
     </select>
+
   </div>
+
   <input type="hidden" id="r_status_interview_id">
+
   <button class="btn btn-primary" onclick="
+
   // Simple API call to update interview status
+
   (function() {
+
     var interviewId = document.getElementById('r_status_interview_id').value;
+
     var newStatus = document.getElementById('r_interview_status').value;
+
     
+
     if (!interviewId || !newStatus) {
+
       alert('Please select a status');
+
       return;
+
     }
+
     
+
     // Show loading state
+
     var btn = event.target;
+
     var originalText = btn.textContent;
+
     btn.textContent = 'Updating...';
+
     btn.disabled = true;
+
     
+
     // Update interview status via new API
+
     fetch('../api/simple-api-new.php?action=update_interview_status', {
+
       method: 'POST',
+
       headers: {
+
         'Content-Type': 'application/json',
+
         'Accept': 'application/json'
+
       },
+
       body: JSON.stringify({
+
         id: interviewId,
+
         status: newStatus
+
       })
+
     })
+
     .then(function(response) {
+
       return response.json();
+
     })
+
     .then(function(data) {
+
       // Restore button state
+
       btn.textContent = originalText;
+
       btn.disabled = false;
+
       
+
       if (data.success) {
+
         // Close modal using multiple methods
+
         var modal = document.getElementById('r_modal_status');
+
         if (modal) {
+
           modal.classList.remove('active');
+
         }
+
         
+
         // Show toast notification instead of alert
+
         if (typeof r_toast === 'function') {
+
           r_toast('Interview status updated successfully!', 'success');
+
         } else {
+
           // Fallback to console if toast function not available
+
           console.log('Interview status updated successfully!');
+
         }
+
         
+
         // Reload data and refresh display
+
         setTimeout(function() {
+
           // Try multiple reload methods
+
           if (typeof window.r_loadInterviews === 'function') {
+
             window.r_loadInterviews().then(function() {
+
               if (typeof window.r_renderInterviews === 'function') {
+
                 window.r_renderInterviews();
+
               }
+
               if (typeof window.r_updateStats === 'function') {
+
                 window.r_updateStats();
+
               }
+
             });
+
           } else {
+
             // Fallback: force page reload
+
             window.location.reload();
+
           }
+
         }, 200);
+
       } else {
+
         console.error('API Error:', data);
+
         alert('Error updating interview status: ' + (data.error || 'Unknown error'));
+
       }
+
     })
+
     .catch(function(e) {
+
       console.error('Fetch Error:', e);
+
       btn.textContent = originalText;
+
       btn.disabled = false;
+
       alert('Error updating interview status');
+
     });
+
   })();
+
 ">Update Status</button>
+
   <button class="btn btn-secondary" onclick="r_close('r_modal_status')">Cancel</button>
+
 </div>
+
 </div>
+
  
-<script src="recruitment-applicant-helper.js?v=1772790400012"></script>
+
+<style>
+
+/* Ensure applicant dropdown is visible and properly styled */
+
+#r_interview_applicant {
+
+  width: 100% !important;
+
+  padding: 8px !important;
+
+  border: 2px solid #007bff !important;
+
+  border-radius: 4px !important;
+
+  background: var(--surface, white) !important;
+
+  color: var(--text-primary, #333) !important;
+
+  font-family: inherit !important;
+
+  font-size: 14px !important;
+
+  display: block !important;
+
+  visibility: visible !important;
+
+  opacity: 1 !important;
+
+  height: auto !important;
+
+  min-height: 40px !important;
+
+  position: relative !important;
+
+  z-index: 1000 !important;
+
+  cursor: pointer !important;
+
+  transition: border-color 0.3s ease !important;
+
+}
+
+
+
+#r_interview_applicant:hover {
+
+  border-color: #0056b3 !important;
+
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
+
+}
+
+
+
+#r_interview_applicant:focus {
+
+  outline: none !important;
+
+  border-color: #0056b3 !important;
+
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
+
+}
+
+
+
+#r_interview_applicant option {
+
+  background: var(--surface, white) !important;
+
+  color: var(--text-primary, #333) !important;
+
+  padding: 4px 8px !important;
+
+  display: block !important;
+
+  visibility: visible !important;
+
+  opacity: 1 !important;
+
+  height: auto !important;
+
+  min-height: 25px !important;
+
+}
+
+
+
+/* Dark mode support */
+
+body.dark-mode #r_interview_applicant,
+
+.dark-mode #r_interview_applicant,
+
+[data-theme="dark"] #r_interview_applicant {
+
+  background: #2d3748 !important;
+
+  color: #f7fafc !important;
+
+  border-color: #4a5568 !important;
+
+}
+
+
+
+body.dark-mode #r_interview_applicant option,
+
+.dark-mode #r_interview_applicant option,
+
+[data-theme="dark"] #r_interview_applicant option {
+
+  background: #2d3748 !important;
+
+  color: #f7fafc !important;
+
+}
+
+</style>
+
+
+
+<!-- recruitment-applicant-helper.js removed: functionality inlined below -->
+
 <script src="interview-status-update.js?v=1772790400012"></script>
+
 <script>
+
 // Ensure interview status column exists
+
 fetch('../api/simple-api-new.php?action=ensure_interview_status_column', {
+
   method: 'POST',
+
   headers: {
+
     'Content-Type': 'application/json',
+
     'Accept': 'application/json'
+
   }
+
 })
+
 .then(function(response) {
+
   return response.json();
+
 })
+
 .then(function(data) {
+
   console.log('Interview status column check:', data);
+
 })
+
 .catch(function(e) {
+
   console.error('Error ensuring status column:', e);
+
 });
+
+
 
 // Debug: Check if function is accessible
+
 console.log('Script loading - checking function accessibility...');
+
   
+
   // Persistence check - ensure functions remain available
+
   setInterval(function() {
+
     if (typeof window.r_saveInterviewStatus !== 'function') {
+
       console.error('⚠️ r_saveInterviewStatus was lost, reassigning...');
+
       window.r_saveInterviewStatus = r_saveInterviewStatus;
+
     }
+
     if (typeof window.r_saveInterview !== 'function') {
+
       console.error('⚠️ r_saveInterview was lost, reassigning...');
+
       window.r_saveInterview = r_saveInterview;
+
     }
+
     if (typeof window.r_close !== 'function') {
+
       console.error('⚠️ r_close was lost, reassigning...');
+
       window.r_close = r_close;
+
     }
+
   }, 1000);
+
   
+
   setTimeout(function() {
+
     console.log('r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
+
     console.log('window.r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
+
     if (typeof window.r_saveInterviewStatus === 'function') {
+
       console.log('✅ r_saveInterviewStatus is properly defined and accessible');
+
     } else {
+
       console.error('❌ r_saveInterviewStatus is NOT accessible');
+
     }
+
   }, 1000);
+
+
 
 var JOBS = [], OFFERS = [], COMMS = [], INTERVIEWS = [];
+
  
+
 /* ── Utility functions ── */
+
 function esc(str) {
+
   if (!str) return '';
+
   return String(str).replace(/[&<>"']/g, function(m) {
+
     return {
+
       '&': '&amp;',
+
       '<': '&lt;',
+
       '>': '&gt;',
+
       '"': '&quot;',
+
       "'": '&#39;'
+
     }[m];
+
   });
+
 }
+
  
+
 function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
  
+
 function formatTime(time) {
+
   if (!time) return 'No time';
+
   var [hours, minutes] = time.split(':');
+
   var hour = parseInt(hours);
+
   var ampm = hour >= 12 ? 'PM' : 'AM';
+
   hour = hour % 12;
+
   hour = hour === 0 ? 12 : hour;
+
   return hour + ':' + minutes + ' ' + ampm;
+
 }
+
  
+
 // Standalone redirect detection
+
 +(function() {
+
   'use strict';
+
  
+
   function isInIframe() {
+
     try {
+
       return window.self !== window.top;
+
     } catch (e) {
+
       return true;
+
     }
+
   }
+
  
+
   function getModuleName() {
+
     var path = window.location.pathname;
+
     var filename = path.split('/').pop();
+
     return filename.replace('.html', '');
+
   }
+
  
+
   function redirectToDashboard(moduleName) {
+
     var dashboardUrl = window.location.pathname.replace(/\/[^\/]*$/, '/dashboard.html');
+
     var separator = dashboardUrl.includes('?') ? '&' : '?';
+
     var targetUrl = dashboardUrl + separator + 'module=' + encodeURIComponent(moduleName);
+
     window.location.replace(targetUrl);
+
   }
+
  
+
   if (!isInIframe()) {
+
     var moduleName = getModuleName();
+
     console.log('Module loaded standalone, redirecting to dashboard with module:', moduleName);
+
  
+
     document.body.innerHTML = `
+
       <div style="
+
         display: flex;
+
         justify-content: center;
+
         align-items: center;
+
         height: 100vh;
+
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
         background: #f8f9fa;
+
         color: #2ca078;
+
         font-size: 18px;
+
         font-weight: 600;
+
       ">
+
         <div style="text-align: center;">
+
           <div style="
+
             width: 40px;
+
             height: 40px;
+
             border: 4px solid #e5e7eb;
+
             border-top: 4px solid #2ca078;
+
             border-radius: 50%;
+
             animation: spin 1s linear infinite;
+
             margin: 0 auto 20px;
+
           "></div>
+
           Loading HR Dashboard...
+
         </div>
+
       </div>
+
       <style>
+
         @keyframes spin {
+
           0% { transform: rotate(0deg); }
+
           100% { transform: rotate(360deg); }
+
         }
+
       </style>
+
     `;
+
  
+
     setTimeout(function() {
+
       redirectToDashboard(moduleName);
+
     }, 500);
+
     return;
+
   } else {
+
     console.log('Module loaded in dashboard context');
+
   }
+
 })();
+
  
+
 /* ── Pre-Employment Processing Functions ── */
+
 var selectedCandidate = null;
+
  
+
 // Make function globally accessible
+
 window.r_populateCandidateData = function() {
+
   console.log('r_populateCandidateData called');
+
  
+
   var select = document.getElementById('r_off_candidate');
+
   var selectedOption = select.options[select.selectedIndex];
+
  
+
   console.log('Selected option:', selectedOption);
+
  
+
   if (!selectedOption.value) {
+
     console.log('No candidate selected, disabling PDF button');
+
     document.getElementById('generate_pdf_btn').disabled = true;
+
     // Clear fields
+
     document.getElementById('r_off_pos').value = '';
+
     document.getElementById('r_off_dept').value = '';
+
     document.getElementById('r_off_emptype').value = '';
+
     document.getElementById('r_off_expected_salary').value = '';
+
     document.getElementById('offer_preview').innerHTML = '';
+
     return;
+
   }
+
  
+
   try {
+
     selectedCandidate = JSON.parse(selectedOption.dataset.interview);
+
     console.log('Selected candidate:', selectedCandidate);
+
  
+
     // Get applicant info for expected salary
+
     var applicantName = selectedCandidate.applicant_name || 'Unknown Applicant';
+
     var expectedSalary = '';
+
  
+
     // Find applicant in cache to get expected salary
+
     var applicant = APPLICATIONS_CACHE.find(function(app) { 
+
       return (app.first_name + ' ' + app.last_name) === applicantName || 
+
              app.id === selectedCandidate.applicant_id || 
+
              app.id === selectedCandidate.applicant_name;
+
     });
+
  
+
     if (applicant && applicant.expected_salary) {
+
       expectedSalary = applicant.expected_salary;
+
     }
+
  
+
     // Populate candidate data
+
     document.getElementById('r_off_pos').value = selectedCandidate.position || '';
+
     document.getElementById('r_off_expected_salary').value = expectedSalary;
+
  
+
     // Try to get department and employment type from job
+
     var job = JOBS.find(function(j) { 
+
       return j.title.toLowerCase() === (selectedCandidate.position || '').toLowerCase();
+
     });
+
  
+
     console.log('Found job:', job);
+
  
+
     if (job) {
+
       document.getElementById('r_off_dept').value = job.dept || '';
+
       document.getElementById('r_off_emptype').value = job.emptype || '';
+
     }
+
  
+
     // Enable PDF button and generate preview
+
     document.getElementById('generate_pdf_btn').disabled = false;
+
     r_generateOfferPreview();
+
     console.log('PDF button enabled and preview generated');
+
   } catch(e) {
+
     console.error('Error in r_populateCandidateData:', e);
+
   }
+
 }
+
  
+
 /* ── Storage keys ── */
+
 var KEY_JOBS = 'careers_job_postings';
+
 var KEY_APPS = 'careers_applications';
+
  
+
 /* ── SVG icons ── */
+
 var ICO = {
+
   cal: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+
   usr: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+
   mic: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'
+
 };
+
  
+
 /* ── Load from localStorage on init ── */
+
 async function r_loadFromStorage() {
+
   console.log('Loading jobs from API...');
+
   try {
+
     const response = await fetch('../api/simple-api-new.php?action=get_job_postings');
+
     const data = await response.json();
+
     console.log('Jobs API Response:', data);
+
  
+
     if (data.error) {
+
       console.error('Error loading jobs:', data.error);
+
       JOBS = [];
+
     } else {
+
       // Check if we need to migrate from localStorage
+
       var localJobs = [];
+
       try {
+
         var j = localStorage.getItem(KEY_JOBS);
+
         localJobs = j ? JSON.parse(j) : [];
+
         console.log('Found localStorage jobs:', localJobs.length);
+
         if (localJobs.length > 0) {
+
           console.log('Sample localStorage job:', localJobs[0]);
+
         }
+
       } catch(e) {
+
         console.log('No localStorage jobs found:', e);
+
       }
+
  
+
       // If database is empty but localStorage has jobs, migrate them
+
       if (data.length === 0 && localJobs.length > 0) {
+
         console.log('Database is empty, localStorage has jobs. Starting migration...');
+
         await r_migrateJobsToDatabase(localJobs);
+
  
+
         // Reload from database after migration
+
         console.log('Reloading from database after migration...');
+
         const migrationResponse = await fetch('../api/simple-api-new.php?action=get_job_postings');
+
         const migrationData = await migrationResponse.json();
+
         console.log('Migration reload response:', migrationData);
+
         if (!migrationData.error) {
+
           data = migrationData;
+
         }
+
       }
+
  
+
       JOBS = data.map(function(job) {
+
         return {
+
           id: job.id,
+
           title: job.title,
+
           dept: job.department,
+
           location: job.location,
+
           emptype: job.employment_type,
+
           desc: job.description,
+
           requirements: job.requirements,
+
           benefits: job.benefits,
+
           salary: job.salary_range,
+
           status: job.status,
+
           posted: job.posted_date,
+
           apps: (job.applicants && job.applicants.length) || 0,
+
           interviews: INTERVIEWS.filter(function(interview) {
+
             var interviewPosition = interview.position || interview.job_position || interview.applied_position || '';
+
  
+
             // Extract position from notes if not found in dedicated fields
+
             if (!interviewPosition && interview.notes) {
+
               var positionMatch = interview.notes.match(/Position:\s*(.+)/);
+
               if (positionMatch) {
+
                 interviewPosition = positionMatch[1].trim();
+
               }
+
             }
+
  
+
             return interview.job_id === job.id ||
+
                    (interviewPosition && interviewPosition.toLowerCase() === job.title.toLowerCase());
+
           }).length,
+
           applicants: job.applicants || []
+
         };
+
       });
+
       console.log('Processed JOBS:', JOBS);
+
     }
+
   } catch(e) { 
+
     console.error('Error loading jobs:', e);
+
     JOBS = []; 
+
   }
+
 }
+
  
+
 async function r_migrateJobsToDatabase(localJobs) {
+
   console.log('Starting migration of', localJobs.length, 'jobs...');
+
  
+
   for (var i = 0; i < localJobs.length; i++) {
+
     var job = localJobs[i];
+
     try {
+
       const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+
         method: 'POST',
+
         headers: {
+
           'Content-Type': 'application/json',
+
           'Accept': 'application/json'
+
         },
+
         body: JSON.stringify({
+
           title: job.title,
+
           department: job.dept,
+
           location: job.location,
+
           employment_type: job.emptype,
+
           description: job.desc,
+
           salary_range: job.salary || '',
+
           status: job.status || 'Active'
+
         })
+
       });
+
  
+
       const data = await response.json();
+
       if (data.success) {
+
         console.log('Migrated job:', job.title);
+
       } else {
+
         console.error('Failed to migrate job:', job.title, data.error);
+
       }
+
     } catch(e) {
+
       console.error('Error migrating job:', job.title, e);
+
     }
+
   }
+
  
+
   console.log('Migration completed. Clearing localStorage...');
+
   localStorage.removeItem(KEY_JOBS);
+
 }
+
  
+
 function r_saveJobs() {
+
   try { 
+
     console.log('Saving jobs:', JOBS);
+
     localStorage.setItem(KEY_JOBS, JSON.stringify(JOBS));
+
     console.log('Jobs saved successfully');
+
   } catch(e) { 
+
     console.error('Error saving jobs:', e);
+
   }
+
 }
+
  
+
 // Manual migration function
+
 async function r_manualMigrate() {
+
   console.log('Manual migration triggered...');
+
  
+
   // Check localStorage first
+
   var localJobs = [];
+
   try {
+
     var j = localStorage.getItem(KEY_JOBS);
+
     localJobs = j ? JSON.parse(j) : [];
+
     console.log('Found localStorage jobs:', localJobs.length);
+
   } catch(e) {
+
     console.log('No localStorage jobs found:', e);
+
   }
+
  
+
   if (localJobs.length > 0) {
+
     console.log('Migrating localStorage jobs...');
+
     await r_migrateJobsToDatabase(localJobs);
+
     await r_loadFromStorage();
+
     r_render();
+
     r_updateStats();
+
     r_toast('Jobs migrated successfully!');
+
   } else {
+
     console.log('No localStorage jobs found, creating sample jobs...');
+
     await r_createSampleJobs();
+
     await r_loadFromStorage();
+
     r_render();
+
     r_updateStats();
+
     r_toast('Sample jobs created!');
+
   }
+
 }
+
  
+
 // Create sample jobs if none exist
+
 async function r_createSampleJobs() {
+
   console.log('Creating sample jobs...');
+
  
+
   var sampleJobs = [
+
     {
+
       title: 'Loan Officer',
+
       department: 'Lending Operations',
+
       location: 'Main Branch',
+
       employment_type: 'Full-time',
+
       description: 'Responsible for processing loan applications, assessing creditworthiness, and providing excellent customer service to clients seeking financial assistance.',
+
       salary_range: '₱20,000 - ₱25,000',
+
       status: 'Active'
+
     },
+
     {
+
       title: 'Customer Service Representative',
+
       department: 'Customer Service',
+
       location: 'Main Branch',
+
       employment_type: 'Full-time',
+
       description: 'Handle customer inquiries, resolve complaints, and provide information about products and services. Maintain high level of customer satisfaction.',
+
       salary_range: '₱15,000 - ₱18,000',
+
       status: 'Active'
+
     },
+
     {
+
       title: 'Accountant',
+
       department: 'Finance & Accounting',
+
       location: 'Head Office',
+
       employment_type: 'Full-time',
+
       description: 'Manage financial records, prepare financial statements, handle tax compliance, and provide financial analysis and reporting.',
+
       salary_range: '₱25,000 - ₱30,000',
+
       status: 'Active'
+
     },
+
     {
+
       title: 'IT Support Specialist',
+
       department: 'Information Technology',
+
       location: 'Head Office',
+
       employment_type: 'Full-time',
+
       description: 'Provide technical support to staff, maintain IT infrastructure, troubleshoot hardware and software issues, and ensure system security.',
+
       salary_range: '₱18,000 - ₱22,000',
+
       status: 'Active'
+
     },
+
     {
+
       title: 'HR Assistant',
+
       department: 'Human Resources',
+
       location: 'Main Branch',
+
       employment_type: 'Full-time',
+
       description: 'Assist with recruitment, employee relations, payroll processing, and maintain HR records. Support various HR functions and initiatives.',
+
       salary_range: '₱16,000 - ₱20,000',
+
       status: 'Active'
+
     }
+
   ];
+
  
+
   for (var i = 0; i < sampleJobs.length; i++) {
+
     var job = sampleJobs[i];
+
     try {
+
       const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+
         method: 'POST',
+
         headers: {
+
           'Content-Type': 'application/json',
+
           'Accept': 'application/json'
+
         },
+
         body: JSON.stringify(job)
+
       });
+
  
+
       const data = await response.json();
+
       if (data.success) {
+
         console.log('Created sample job:', job.title);
+
       } else {
+
         console.error('Failed to create sample job:', job.title, data.error);
+
       }
+
     } catch(e) {
+
       console.error('Error creating sample job:', job.title, e);
+
     }
+
   }
+
  
+
   console.log('Sample jobs creation completed');
+
 }
+
  
+
 // Load interviews from database
+
 async function r_loadInterviews() {
+
   console.log('Loading interviews from database...');
+
   try {
+
     const response = await fetch('../api/simple-api-new.php?action=get_interviews');
+
     const data = await response.json();
+
     console.log('Interviews API Response:', data);
+
  
+
     if (data.error) {
+
       console.error('Error loading interviews:', data.error);
+
       INTERVIEWS = [];
+
     } else {
+
       INTERVIEWS = data;
+
       console.log('Processed INTERVIEWS:', INTERVIEWS);
+
     }
+
   } catch(e) { 
+
     console.error('Error loading interviews:', e);
+
     INTERVIEWS = []; 
+
   }
+
 }
+
  
+
 // Global cache for applications data
+
 var APPLICATIONS_CACHE = [];
+
  
+
 // Render job cards
+
 function r_render() {
+
   var el = document.getElementById('r_jobs'); if (!el) return;
+
   if (!JOBS.length) {
+
     el.className = '';
+
     el.innerHTML = '<div class="empty-state">No job postings yet. Click <strong>+ Create Job Post</strong> to get started.</div>';
+
     return;
+
   }
+
   el.className = 'job-grid';
+
   el.innerHTML = JOBS.map(function(j) {
+
     var desc = (j.desc || '').length > 100 ? j.desc.substring(0,100) + '...' : j.desc;
+
  
+
     // Calculate actual interview count for this job
+
     var interviewCount = 0;
+
     if (j.applicants && j.applicants.length > 0) {
+
       // Count interviews for applicants who applied to this job
+
       interviewCount = INTERVIEWS.filter(function(interview) {
+
         // Find if this interview belongs to an applicant of this job
+
         return j.applicants.some(function(applicant) {
+
           // Match by applicant ID or name
+
           return interview.applicant_id == applicant.id || 
+
                  interview.applicant_name == applicant.id ||
+
                  (interview.applicant_name && 
+
                   (interview.applicant_name === (applicant.first_name + ' ' + applicant.last_name)));
+
         });
+
       }).length;
+
     }
+
  
+
     return '<div class="job-card">' +
+
       '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">' +
+
         '<div><h3 style="font-size:17px;margin-bottom:3px;">' + esc(j.title) + '</h3>' +
+
         '<p style="font-size:13px;color:var(--text-secondary);">' + esc(j.dept) + ' &bull; ' + esc(j.location) + '</p></div>' +
+
         '<span class="badge ' + (j.status === 'Active' ? 'bd-active' : 'bd-draft') + '">' + j.status + '</span>' +
+
       '</div>' +
+
       '<p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">' + esc(desc) + '</p>' +
+
       '<div class="meta-row">' +
+
         '<span>' + ICO.cal + esc(j.posted) + '</span>' +
+
         '<span>' + ICO.usr + j.apps + ' applicant' + (j.apps !== 1 ? 's' : '') + '</span>' +
+
         '<span>' + ICO.mic + interviewCount + ' interview' + (interviewCount !== 1 ? 's' : '') + '</span>' +
+
       '</div>' +
+
       '<div style="display:flex;gap:8px;">' +
+
         '<button class="btn-sm bsm-blue" onclick="r_viewDetails(\'' + j.id + '\')">View Details</button>' +
+
         '<button class="btn-sm bsm-red" data-jid="' + j.id + '" onclick="r_deleteJob(this.dataset.jid)">Delete</button>' +
+
       '</div>' +
+
     '</div>';
+
   }).join('');
+
 }
+
  
+
 // Update statistics
+
 async function r_updateStats() {
+
   // Load applications data to get accurate hired count
+
   try {
+
     const response = await fetch('../api/simple-api-new.php?action=get_applications');
+
     const applications = await response.json();
+
  
+
     function set(id, v) { 
+
       var e = document.getElementById(id); 
+
       if (e) {
+
         // Convert to number to remove any leading zeros
+
         var numValue = parseInt(v, 10) || 0;
+
         e.textContent = numValue;
+
       }
+
     }
+
  
+
     set('r_s_active',     JOBS.filter(function(j) { return j.status === 'Active'; }).length);
+
     set('r_s_apps',       JOBS.reduce(function(sum, j) { return sum + (j.apps||0); }, 0));
+
     set('r_s_interviews', INTERVIEWS.length);
+
     set('r_s_offers',     OFFERS.length);
+
  
+
     // Count hired from actual applications data (same logic as Application Management)
+
     var hiredCount = 0;
+
     if (!applications.error && applications.length > 0) {
+
       hiredCount = applications.filter(function(app) { 
+
         return (app.status || '').toLowerCase() === 'hired'; 
+
       }).length;
+
     }
+
     set('r_s_hired', hiredCount);
+
  
+
     console.log('Recruitment stats updated - Hired count:', hiredCount, 'from', applications.length, 'applications');
+
   } catch(e) {
+
     console.error('Error updating recruitment stats:', e);
+
     // Fallback to original logic if API fails
+
     function set(id, v) { 
+
       var e = document.getElementById(id); 
+
       if (e) {
+
         var numValue = parseInt(v, 10) || 0;
+
         e.textContent = numValue;
+
       }
+
     }
+
     set('r_s_hired', OFFERS.filter(function(o) { return o.status === 'Accepted'; }).length);
+
   }
+
 }
+
  
+
 // Render interviews
+
 function r_renderInterviews() {
+
   try {
+
     console.log('Rendering interviews:', INTERVIEWS.length);
+
  
+
     var el = document.getElementById('r_interviews'); 
+
     console.log('  - Element found:', !!el);
+
  
+
     if (!el) {
+
       console.error(' r_interviews element not found!');
+
       return;
+
     }
+
  
+
     if (!INTERVIEWS.length) {
+
       console.log(' No interviews to display, showing empty state');
+
       el.innerHTML = '<div class="empty-state">No interviews scheduled yet. Click <strong>+ Schedule Interview</strong> to get started.</div>';
+
       return;
+
     }
+
  
+
     console.log(' Rendering', INTERVIEWS.length, 'interviews');
+
  
+
     el.innerHTML = INTERVIEWS.map(function(interview) {
+
       console.log('  Rendering interview:', interview.applicant_name);
+
       var interviewDate = interview.interview_date ? interview.interview_date.split('-').reverse().join('/') : 'No date';
+
       var interviewTime = interview.interview_time ? formatTime(interview.interview_time) : 'No time';
+
       var applicantName = interview.applicant_name || 'Unknown Applicant';
+
  
+
       // If applicant_name is just an ID, get the actual name from cached applications data
+
       if (applicantName && /^\d+$/.test(applicantName)) {
+
         var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
+
         if (applicant) {
+
           applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+
         } else {
+
           applicantName = 'Unknown Applicant';
+
         }
+
       }
+
       var interviewType = interview.interview_type || 'Unknown Type';
+
       var interviewNotes = interview.notes || '';
+
       // Clean notes for display (remove status and status notes)
+
       var displayNotes = interviewNotes.replace(/Status:\s*.+?$/gm, '').trim();
+
       displayNotes = displayNotes.replace(/Status:\s*.+?\n/gm, '').trim();
+
       displayNotes = displayNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
+
       displayNotes = displayNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
+
       displayNotes = displayNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
+
  
+
       // Only show notes section if there are actual user notes
+
       var showNotes = displayNotes && displayNotes.trim().length > 0;
+
       var position = interview.position || '';
+
  
+
       // If no position in interview, try to get it from applicant's job application
+
       if (!position && applicantName && applicantName !== 'Unknown Applicant') {
+
         // Find the applicant in the cache to get their position
+
         var applicant = APPLICATIONS_CACHE.find(function(app) { 
+
           return (app.first_name + ' ' + app.last_name) === applicantName || 
+
                  app.id === interview.applicant_id || 
+
                  app.id === interview.applicant_name;
+
         });
+
         if (applicant && applicant.position) {
+
           position = applicant.position;
+
         }
+
       }
+
+
 
       // Use dedicated status field instead of parsing from notes
+
       var status = interview.status || 'Scheduled'; // Default status
 
+
+
       // Determine status badge class
+
       var statusBadgeClass = 'bd-scheduled'; // Default
+
       if (status.toLowerCase() === 'passed') statusBadgeClass = 'bd-accepted';
+
       else if (status.toLowerCase() === 'failed') statusBadgeClass = 'bd-rejected';
+
       else if (status.toLowerCase() === 'on-going') statusBadgeClass = 'bd-pending';
 
+
+
       return '<div class="interview-card">' +
+
         '<div class="interview-header">' +
+
           '<div class="interview-info">' +
+
             '<h3>' + applicantName + '</h3>' +
+
             '<p>' + interviewType + '</p>' +
+
             (position ? '<p style="font-size:12px;color:var(--text-secondary);margin-top:4px;"> ' + position + '</p>' : '<p style="font-size:12px;color:var(--text-secondary);margin-top:4px;"> No position specified</p>') +
+
           '</div>' +
+
           '<span class="badge ' + statusBadgeClass + '">' + status + '</span>' +
+
         '</div>' +
+
         '<div class="interview-details">' +
+
           '<p><strong>Date:</strong> ' + interviewDate + '<br><strong>Time:</strong> ' + interviewTime + 
+
           (showNotes ? '<br><strong>Notes:</strong> ' + displayNotes : '') +
+
           '</p>' +
+
         '</div>' +
+
         '<div class="interview-actions">' +
+
           '<button class="btn-sm bsm-blue" onclick="r_editInterview(\'' + interview.id + '\')">Edit</button>' +
+
           '<button class="btn-sm bsm-green" onclick="r_changeInterviewStatus(\'' + interview.id + '\')">Change Status</button>' +
+
           '<button class="btn-sm bsm-red" onclick="r_deleteInterview(\'' + interview.id + '\')">Delete</button>' +
+
         '</div>' +
+
       '</div>';
+
     }).join('');
+
  
+
     console.log(' r_renderInterviews() completed');
+
   } catch(e) {
+
     console.error(' Error in r_renderInterviews():', e);
+
   }
+
 }
+
  
+
 // Render offers
+
 function r_renderOffers() {
+
   var el = document.getElementById('r_offers'); if (!el) return;
+
   el.innerHTML = '<div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openOffer()">+ Create Offer Document</button></div>' +
+
     (OFFERS.length ? OFFERS.map(function(o) {
+
       var sc = o.status === 'Accepted' ? 'bd-accepted' : o.status === 'Rejected' ? 'bd-rejected' : 'bd-pending';
+
       var candidateName = o.candidateName || o.name || 'Unknown Candidate';
+
       var position = o.position || 'Position not specified';
+
       var department = o.department || 'Department not specified';
+
       var salary = o.salary || 'Not specified';
+
       var startDate = o.startDate || 'To be determined';
+
       var extendedAt = o.extendedAt || new Date().toLocaleString();
+
  
+
       // Check if PDF was generated
+
       var pdfBadge = o.pdfGenerated ? '<span class="badge bd-active" style="margin-left: 8px;">📄 PDF Generated</span>' : '';
+
  
+
       return '<div class="offer-card">' +
+
         '<div class="offer-hdr">' +
+
           '<div>' +
+
             '<div class="offer-name">' + esc(candidateName) + '</div>' +
+
             '<div class="offer-position">' + esc(position) + ' • ' + esc(department) + '</div>' +
+
           '</div>' +
+
           '<div style="text-align: right;">' +
+
             '<span class="badge ' + sc + '">' + o.status + '</span>' +
+
             pdfBadge +
+
           '</div>' +
+
         '</div>' +
+
         '<div class="offer-details">' +
+
           '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">' +
+
             '<div><strong>Salary:</strong> ' + esc(salary) + '</div>' +
+
             '<div><strong>Start Date:</strong> ' + esc(startDate) + '</div>' +
+
           '</div>' +
+
           '<div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">' +
+
             '<strong>Extended:</strong> ' + extendedAt +
+
           '</div>' +
+
           (o.terms ? '<div style="margin-bottom: 10px;"><strong>Terms:</strong> ' +
+
             (o.terms.benefits ? '• ' + esc(o.terms.benefits.substring(0, 100)) + (o.terms.benefits.length > 100 ? '...' : '') + '<br>' : '') +
+
             (o.terms.probation ? '• Probation: ' + esc(o.terms.probation) + '<br>' : '') +
+
             (o.terms.schedule ? '• Schedule: ' + esc(o.terms.schedule) : '') +
+
             '</div>' : '') +
+
           (o.details ? '<div style="margin-bottom: 10px;"><strong>Additional Details:</strong> ' + esc(o.details) + '</div>' : '') +
+
         '</div>' +
+
         '<div class="offer-actions" style="display: flex; gap: 8px; margin-top: 15px;">' +
+
           (o.pdfGenerated ? '<button class="btn-sm bsm-blue" onclick="r_reprintOffer(\'' + o.id + '\')">📄 Reprint PDF</button>' : '') +
+
           '<button class="btn-sm bsm-green" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
+
           '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>' +
+
         '</div>' +
+
       '</div>';
+
     }).join('') : '<p class="empty-state">No offer documents created yet. Click <strong>+ Create Offer Document</strong> to get started.</p>');
+
 }
+
  
+
 // Render communications
+
 function r_renderComms() {
+
   var el = document.getElementById('r_comms'); if (!el) return;
+
   el.innerHTML = '<div style="margin-bottom:16px;"><button class="btn-primary" onclick="r_openComm()">+ Send Communication</button></div>' +
+
     (COMMS.length ? '<div class="comm-log">' + COMMS.map(function(c) {
+
       return '<div class="comm-entry"><div class="comm-meta">' + esc(c.to) + ' &bull; ' + c.sent + '</div><div class="comm-subj">' + esc(c.subj) + '</div><div class="comm-body">' + esc(c.msg) + '</div></div>';
+
     }).join('') + '</div>' : '<p class="empty-state">No communications sent yet.</p>');
+
 }
+
  
+
 // Render talent
+
 function r_renderTalent() {
+
   var el = document.getElementById('r_talent'); if (!el) return;
+
   // Pull unique applicants from localStorage
+
   try {
+
     var apps = [];
+
     try { var j = localStorage.getItem('applications'); apps = j ? JSON.parse(j) : []; } catch(e) {}
+
     var uniq = {};
+
     apps.forEach(function(a) { if(a.email) uniq[a.email] = a; });
+
     var unique = Object.keys(uniq).map(function(k) { return uniq[k]; });
+
     el.innerHTML = unique.length ? unique.map(function(a) {
+
       return '<div class="talent-card"><div class="talent-name">' + esc(a.first_name + ' ' + a.last_name) + '</div><div class="talent-info">' + esc(a.email) + ' &bull; ' + esc(a.phone) + '</div><div class="talent-pos">' + esc(a.position) + '</div></div>';
+
     }).join('') : '<p class="empty-state">No talent pool yet.</p>';
+
   } catch(e) { el.innerHTML = '<p class="empty-state">Error loading talent pool.</p>'; }
+
 }
+
  
+
 // View job details
+
 function r_viewDetails(jobId) {
+
   console.log('r_viewDetails called with jobId:', jobId, 'type:', typeof jobId);
+
  
+
   // Find the job - convert both to string for comparison
+
   var job = JOBS.find(function(j) { 
+
     console.log('Comparing j.id:', j.id, 'type:', typeof j.id, 'with jobId:', jobId);
+
     return String(j.id) === String(jobId); 
+
   });
+
   if (!job) {
+
     console.log('Job not found with ID:', jobId);
+
     console.log('Available jobs:', JOBS);
+
     return;
+
   }
+
  
+
   console.log('Found job:', job);
+
  
+
   // Use the applicants data already loaded from API
+
   var jobApplications = job.applicants || [];
+
   console.log('Applications for this job:', jobApplications.length);
+
  
+
   // Create modal HTML
+
   var modalHtml = `
+
     <div id="jobDetailsModal" style="
+
       position: fixed;
+
       top: 0;
+
       left: 0;
+
       width: 100%;
+
       height: 100%;
+
       background: rgba(0, 0, 0, 0.8);
+
       display: flex;
+
       justify-content: center;
+
       align-items: center;
+
       z-index: 10000;
+
     ">
+
       <div style="
+
         background: var(--surface);
+
         color: var(--text-primary);
+
         padding: 30px;
+
         border-radius: 12px;
+
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
         max-width: 700px;
+
         width: 90%;
+
         max-height: 80vh;
+
         overflow-y: auto;
+
         position: relative;
+
         border: 1px solid var(--border-color);
+
       ">
+
         <button onclick="this.closest('#jobDetailsModal').remove()" style="
+
           position: absolute;
+
           top: 15px;
+
           right: 15px;
+
           background: transparent;
+
           border: none;
+
           font-size: 24px;
+
           cursor: pointer;
+
           color: var(--text-secondary);
+
           padding: 5px;
+
           line-height: 1;
+
         ">&times;</button>
+
  
+
         <h2 style="margin: 0 0 20px 0; color: var(--text-primary);">${job.title}</h2>
+
  
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+
           <div>
+
             <strong style="color: var(--text-secondary);">Department:</strong><br>
+
             <span style="color: var(--text-primary);">${job.dept}</span>
+
           </div>
+
           <div>
+
             <strong style="color: var(--text-secondary);">Location:</strong><br>
+
             <span style="color: var(--text-primary);">${job.location}</span>
+
           </div>
+
           <div>
+
             <strong style="color: var(--text-secondary);">Type:</strong><br>
+
             <span style="color: var(--text-primary);">${job.emptype}</span>
+
           </div>
+
           <div>
+
             <strong style="color: var(--text-secondary);">Status:</strong><br>
+
             <span class="badge ${job.status === 'Active' ? 'bd-active' : 'bd-draft'}">${job.status}</span>
+
           </div>
+
           <div>
+
             <strong style="color: var(--text-secondary);">Posted:</strong><br>
+
             <span style="color: var(--text-primary);">${job.posted}</span>
+
           </div>
+
           <div>
+
             <strong style="color: var(--text-secondary);">Salary:</strong><br>
+
             <span style="color: var(--text-primary);">${job.salary}</span>
+
           </div>
+
         </div>
+
  
+
         <div style="margin-bottom: 25px;">
+
           <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Job Description</h3>
+
           <p style="margin: 0; line-height: 1.6; color: var(--text-secondary);">${job.desc}</p>
+
         </div>
+
  
+
         <div style="margin-bottom: 25px;">
+
           <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Application Requirements</h3>
+
           <ul style="margin: 0; line-height: 1.6; color: var(--text-secondary); padding-left: 20px;">
+
             <li>Updated Resume/CV</li>
+
             <li>Birth Certificate</li>
+
             <li>Diploma/TOR</li>
+
             <li>Cover Letter (optional)</li>
+
           </ul>
+
         </div>
+
  
+
         <div style="margin-bottom: 20px;">
+
           <h3 style="margin: 0 0 15px 0; color: var(--text-primary);">Applicants (${jobApplications.length})</h3>
+
           ${jobApplications.length === 0 ? 
+
             '<p style="color: var(--text-secondary); font-style: italic;">No applications received yet.</p>' :
+
             '<div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px;">' +
+
               jobApplications.map(function(app, index) {
+
                 return `
+
                   <div style="
+
                     padding: 12px;
+
                     margin-bottom: 10px;
+
                     background: var(--background);
+
                     border: 1px solid var(--border-color);
+
                     border-radius: 6px;
+
                     ${index < jobApplications.length - 1 ? 'border-bottom: 1px solid var(--border-color);' : ''}
+
                   ">
+
                     <div style="display: flex; justify-content: space-between; align-items: center;">
+
                       <div>
+
                         <strong style="color: var(--text-primary);">${(app.first_name || '') + ' ' + (app.last_name || '')}</strong><br>
+
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.email}</span><br>
+
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.phone}</span>
+
                       </div>
+
                       <div style="text-align: right;">
+
                         <span style="color: var(--text-secondary); font-size: 12px;">Applied: ${(app.application_date || 'N/A').split(' ')[0]}</span><br>
+
                         <span style="color: var(--text-secondary); font-size: 12px;">ID: ${app.id}</span>
+
                       </div>
+
                     </div>
+
                     ${app.message ? '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color);"><em style="color: var(--text-secondary); font-size: 13px;">"' + app.message + '"</em></div>' : ''}
+
                   </div>
+
                 `;
+
               }).join('') +
+
             '</div>'
+
           }
+
         </div>
+
  
+
         <div style="text-align: center; margin-top: 25px;">
+
           <button onclick="this.closest('#jobDetailsModal').remove()" style="
+
             background: var(--brand-green);
+
             color: white;
+
             border: none;
+
             padding: 10px 20px;
+
             border-radius: 6px;
+
             cursor: pointer;
+
             font-weight: 600;
+
           ">Close</button>
+
         </div>
+
       </div>
+
     </div>
+
   `;
+
  
+
   console.log('Adding modal to page...');
+
   try {
+
     if (window.parent !== window) {
+
       // Send modal HTML to parent window for display
+
       window.parent.postMessage({
+
         type: 'HR1_SHOW_MODAL',
+
         modalId: 'jobDetailsModal',
+
         modalHtml: modalHtml
+
       }, '*');
+
       console.log('Modal sent to parent window');
+
       return;
+
     }
+
   } catch(e) {
+
     console.log('Parent window not available, using fallback');
+
   }
+
  
+
   // Fallback: Add modal to current document body
+
   document.body.insertAdjacentHTML('beforeend', modalHtml);
+
   console.log('Modal added successfully');
+
 }
+
  
+
 /* ── Init ── */
+
 (function init() {
+
   try {
+
     if (window.parent !== window)
+
       document.body.classList.toggle('dark-mode', window.parent.document.body.classList.contains('dark-mode'));
+
   } catch(e) {}
+
  
+
   // Ensure DOM is ready before loading
+
   function delayedInit() {
+
     // Load applications data into cache first
+
     fetch('../api/simple-api-new.php?action=get_applications')
+
       .then(response => response.json())
+
       .then(data => {
+
         if (!data.error && data.length > 0) {
+
           APPLICATIONS_CACHE = data;
+
           console.log('Applications cache loaded with', data.length, 'applicants');
+
         }
+
       })
+
       .then(() => {
+
         r_loadFromStorage();
+
         r_loadInterviews().then(() => {
+
           console.log(' Interviews loaded, now rendering...');
+
           r_render();
+
           console.log(' About to call r_renderInterviews()...');
+
           console.log(' r_renderInterviews function exists:', typeof r_renderInterviews);
+
           console.log(' Calling r_renderInterviews() directly...');
+
           setTimeout(() => {
+
             console.log(' Timeout: Calling r_renderInterviews() after delay...');
+
             try {
+
               r_renderInterviews();
+
               console.log(' r_renderInterviews() executed successfully');
+
             } catch(e) {
+
               console.error(' r_renderInterviews() failed:', e);
+
             }
+
           }, 100);
+
           r_updateStats();
+
         });
+
       });
+
   }
+
  
+
   // Try immediate init first
+
   delayedInit();
+
  
+
   // If that fails, try again after DOM is ready
+
   if (document.readyState === 'loading') {
+
     document.addEventListener('DOMContentLoaded', delayedInit);
+
   }
+
  
+
   // Also try after a short delay to handle iframe loading issues
+
   setTimeout(delayedInit, 100);
+
  
+
   // Poll every 5 seconds to pick up new applications from careers site
+
   setInterval(function() {
+
     r_loadFromStorage();
+
     r_render();
+
     r_updateStats();
+
   }, 5000);
+
 })();
+
  
+
 window.addEventListener('message', function(e) {
+
   if (e.data && e.data.type === 'THEME') document.body.classList.toggle('dark-mode', e.data.dark);
+
   if (e.data && e.data.type === 'NEW_APPLICATION') { r_loadFromStorage(); r_render(); r_updateStats(); }
+
 });
+
  
+
 /* ── Tabs ── */
+
 function r_tab(t, btn) {
+
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+
   var p = document.getElementById('r_tab_' + t);
+
   if (p) p.classList.add('active');
+
   if (btn) btn.classList.add('active');
+
   if (t === 'jobs')           r_render();
+
   if (t === 'offers')         r_renderOffers();
+
   if (t === 'communications') r_renderComms();
+
   if (t === 'interviews')     r_renderInterviews();
+
   if (t === 'talent')         r_renderTalent();
+
 }
+
  
+
 /* ── Modal helpers ── */
+
 function r_open(id) {
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); } } catch(e) {}
   var m = document.getElementById(id); if (m) m.classList.add('active');
 }
+window.r_open = r_open;
+
 function r_close(id) {
-  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
+  try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); } } catch(e) {}
   var m = document.getElementById(id); if (m) m.classList.remove('active');
 }
 window.r_close = r_close;
 
+
+
 function r_toast(msg, type) {
+
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_TOAST',msg:msg,style:type||'success'},'*'); return; } } catch(e) {}
+
   alert(msg);
+
 }
+
  
+
 function r_openAdd()  { r_open('r_modal_add'); }
+
 function r_openComm() { r_open('r_modal_comm'); }
+
 function r_openInterview() { 
+
   // Reset ALL form fields for new interview
+
   var dropdown = document.getElementById('r_interview_applicant');
+
   var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
+
 
   // Show dropdown and hide display input for new interviews
+
   dropdown.style.display = 'block';
+
   applicantDisplay.style.display = 'none';
+
   dropdown.disabled = false;
+
   dropdown.value = '';
+
   delete dropdown.dataset.currentApplicantId;
+
   delete dropdown.dataset.currentApplicantName;
+
   delete dropdown.dataset.originalStatus;
 
+
+
   // Reset all form fields
+
   document.getElementById('r_interview_position').value = '';
+
   document.getElementById('r_interview_date').value = '';
+
   document.getElementById('r_interview_time').value = '';
+
   document.getElementById('r_interview_type').value = 'Phone Screen';
+
   document.getElementById('r_interview_notes').value = '';
+
   document.getElementById('r_interview_id').value = '';
 
+
+
   document.getElementById('r_interview_modal_title').textContent = 'Schedule Interview';
+
   
-  // Populate applicant dropdown
-  if (typeof r_populateApplicantDropdownForInterview === 'function') {
-    r_populateApplicantDropdownForInterview();
-  }
-  
-  r_open('r_modal_interview'); 
+
+  r_open('r_modal_interview');
+
+  // Inline fetch - no external helper dependency
+  (function() {
+    var drop = document.getElementById('r_interview_applicant');
+    if (!drop) return;
+    drop.innerHTML = '<option value="">Loading applicants...</option>';
+    drop.disabled = true;
+    fetch('../api/simple-api-new.php?action=get_applications')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        drop.innerHTML = '<option value="">Select an applicant...</option>';
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(function(a) {
+            var name = ((a.first_name||'') + ' ' + (a.last_name||'')).trim();
+            var pos = a.position || '';
+            var st  = a.status   || '';
+            var opt = document.createElement('option');
+            opt.value = a.id;
+            opt.textContent = name + (pos?' - '+pos:'') + (st?' ('+st+')':'');
+            opt.dataset.position = pos;
+            opt.dataset.applicantName = name;
+            drop.appendChild(opt);
+          });
+        } else {
+          drop.innerHTML = '<option value="">No applicants found</option>';
+        }
+        drop.disabled = false;
+      })
+      .catch(function(e) {
+        console.error('get_applications failed:', e);
+        drop.innerHTML = '<option value="">Error - check console</option>';
+        drop.disabled = false;
+      });
+  })();
 }
+
  
+
 async function r_saveInterview() {
+
   var dropdown = document.getElementById('r_interview_applicant');
+
   var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
   var applicantId, applicantName;
+
  
+
   // Check if we're in editing mode (dropdown is hidden, display is shown)
+
   if (dropdown.style.display === 'none' && applicantDisplay.style.display === 'block') {
+
     // Use stored applicant data for editing
+
     applicantId = dropdown.dataset.currentApplicantId || '';
+
     applicantName = dropdown.dataset.currentApplicantName || '';
+
   } else {
+
     // Normal mode - get from dropdown selection
+
     applicantId = dropdown.value;
+
     var selectedOption = dropdown.options[dropdown.selectedIndex];
+
     applicantName = selectedOption ? selectedOption.dataset.applicantName : '';
+
   }
+
   var position = document.getElementById('r_interview_position').value;
+
   var date = document.getElementById('r_interview_date').value;
+
   var time = document.getElementById('r_interview_time').value;
+
   var type = document.getElementById('r_interview_type').value;
+
   var notes = document.getElementById('r_interview_notes').value;
+
  
+
   // Get position from dropdown selection if not already set (only in normal mode)
+
   if (!position && applicantName && !dropdown.disabled) {
+
     if (selectedOption && selectedOption.dataset.position) {
+
       position = selectedOption.dataset.position;
+
       document.getElementById('r_interview_position').value = position;
+
     }
+
   }
+
  
+
   if (!applicantName || !date || !time || !type) {
+
     r_toast('Please fill all required fields', 'error');
+
     return;
+
   }
+
  
+
   try {
+
     var interviewId = document.getElementById('r_interview_id')?.value || null;
+
     var finalNotes = notes;
+
  
+
     // If editing an existing interview, add back the original status
+
     if (interviewId) {
+
       var dropdown = document.getElementById('r_interview_applicant');
+
       var originalStatus = dropdown.dataset.originalStatus || 'Scheduled';
+
  
+
       // Add the status back to the notes
+
       if (finalNotes && !finalNotes.match(/Status:\s*.+/)) {
+
         finalNotes = finalNotes + (finalNotes ? '\n\n' : '') + 'Status: ' + originalStatus;
+
       } else if (!finalNotes) {
+
         finalNotes = 'Status: ' + originalStatus;
+
       }
+
     }
+
  
+
     var apiPayload = {
+
       id: interviewId,
+
       applicant_name: applicantName,
+
       applicant_id: applicantId,
+
       interview_date: date,
+
       interview_time: time,
+
       interview_type: type,
+
       notes: finalNotes
+
     };
+
  
+
     const response = await fetch('../api/simple-api-new.php?action=save_interview', {
+
       method: 'POST',
+
       headers: {
+
         'Content-Type': 'application/json',
+
         'Accept': 'application/json'
+
       },
+
       body: JSON.stringify(apiPayload)
+
     });
+
  
+
     const data = await response.json();
+
  
+
     if (data.success) {
+
       // Determine message before clearing the form
+
       var message = interviewId ? 'Interview updated successfully!' : 'Interview scheduled successfully!';
+
  
+
       r_close('r_modal_interview');
+
       // Clear form
+
       document.getElementById('r_interview_position').value = '';
+
       document.getElementById('r_interview_date').value = '';
+
       document.getElementById('r_interview_time').value = '';
+
       document.getElementById('r_interview_type').value = 'Phone Screen';
+
       document.getElementById('r_interview_notes').value = '';
+
       document.getElementById('r_interview_id').value = '';
+
  
+
       r_toast(message);
+
       // Add small delay to ensure database update completes
+
       setTimeout(async () => {
+
         await r_loadInterviews();
+
         await r_loadFromStorage(); // Reload jobs to update interview counts
+
         r_renderInterviews();
+
         r_render(); // Re-render job cards with updated counts
+
         r_updateStats();
+
       }, 200);
+
     } else {
+
       console.error('API Error:', data);
+
       r_toast('Error scheduling interview: ' + (data.error || 'Unknown error'), 'error');
+
     }
+
   } catch(e) {
+
     console.error('Error saving interview:', e);
+
     r_toast('Error scheduling interview', 'error');
+
   }
+
 }
+
+
 
 // Make r_saveInterview globally available immediately after definition
+
 window.r_saveInterview = r_saveInterview;
 
+
+
 async function r_editInterview(id) {
+
   // Find the interview to edit
+
   var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
+
   if (!interview) {
+
     r_toast('Interview not found', 'error');
+
     return;
+
   }
+
  
+
   // Get the applicant dropdown and display input
+
   var applicantDropdown = document.getElementById('r_interview_applicant');
+
   var applicantDisplay = document.getElementById('r_interview_applicant_display');
+
  
+
   // Find and set the current applicant
+
   var currentApplicantId = interview.applicant_id || '';
+
   var currentApplicantName = interview.applicant_name || '';
+
  
+
   // If applicant_name is an ID, get the actual name from cache
+
   if (currentApplicantName && /^\d+$/.test(currentApplicantName)) {
+
     var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === currentApplicantName; });
+
     if (applicant) {
+
       currentApplicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+
       currentApplicantId = currentApplicantName;
+
     }
+
   }
+
  
+
   // Hide dropdown and show display input for editing
+
   applicantDropdown.style.display = 'none';
+
   applicantDisplay.style.display = 'block';
+
   applicantDisplay.value = currentApplicantName;
+
  
+
   // Store the current applicant data for saving
+
   applicantDropdown.dataset.currentApplicantId = currentApplicantId;
+
   applicantDropdown.dataset.currentApplicantName = currentApplicantName;
+
  
+
   // Extract and store the original status before cleaning notes
+
   var originalStatus = 'Scheduled';
+
   if (interview.notes) {
+
     var statusMatch = interview.notes.match(/Status:\s*(.+)/);
+
     if (statusMatch) {
+
       originalStatus = statusMatch[1].trim();
+
     }
+
   }
+
   // Store the original status in the dropdown dataset for use when saving
+
   applicantDropdown.dataset.originalStatus = originalStatus;
+
  
+
   // Clean notes by removing status information
+
   var cleanNotes = interview.notes || '';
+
   cleanNotes = cleanNotes.replace(/Status:\s*.+?$/gm, '').trim();
+
   cleanNotes = cleanNotes.replace(/Status:\s*.+?\n/gm, '').trim();
+
   cleanNotes = cleanNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
+
   cleanNotes = cleanNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
+
   cleanNotes = cleanNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
+
  
+
   // Populate other modal fields
+
   document.getElementById('r_interview_position').value = interview.position || '';
+
   document.getElementById('r_interview_date').value = interview.interview_date || '';
+
   document.getElementById('r_interview_time').value = interview.interview_time || '';
+
  
+
   // Set interview type dropdown value with proper matching
+
   var interviewTypeDropdown = document.getElementById('r_interview_type');
+
   var savedInterviewType = interview.interview_type || 'Phone Screen';
+
  
+
   // Find the matching option and set it as selected
+
   for (var i = 0; i < interviewTypeDropdown.options.length; i++) {
+
     if (interviewTypeDropdown.options[i].value === savedInterviewType) {
+
       interviewTypeDropdown.selectedIndex = i;
+
       break;
+
     }
+
   }
+
  
+
   document.getElementById('r_interview_notes').value = cleanNotes;
+
   document.getElementById('r_interview_id').value = interview.id || '';
+
  
+
   // Change modal title for editing
+
   document.getElementById('r_interview_modal_title').textContent = 'Edit Interview';
+
  
+
   // Open the modal for editing
+
   r_open('r_modal_interview');
+
 }
+
  
+
 async function r_changeInterviewStatus(id) {
+
   // Find the interview to change status
+
   var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
+
   if (!interview) {
+
     r_toast('Interview not found', 'error');
+
     return;
+
   }
+
  
+
   // Extract current status from notes
+
   var currentStatus = 'Scheduled';
+
   if (interview.notes) {
+
     var statusMatch = interview.notes.match(/Status:\s*(.+)/);
+
     if (statusMatch) {
+
       currentStatus = statusMatch[1].trim();
+
     }
+
   }
+
  
+
   // Populate the modal with current data
+
   document.getElementById('r_interview_status').value = currentStatus;
+
   document.getElementById('r_status_interview_id').value = interview.id;
+
  
+
   // Store the original applicant name to preserve it
+
   document.getElementById('r_status_interview_id').dataset.applicantName = interview.applicant_name || '';
+
  
+
   // Open the status modal
+
   r_open('r_modal_status');
+
 }
+
  
+
 async function r_saveInterviewStatus() {
+
   var interviewId = document.getElementById('r_status_interview_id').value;
+
   var newStatus = document.getElementById('r_interview_status').value;
+
  
+
   if (!interviewId || !newStatus) {
+
     r_toast('Please select a status', 'error');
+
     return;
+
   }
+
  
+
   try {
+
     // Find the interview
+
     var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(interviewId); });
+
     if (!interview) {
+
       r_toast('Interview not found', 'error');
+
       return;
+
     }
+
  
+
     // Extract existing notes and update status
+
     var existingNotes = interview.notes || '';
+
  
+
     // Remove existing status from notes
+
     existingNotes = existingNotes.replace(/Status:\s*.+?$/gm, '').trim();
+
     existingNotes = existingNotes.replace(/Status:\s*.+?\n/gm, '').trim();
+
     existingNotes = existingNotes.replace(/Status Notes:\s*.+?$/gm, '').trim();
+
     existingNotes = existingNotes.replace(/Status Notes:\s*.+?\n/gm, '').trim();
+
     existingNotes = existingNotes.replace(/\n\s*\n\s*\n/gm, '\n\n').trim();
+
  
+
     // Add new status to notes
+
     var updatedNotes = existingNotes + (existingNotes ? '\n\n' : '') + 'Status: ' + newStatus;
+
  
+
     // Use the current applicant name from the interview data
+
     var storedAppName = interview.applicant_name || '';
+
  
+
     // Update interview status directly via new API
+
     const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
+
       method: 'POST',
+
       headers: {
+
         'Content-Type': 'application/json',
+
         'Accept': 'application/json'
+
       },
+
       body: JSON.stringify({
+
         id: interviewId,
+
         status: newStatus
+
       })
+
     });
+
  
+
     const data = await response.json();
+
     if (data.success) {
+
       r_close('r_modal_status');
+
       r_toast('Interview status updated successfully!');
+
  
+
       // Reload interviews and re-render
+
       setTimeout(async () => {
+
         await r_loadInterviews();
+
         r_renderInterviews();
+
         await r_updateStats();
+
       }, 200);
+
     } else {
+
       r_toast('Error updating interview status: ' + (data.error || 'Unknown error'), 'error');
+
     }
+
   } catch(e) {
+
     console.error('Error updating interview status:', e);
+
     r_toast('Error updating interview status', 'error');
+
   }
+
 }
+
+
 
 // Make function globally accessible
+
 window.r_saveInterviewStatus = r_saveInterviewStatus;
 
+
+
 async function r_deleteInterview(id) {
+
   try {
+
     const response = await fetch(`../api/simple-api-new.php?action=delete_interview&id=${id}`, {
+
       method: 'DELETE'
+
     });
+
  
+
     const data = await response.json();
+
     if (data.success) {
+
       r_toast('Interview deleted successfully!');
+
       await r_loadInterviews();
+
       r_renderInterviews();
+
       await r_updateStats();
+
     } else {
+
       r_toast('Error deleting interview: ' + (data.error || 'Unknown error'), 'error');
+
     }
+
   } catch(e) {
+
     console.error('Error deleting interview:', e);
+
     r_toast('Error deleting interview', 'error');
+
   }
+
 }
+
  
+
 async function r_save() {
+
   var title = g('r_title'), desc = g('r_desc');
+
   if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
+
  
+
   try {
+
     const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+
       method: 'POST',
+
       headers: {
+
         'Content-Type': 'application/json',
+
         'Accept': 'application/json'
+
       },
+
       body: JSON.stringify({
+
         title: title,
+
         department: g('r_dept'),
+
         location: g('r_location'),
+
         employment_type: g('r_emptype'),
+
         description: desc,
+
         salary_range: g('r_salary'),
+
         status: 'Active'
+
       })
+
     });
+
  
+
     const data = await response.json();
+
     if (data.success) {
+
       r_close('r_modal_add');
+
       ['r_title','r_dept','r_location','r_emptype','r_salary','r_desc'].forEach(function(id) { 
+
         var e = document.getElementById(id); 
+
         if (e) e.value = ''; 
+
       });
+
       await r_loadFromStorage();
+
       r_render(); 
+
       await r_updateStats();
+
       r_toast('Job posted successfully!');
+
     } else {
+
       r_toast('Error posting job: ' + (data.error || 'Unknown error'), 'error');
+
     }
+
   } catch(e) {
+
     console.error('Error saving job:', e);
+
     r_toast('Error posting job', 'error');
+
   }
+
 }
+
  
+
 async function r_deleteJob(id) {
+
   if (!confirm('Are you sure you want to delete this job posting?')) return;
+
  
+
   try {
+
     const response = await fetch(`../api/simple-api-new.php?action=delete_job_posting&id=${id}`, {
+
       method: 'DELETE'
+
     });
+
  
+
     const data = await response.json();
+
     if (data.success) {
+
       await r_loadFromStorage();
+
       r_render(); 
+
       await r_updateStats();
+
       r_toast('Job posting removed successfully!');
+
     } else {
+
       r_toast('Error deleting job: ' + (data.error || 'Unknown error'), 'error');
+
     }
+
   } catch(e) {
+
     console.error('Error deleting job:', e);
+
     r_toast('Error deleting job', 'error');
+
   }
+
 }
+
  
+
 // Pre-Employment Processing Functions
+
 var currentOfferStep = 1;
+
 function r_openOffer() {
+
   selectedCandidate = null;
+
   r_loadCandidatesForOffer();
+
   r_open('r_modal_offer');
+
 }
+
  
+
 function r_loadCandidatesForOffer() {
+
   var select = document.getElementById('r_off_candidate');
+
   select.innerHTML = '<option value="">Choose a candidate...</option>';
+
  
+
   console.log('Loading candidates for offer...');
+
   console.log('Total interviews available:', INTERVIEWS.length);
+
   console.log('Interviews:', INTERVIEWS);
+
   console.log('Dropdown element before populating:', select);
+
  
+
   // Load candidates from passed interviews
+
   var passedCandidates = INTERVIEWS.filter(function(interview) {
+
     var status = 'Scheduled';
+
     if (interview.interview_status) {
+
       status = interview.interview_status;
+
     } else if (interview.notes) {
+
       var statusMatch = interview.notes.match(/Status:\s*(.+)/);
+
       if (statusMatch) {
+
         status = statusMatch[1].trim();
+
       }
+
     }
+
     console.log('Interview ID:', interview.id, 'Status:', status);
+
     // Accept both "passed" and "Passed" (case insensitive)
+
     return status.toLowerCase() === 'passed';
+
   });
+
  
+
   console.log('Passed candidates found:', passedCandidates.length);
+
  
+
   passedCandidates.forEach(function(interview) {
+
     var applicantName = interview.applicant_name || 'Unknown Applicant';
+
     if (applicantName && /^\d+$/.test(applicantName)) {
+
       var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
+
       if (applicant) {
+
         applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+
       }
+
     }
+
  
+
     // Get position from multiple sources
+
     var position = interview.position || '';
+
  
+
     // If no position in interview, try to get it from applicant's job application
+
     if (!position && applicantName && applicantName !== 'Unknown Applicant') {
+
       // Find the applicant in the cache to get their position
+
       var applicant = APPLICATIONS_CACHE.find(function(app) { 
+
         return (app.first_name + ' ' + app.last_name) === applicantName || 
+
                app.id === interview.applicant_id || 
+
                app.id === interview.applicant_name;
+
       });
+
       if (applicant && applicant.position) {
+
         position = applicant.position;
+
       }
+
     }
+
  
+
     // If still no position, try to get from job posting
+
     if (!position && interview.applicant_id) {
+
       // Find which job this applicant applied to
+
       var applicant = APPLICATIONS_CACHE.find(function(app) { 
+
         return app.id === interview.applicant_id || app.id === interview.applicant_name;
+
       });
+
       if (applicant && applicant.job_id) {
+
         var job = JOBS.find(function(j) { return String(j.id) === String(applicant.job_id); });
+
         if (job && job.title) {
+
           position = job.title;
+
         }
+
       }
+
     }
+
  
+
     var option = document.createElement('option');
+
     option.value = interview.id;
+
     option.textContent = applicantName + ' - ' + (position || 'Position not specified');
+
     option.dataset.interview = JSON.stringify(interview);
+
  
+
     // Add click handler to option as additional trigger
+
     option.addEventListener('click', function() {
+
       console.log('Option clicked:', this.value);
+
       setTimeout(function() {
+
         if (typeof window.r_populateCandidateData === 'function') {
+
           window.r_populateCandidateData();
+
         }
+
       }, 10);
+
     });
+
  
+
     select.appendChild(option);
+
   });
+
  
+
   // If no passed candidates, show all interviews for testing
+
   if (passedCandidates.length === 0 && INTERVIEWS.length > 0) {
+
     console.log('No passed candidates found, showing all interviews for testing...');
+
     INTERVIEWS.forEach(function(interview) {
+
       var applicantName = interview.applicant_name || 'Unknown Applicant';
+
       if (applicantName && /^\d+$/.test(applicantName)) {
+
         var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
+
         if (applicant) {
+
           applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+
         }
+
       }
+
  
+
       var option = document.createElement('option');
+
       option.value = interview.id;
+
       var status = 'Scheduled';
+
       if (interview.interview_status) {
+
         status = interview.interview_status;
+
       } else if (interview.notes) {
+
         var statusMatch = interview.notes.match(/Status:\s*(.+)/);
+
         if (statusMatch) {
+
           status = statusMatch[1].trim();
+
         }
+
       }
+
       option.textContent = applicantName + ' - ' + (interview.position || 'Position not specified') + ' [' + status + ']';
+
       option.dataset.interview = JSON.stringify(interview);
+
  
+
       // Add click handler to fallback option as additional trigger
+
       option.addEventListener('click', function() {
+
         console.log('Fallback option clicked:', this.value);
+
         setTimeout(function() {
+
           if (typeof window.r_populateCandidateData === 'function') {
+
             window.r_populateCandidateData();
+
           }
+
         }, 10);
+
       });
+
  
+
       select.appendChild(option);
+
     });
+
   }
+
  
+
   console.log('Dropdown element after populating:', select);
+
   console.log('Dropdown options count:', select.options.length);
+
  
+
   // Re-attach event listeners after populating dropdown
+
   setTimeout(function() {
+
     var candidateSelect = document.getElementById('r_off_candidate');
+
     if (candidateSelect) {
+
       console.log('Adding multiple event listeners to dropdown');
+
  
+
       candidateSelect.addEventListener('change', function(event) {
+
         console.log('Change event fired AFTER population');
+
         console.log('Event target:', event.target);
+
         console.log('Selected value:', event.target.value);
+
         console.log('Selected index:', event.target.selectedIndex);
+
         if (typeof window.r_populateCandidateData === 'function') {
+
           window.r_populateCandidateData();
+
         } else {
+
           console.error('r_populateCandidateData is not available');
+
         }
+
       });
+
  
+
       // Try input event as fallback
+
       candidateSelect.addEventListener('input', function(event) {
+
         console.log('Input event fired');
+
         console.log('Selected value:', event.target.value);
+
         if (event.target.value && typeof window.r_populateCandidateData === 'function') {
+
           window.r_populateCandidateData();
+
         }
+
       });
+
  
+
       // Try mouseup event as additional trigger
+
       candidateSelect.addEventListener('mouseup', function(event) {
+
         console.log('Mouseup event fired');
+
         setTimeout(function() {
+
           console.log('Mouseup - checking value:', candidateSelect.value);
+
           if (candidateSelect.value && typeof window.r_populateCandidateData === 'function') {
+
             window.r_populateCandidateData();
+
           }
+
         }, 100);
+
       });
+
  
+
       // Try focus event
+
       candidateSelect.addEventListener('focus', function() {
+
         console.log('Focus event on dropdown');
+
       });
+
  
+
       // Try blur event (when leaving dropdown)
+
       candidateSelect.addEventListener('blur', function() {
+
         setTimeout(function() {
+
           var select = document.getElementById('r_off_candidate');
+
           console.log('Blur event - checking value:', select.value);
+
           if (select.value && typeof window.r_populateCandidateData === 'function') {
+
             window.r_populateCandidateData();
+
           }
+
         }, 100);
+
       });
+
  
+
       console.log('Event listener re-attached after population');
+
  
+
       // Also try polling as last resort
+
       var lastValue = candidateSelect.value;
+
       setInterval(function() {
+
         var currentValue = candidateSelect.value;
+
         if (currentValue !== lastValue) {
+
           console.log('Value changed detected by polling:', currentValue);
+
           lastValue = currentValue;
+
           if (currentValue && typeof window.r_populateCandidateData === 'function') {
+
             window.r_populateCandidateData();
+
           }
+
         }
+
       }, 500);
+
     }
+
   }, 50);
+
 }
+
  
+
 function r_generateOfferPreview() {
+
   var preview = document.getElementById('offer_preview');
+
  
+
   // Get candidate name from dropdown selection
+
   var select = document.getElementById('r_off_candidate');
+
   var selectedOption = select.options[select.selectedIndex];
+
   var candidateName = '';
+
  
+
   if (selectedOption && selectedOption.value) {
+
     // Extract name from the dropdown text (format: "Name - Position")
+
     candidateName = selectedOption.textContent.split(' - ')[0] || '';
+
   }
+
  
+
   var offerData = {
+
     candidateName: candidateName,
+
     position: document.getElementById('r_off_pos').value,
+
     department: document.getElementById('r_off_dept').value,
+
     employmentType: document.getElementById('r_off_emptype').value,
+
     salary: document.getElementById('r_off_salary').value,
+
     startDate: document.getElementById('r_off_start').value,
+
     schedule: document.getElementById('r_off_schedule').value,
+
     location: document.getElementById('r_off_location').value,
+
     benefits: document.getElementById('r_off_benefits').value,
+
     probation: document.getElementById('r_off_probation').value,
+
     reporting: document.getElementById('r_off_reporting').value,
+
     conditions: document.getElementById('r_off_conditions').value,
+
     validity: document.getElementById('r_off_validity').value,
+
     offerDate: new Date().toLocaleDateString()
+
   };
+
  
+
   preview.innerHTML = `
+
     <div class="offer-document-preview" style="
+
       background: white;
+
       border: 1px solid #ddd;
+
       padding: 30px;
+
       border-radius: 8px;
+
       font-family: 'Times New Roman', serif;
+
       line-height: 1.6;
+
     ">
+
       <div style="text-align: center; margin-bottom: 30px;">
+
         <h2 style="margin: 0; color: #2c3e50;">EMPLOYMENT OFFER LETTER</h2>
+
         <p style="margin: 5px 0; color: #7f8c8d;">${offerData.offerDate}</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p style="margin: 0;">Dear <strong>${offerData.candidateName}</strong>,</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p>We are pleased to offer you the position of <strong>${offerData.position}</strong> in our <strong>${offerData.department}</strong> department. This offer is contingent upon your acceptance of the terms and conditions outlined below.</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">EMPLOYMENT TERMS:</h4>
+
         <ul style="margin: 0; padding-left: 20px;">
+
           <li><strong>Position:</strong> ${offerData.position}</li>
+
           <li><strong>Department:</strong> ${offerData.department}</li>
+
           <li><strong>Employment Type:</strong> ${offerData.employmentType}</li>
+
           <li><strong>Salary:</strong> ${offerData.salary}</li>
+
           <li><strong>Start Date:</strong> ${offerData.startDate}</li>
+
           <li><strong>Work Schedule:</strong> ${offerData.schedule || 'To be discussed'}</li>
+
           <li><strong>Work Location:</strong> ${offerData.location || 'Main Branch'}</li>
+
           <li><strong>Probation Period:</strong> ${offerData.probation}</li>
+
           <li><strong>Reporting To:</strong> ${offerData.reporting || 'Department Manager'}</li>
+
         </ul>
+
       </div>
+
  
+
       ${offerData.benefits ? `
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">BENEFITS & COMPENSATION:</h4>
+
         <p style="margin: 0;">${offerData.benefits}</p>
+
       </div>
+
       ` : ''}
+
  
+
       ${offerData.conditions ? `
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">SPECIAL CONDITIONS:</h4>
+
         <p style="margin: 0;">${offerData.conditions}</p>
+
       </div>
+
       ` : ''}
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p>This offer is valid until <strong>${offerData.validity || 'To be discussed'}</strong>. Please sign and return a copy of this letter to indicate your acceptance of these terms.</p>
+
       </div>
+
  
+
       <div style="margin-top: 40px;">
+
         <div style="display: flex; justify-content: space-between;">
+
           <div>
+
             <p style="margin: 0;">_________________________</p>
+
             <p style="margin: 0;">Company Representative</p>
+
             <p style="margin: 0;">Date: _________________</p>
+
           </div>
+
           <div>
+
             <p style="margin: 0;">_________________________</p>
+
             <p style="margin: 0;">${offerData.candidateName}</p>
+
             <p style="margin: 0;">Date: _________________</p>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   `;
+
 }
+
  
+
 function r_generateOfferPDF() {
+
   // Get candidate name from dropdown selection
+
   var select = document.getElementById('r_off_candidate');
+
   var selectedOption = select.options[select.selectedIndex];
+
   var candidateName = '';
+
  
+
   if (selectedOption && selectedOption.value) {
+
     // Extract name from the dropdown text (format: "Name - Position")
+
     candidateName = selectedOption.textContent.split(' - ')[0] || '';
+
   }
+
  
+
   // Get offer data
+
   var offerData = {
+
     candidateName: candidateName,
+
     position: document.getElementById('r_off_pos').value,
+
     department: document.getElementById('r_off_dept').value,
+
     employmentType: document.getElementById('r_off_emptype').value,
+
     salary: document.getElementById('r_off_salary').value,
+
     startDate: document.getElementById('r_off_start').value,
+
     schedule: document.getElementById('r_off_schedule').value,
+
     location: document.getElementById('r_off_location').value,
+
     benefits: document.getElementById('r_off_benefits').value,
+
     probation: document.getElementById('r_off_probation').value,
+
     reporting: document.getElementById('r_off_reporting').value,
+
     conditions: document.getElementById('r_off_conditions').value,
+
     validity: document.getElementById('r_off_validity').value,
+
     offerDate: new Date().toLocaleDateString()
+
   };
+
  
+
   // Create offer record
+
   var offer = {
+
     id: Date.now(),
+
     candidateName: offerData.candidateName,
+
     position: offerData.position,
+
     department: offerData.department,
+
     salary: offerData.salary,
+
     startDate: offerData.startDate,
+
     status: 'Pending',
+
     extendedAt: new Date().toLocaleString(),
+
     pdfGenerated: true,
+
     terms: offerData
+
   };
+
  
+
   OFFERS.unshift(offer);
+
  
+
   // Generate PDF using browser print functionality
+
   var previewContent = document.getElementById('offer_preview').innerHTML;
+
   var printWindow = window.open('', '_blank');
+
   printWindow.document.write(`
+
     <!DOCTYPE html>
+
     <html>
+
     <head>
+
       <title>Employment Offer - ${offerData.candidateName}</title>
+
       <style>
+
         body { font-family: 'Times New Roman', serif; margin: 20px; }
+
         .offer-document-preview { 
+
           background: white; 
+
           border: none; 
+
           padding: 0; 
+
           max-width: 100%;
+
         }
+
         @media print {
+
           body { margin: 0; }
+
         }
+
       </style>
+
     </head>
+
     <body>
+
       ${previewContent}
+
     </body>
+
     </html>
+
   `);
+
   printWindow.document.close();
+
   printWindow.focus();
+
  
+
   // Wait a bit for the content to load, then trigger print
+
   setTimeout(function() {
+
     printWindow.print();
+
     printWindow.close();
+
   }, 500);
+
  
+
   r_close('r_modal_offer');
+
   r_renderOffers();
+
   r_toast('Offer document generated successfully!');
+
 }
+
  
+
 function r_saveOffer() {
+
   var pos = g('r_off_pos'), sal = g('r_off_salary');
+
   if (!pos || !sal) { r_toast('Fill required fields', 'error'); return; }
+
   OFFERS.unshift({
+
     id:Date.now(),
+
     position:pos,
+
     salary:sal,
+
     startDate:g('r_off_start'),
+
     details:g('r_off_details'),
+
     status:g('r_off_status'),
+
     extendedAt:new Date().toLocaleString()
+
   });
+
   r_close('r_modal_offer');
+
   ['r_off_pos','r_off_salary','r_off_start','r_off_details'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+
   r_renderOffers(); r_toast('Offer extended');
+
 }
+
  
+
 function r_reprintOffer(offerId) {
+
   var offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+
   if (!offer || !offer.pdfGenerated || !offer.terms) {
+
     r_toast('Cannot reprint this offer', 'error');
+
     return;
+
   }
+
  
+
   // Generate PDF using existing terms
+
   var previewContent = `
+
     <div class="offer-document-preview" style="
+
       background: white; 
+
       border: none; 
+
       padding: 30px; 
+
       font-family: 'Times New Roman', serif;
+
       line-height: 1.6;
+
     ">
+
       <div style="text-align: center; margin-bottom: 30px;">
+
         <h2 style="margin: 0; color: #2c3e50;">EMPLOYMENT OFFER LETTER</h2>
+
         <p style="margin: 5px 0; color: #7f8c8d;">${offer.terms.offerDate}</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p style="margin: 0;">Dear <strong>${offer.terms.candidateName}</strong>,</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p>We are pleased to offer you the position of <strong>${offer.terms.position}</strong> in our <strong>${offer.terms.department}</strong> department. This offer is contingent upon your acceptance of the terms and conditions outlined below.</p>
+
       </div>
+
  
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">EMPLOYMENT TERMS:</h4>
+
         <ul style="margin: 0; padding-left: 20px;">
+
           <li><strong>Position:</strong> ${offer.terms.position}</li>
+
           <li><strong>Department:</strong> ${offer.terms.department}</li>
+
           <li><strong>Employment Type:</strong> ${offer.terms.employmentType}</li>
+
           <li><strong>Salary:</strong> ${offer.terms.salary}</li>
+
           <li><strong>Start Date:</strong> ${offer.terms.startDate}</li>
+
           <li><strong>Work Schedule:</strong> ${offer.terms.schedule || 'To be discussed'}</li>
+
           <li><strong>Work Location:</strong> ${offer.terms.location || 'Main Branch'}</li>
+
           <li><strong>Probation Period:</strong> ${offer.terms.probation}</li>
+
           <li><strong>Reporting To:</strong> ${offer.terms.reporting || 'Department Manager'}</li>
+
         </ul>
+
       </div>
+
  
+
       ${offer.terms.benefits ? `
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">BENEFITS & COMPENSATION:</h4>
+
         <p style="margin: 0;">${offer.terms.benefits}</p>
+
       </div>
+
       ` : ''}
+
  
+
       ${offer.terms.conditions ? `
+
       <div style="margin-bottom: 20px;">
+
         <h4 style="margin: 0 0 10px 0;">SPECIAL CONDITIONS:</h4>
+
         <p style="margin: 0;">${offer.terms.conditions}</p>
+
       </div>
+
       ` : ''}
+
  
+
       <div style="margin-bottom: 20px;">
+
         <p>This offer is valid until <strong>${offer.terms.validity || 'To be discussed'}</strong>. Please sign and return a copy of this letter to indicate your acceptance of these terms.</p>
+
       </div>
+
  
+
       <div style="margin-top: 40px;">
+
         <div style="display: flex; justify-content: space-between;">
+
           <div>
+
             <p style="margin: 0;">_________________________</p>
+
             <p style="margin: 0;">Company Representative</p>
+
             <p style="margin: 0;">Date: _________________</p>
+
           </div>
+
           <div>
+
             <p style="margin: 0;">_________________________</p>
+
             <p style="margin: 0;">${offer.terms.candidateName}</p>
+
             <p style="margin: 0;">Date: _________________</p>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   `;
+
  
+
   var printWindow = window.open('', '_blank');
+
   printWindow.document.write(`
+
     <!DOCTYPE html>
+
     <html>
+
     <head>
+
       <title>Employment Offer - ${offer.terms.candidateName}</title>
+
       <style>
+
         body { font-family: 'Times New Roman', serif; margin: 20px; }
+
         .offer-document-preview { 
+
           background: white; 
+
           border: none; 
+
           padding: 0; 
+
           max-width: 100%;
+
         }
+
         @media print {
+
           body { margin: 0; }
+
         }
+
       </style>
+
     </head>
+
     <body>
+
       ${previewContent}
+
     </body>
+
     </html>
+
   `);
+
   printWindow.document.close();
+
   printWindow.focus();
+
  
+
   setTimeout(function() {
+
     printWindow.print();
+
     printWindow.close();
+
   }, 500);
+
 }
+
  
+
 function r_updateOfferStatus(offerId) {
+
   var offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+
   if (!offer) {
+
     r_toast('Offer not found', 'error');
+
     return;
+
   }
+
  
+
   var newStatus = prompt('Update offer status:\n\nCurrent: ' + offer.status + '\n\nOptions: Pending, Accepted, Rejected', offer.status);
+
   if (!newStatus) return;
+
  
+
   // Validate status
+
   var validStatuses = ['Pending', 'Accepted', 'Rejected'];
+
   if (!validStatuses.includes(newStatus)) {
+
     r_toast('Invalid status. Please use: Pending, Accepted, or Rejected', 'error');
+
     return;
+
   }
+
  
+
   offer.status = newStatus;
+
   r_renderOffers();
+
   r_toast('Offer status updated to ' + newStatus);
+
 }
+
  
+
 function r_deleteOffer(offerId) {
+
   if (!confirm('Are you sure you want to delete this offer document?')) return;
+
  
+
   var index = OFFERS.findIndex(function(o) { return String(o.id) === String(offerId); });
+
   if (index > -1) {
+
     OFFERS.splice(index, 1);
+
     r_renderOffers();
+
     r_toast('Offer document deleted');
+
   }
+
 }
+
  
+
 function r_saveComm() {
+
   var to = g('r_comm_to'), subj = g('r_comm_subj'), msg = g('r_comm_msg');
+
   if (!to || !subj || !msg) { r_toast('Fill all fields', 'error'); return; }
+
   COMMS.unshift({id:Date.now(),to:to,subject:subj,message:msg,sentAt:new Date().toLocaleString()});
+
   r_close('r_modal_comm');
+
   ['r_comm_to','r_comm_subj','r_comm_msg'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+
   r_renderComms(); r_toast('Message sent to ' + to);
+
 }
+
 </script>
+
 </body>
+
 </html>
