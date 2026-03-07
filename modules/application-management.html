@@ -66,7 +66,25 @@
 </div>
 </div>
 <script>
-// Standalone redirect detection
+// ── THEME SYNC ───────────────────────────────────────────
+// Listen for theme changes from parent window
+window.addEventListener('message', function(event) {
+  if (event.data.type === 'THEME') {
+    if (event.data.dark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }
+});
+
+// Apply saved theme on load
+const savedTheme = localStorage.getItem('theme') || 'light';
+if (savedTheme === 'dark') {
+  document.body.classList.add('dark-mode');
+}
+
+// ── Standalone redirect detection ──
 (function() {
   'use strict';
   
