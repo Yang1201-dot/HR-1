@@ -65,7 +65,7 @@
             };
 
             try {
-                const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
+                const response = await fetch('./api/simple-api-new.php?action=save_job_posting', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -87,7 +87,7 @@
 
         async function loadJobs() {
             try {
-                const response = await fetch('../api/simple-api-new.php?action=get_job_postings');
+                const response = await fetch('./api/simple-api-new.php?action=get_job_postings');
                 const jobs = await response.json();
                 
                 let html = '';

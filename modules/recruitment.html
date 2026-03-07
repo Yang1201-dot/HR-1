@@ -106,6 +106,8 @@
 
   </div>
 
+
+
   <div class="form-group"><label>Description <span class="req">*</span></label><textarea id="r_desc" placeholder="Job responsibilities, requirements, qualifications..."></textarea></div>
 
   <button class="btn btn-primary" onclick="r_save()">Post Job</button>
@@ -879,6 +881,7 @@ body.dark-mode #r_interview_applicant option,
 
 }
 
+
 </style>
 
 
@@ -1291,9 +1294,11 @@ window.r_populateCandidateData = function() {
 
     if (job) {
 
-      document.getElementById('r_off_dept').value = job.dept || '';
+      document.getElementById('r_off_dept').value = job.department || job.dept || '';
 
-      document.getElementById('r_off_emptype').value = job.emptype || '';
+      document.getElementById('r_off_emptype').value = job.employment_type || job.emptype || '';
+
+      document.getElementById('r_off_location').value = job.location || '';
 
     }
 
@@ -1389,33 +1394,8 @@ async function r_loadFromStorage() {
 
  
 
-      // If database is empty but localStorage has jobs, migrate them
-
-      if (data.length === 0 && localJobs.length > 0) {
-
-        console.log('Database is empty, localStorage has jobs. Starting migration...');
-
-        await r_migrateJobsToDatabase(localJobs);
-
- 
-
-        // Reload from database after migration
-
-        console.log('Reloading from database after migration...');
-
-        const migrationResponse = await fetch('../api/simple-api-new.php?action=get_job_postings');
-
-        const migrationData = await migrationResponse.json();
-
-        console.log('Migration reload response:', migrationData);
-
-        if (!migrationData.error) {
-
-          data = migrationData;
-
-        }
-
-      }
+      // Clear localStorage — DB is the source of truth
+      try { localStorage.removeItem(KEY_JOBS); } catch(e) {}
 
  
 
@@ -1574,21 +1554,8 @@ async function r_migrateJobsToDatabase(localJobs) {
  
 
 function r_saveJobs() {
-
-  try { 
-
-    console.log('Saving jobs:', JOBS);
-
-    localStorage.setItem(KEY_JOBS, JSON.stringify(JOBS));
-
-    console.log('Jobs saved successfully');
-
-  } catch(e) { 
-
-    console.error('Error saving jobs:', e);
-
-  }
-
+  // DB is source of truth — clear any stale localStorage cache
+  try { localStorage.removeItem(KEY_JOBS); } catch(e) {}
 }
 
  
@@ -2580,15 +2547,9 @@ function r_viewDetails(jobId) {
           <h3 style="margin: 0 0 10px 0; color: var(--text-primary);">Application Requirements</h3>
 
           <ul style="margin: 0; line-height: 1.6; color: var(--text-secondary); padding-left: 20px;">
-
-            <li>Updated Resume/CV</li>
-
-            <li>Birth Certificate</li>
-
-            <li>Diploma/TOR</li>
-
-            <li>Cover Letter (optional)</li>
-
+            ${(job.requirements && job.requirements.trim())
+              ? job.requirements.split(',').map(function(r){ return '<li>' + r.trim() + '</li>'; }).join('')
+              : '<li>Resume/CV</li><li>Birth Certificate</li><li>Diploma/TOR</li><li>Cover Letter (optional)</li>'}
           </ul>
 
         </div>
@@ -3470,85 +3431,40 @@ async function r_deleteInterview(id) {
  
 
 async function r_save() {
-
   var title = g('r_title'), desc = g('r_desc');
-
   if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
-
- 
-
+  console.log('r_save: posting job:', title);
   try {
-
     const response = await fetch('../api/simple-api-new.php?action=save_job_posting', {
-
       method: 'POST',
-
-      headers: {
-
-        'Content-Type': 'application/json',
-
-        'Accept': 'application/json'
-
-      },
-
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-
         title: title,
-
         department: g('r_dept'),
-
         location: g('r_location'),
-
         employment_type: g('r_emptype'),
-
         description: desc,
-
         salary_range: g('r_salary'),
-
         status: 'Active'
-
       })
-
     });
-
- 
-
+    console.log('r_save: status:', response.status);
     const data = await response.json();
-
+    console.log('r_save: data:', data);
     if (data.success) {
-
       r_close('r_modal_add');
-
-      ['r_title','r_dept','r_location','r_emptype','r_salary','r_desc'].forEach(function(id) { 
-
-        var e = document.getElementById(id); 
-
-        if (e) e.value = ''; 
-
+      ['r_title','r_dept','r_location','r_emptype','r_salary','r_desc'].forEach(function(id){
+        var e=document.getElementById(id); if(e) e.value='';
       });
-
-      await r_loadFromStorage();
-
-      r_render(); 
-
-      await r_updateStats();
-
+      await r_loadFromStorage(); r_render(); await r_updateStats();
       r_toast('Job posted successfully!');
-
     } else {
-
-      r_toast('Error posting job: ' + (data.error || 'Unknown error'), 'error');
-
+      r_toast('Error: ' + (data.error || 'Unknown error'), 'error');
     }
-
   } catch(e) {
-
-    console.error('Error saving job:', e);
-
-    r_toast('Error posting job', 'error');
-
+    console.error('r_save error:', e);
+    r_toast('Failed: ' + e.message, 'error');
   }
-
 }
 
  
@@ -4702,6 +4618,33 @@ async function r_saveInterview() {
 
 </script>
 
+
+<script>
+async function r_populateApplicantDropdownForInterview(targetDropdown) {
+  var dropdown = targetDropdown || document.getElementById('r_interview_applicant');
+  if (!dropdown) return;
+  var apps = (typeof APPLICATIONS_CACHE !== 'undefined' && APPLICATIONS_CACHE.length > 0)
+    ? APPLICATIONS_CACHE
+    : await fetch('../api/simple-api-new.php?action=get_applications').then(function(r){return r.json();}).catch(function(){return [];});
+  _fillApplicantDropdown(dropdown, Array.isArray(apps) ? apps : []);
+}
+function _fillApplicantDropdown(dropdown, apps) {
+  dropdown.innerHTML = '<option value="">Select an applicant...</option>';
+  apps.forEach(function(app) {
+    var fname = app.first_name || app.fname || '';
+    var lname = app.last_name  || app.lname || '';
+    var fullName = (fname + ' ' + lname).trim();
+    var pos = app.position || '';
+    var opt = document.createElement('option');
+    opt.value = fullName;
+    opt.textContent = fullName + (pos ? ' — ' + pos : '');
+    opt.dataset.id = String(app.id || '');
+    opt.dataset.position = pos;
+    opt.dataset.name = fullName;
+    dropdown.appendChild(opt);
+  });
+}
+</script>
 </body>
 
 </html>

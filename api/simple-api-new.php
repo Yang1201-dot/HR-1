@@ -43,6 +43,8 @@ switch($action) {
         break;
         
     case 'get_applications':
+        // Ensure expected_salary column exists
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN expected_salary VARCHAR(100) NULL"); } catch(Exception $ignored) {}
         $countStmt = $pdo->query("SELECT COUNT(*) as count FROM applicants");
         $count = $countStmt->fetch(PDO::FETCH_ASSOC)['count'];
         error_log("Total applicants in database: " . $count);
@@ -51,6 +53,7 @@ switch($action) {
             SELECT 
                 id, fname as first_name, lname as last_name, email, phone, position,
                 dept as department, applied_at as application_date, status, updated_at,
+                expected_salary,
                 resume_path, birth_certificate_path, diploma_path, cover_letter_path
             FROM applicants 
             ORDER BY applied_at DESC
@@ -172,10 +175,12 @@ switch($action) {
                 // Column already exists, ignore error
             }
             
-            try {
-                $pdo->exec("ALTER TABLE jobs ADD COLUMN benefits TEXT AFTER requirements");
-            } catch (Exception $e) {
-                // Column already exists, ignore error
+            // Drop legacy unused columns if they still exist
+            foreach (['benefits', 'emptype', 'salary', 'requirements'] as $dropCol) {
+                try {
+                    $check = $pdo->query("SHOW COLUMNS FROM jobs LIKE '$dropCol'")->rowCount();
+                    if ($check > 0) { $pdo->exec("ALTER TABLE jobs DROP COLUMN `$dropCol`"); }
+                } catch (Exception $ignored) {}
             }
             
             try {
@@ -204,8 +209,8 @@ switch($action) {
             
             $stmt = $pdo->query("
                 SELECT 
-                    id, title, department, location, employment_type, 
-                    description, requirements, benefits, salary_range, status,
+                    id, title, department, location, employment_type,
+                    description, salary_range, status,
                     posted_date, created_at, updated_at
                 FROM jobs 
                 ORDER BY created_at DESC
@@ -249,19 +254,17 @@ switch($action) {
                 
                 $stmt = $pdo->prepare("
                     INSERT INTO jobs (
-                        title, department, location, employment_type, 
-                        description, requirements, benefits, salary_range, status
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        title, department, location, employment_type,
+                        description, salary_range, status
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 ");
-                
+
                 $stmt->execute([
                     $data['title'],
-                    $data['department'],
-                    $data['location'],
-                    $data['employment_type'],
+                    $data['department'] ?? '',
+                    $data['location'] ?? '',
+                    $data['employment_type'] ?? '',
                     $data['description'],
-                    $data['requirements'] ?? '',
-                    $data['benefits'] ?? '',
                     $data['salary_range'] ?? '',
                     $data['status'] ?? 'Active'
                 ]);
