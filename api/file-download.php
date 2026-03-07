@@ -63,54 +63,11 @@ try {
     // Debug: Log file info
     error_log("File download debug - File info: " . print_r($file, true));
     
-    // Find file by pattern matching since files are stored with timestamp prefix
-    $uploadDir = '../uploads/applicants/';
-    $filePath = null;
-    
-    // Get all files in upload directory
-    $files = glob($uploadDir . '*');
-    error_log("Found " . count($files) . " files in upload directory");
-    
-    // Look for file matching pattern: timestamp_fieldname_filename
-    foreach ($files as $filePathCandidate) {
-        $fileName = basename($filePathCandidate);
-        error_log("Checking file: $fileName");
-        
-        // Check if file matches our pattern
-        $pattern = '/^\d+_' . preg_quote($file['file_field']) . '_' . preg_quote($file['file_name']) . '$/';
-        error_log("Pattern: $pattern, Checking against: $fileName");
-        if (preg_match($pattern, $fileName)) {
-            $filePath = $filePathCandidate;
-            error_log("Found matching file: $filePath");
-            break;
-        }
-    }
-    
-    // If not found by pattern, try exact filename match
-    if (!$filePath) {
-        foreach ($files as $filePathCandidate) {
-            $fileName = basename($filePathCandidate);
-            if ($fileName === $file['file_name']) {
-                $filePath = $filePathCandidate;
-                error_log("Found exact filename match: $filePath");
-                break;
-            }
-        }
-    }
-    
-    if (!$filePath) {
-        error_log("File not found in upload directory for field: " . $file['file_field'] . " and filename: " . $file['file_name']);
-        jsonResponse(['error' => 'File not found on server for field: ' . $file['file_field'] . ' and filename: ' . $file['file_name']], 404);
-        exit;
-    }
-    
-    // Get file info
-    $fileInfo = pathinfo($filePath);
-    $fileName = $file['file_name'];
-    $fileSize = filesize($filePath);
-    $mimeType = $file['file_type'] ?: mime_content_type($filePath);
-    
     // Set headers for download/view
+    $fileName = $file['file_name'];
+    $fileSize = $file['file_size'];
+    $mimeType = $file['file_type'] ?: 'application/octet-stream';
+    
     if ($viewMode) {
         // View mode - display in browser
         header('Content-Type: ' . $mimeType);
@@ -125,10 +82,10 @@ try {
     // Prevent caching
     header('Cache-Control: no-cache, must-revalidate');
     header('Pragma: no-cache');
-    header('Expires: 0');
+    header('Expires: 0);
     
-    // Output file content
-    readfile($filePath);
+    // Output file content from database
+    echo $file['file_content'];
     exit;
     
 } catch (Exception $e) {
