@@ -196,6 +196,10 @@ async function r_loadApplicantsForPopup() {
         });
         
         console.log('🎯 Final dropdown options count:', select.options.length);
+        console.log('🎯 Dropdown HTML content:', select.innerHTML);
+        console.log('🎯 Dropdown visibility check:', getComputedStyle(select).display);
+        console.log('🎯 Dropdown position:', getComputedStyle(select).position);
+        console.log('🎯 Dropdown z-index:', getComputedStyle(select).zIndex);
     } catch (error) {
         console.error('❌ Error loading applicants:', error);
         document.getElementById('popup_applicant').innerHTML = '<option value="">Error loading applicants</option>';
