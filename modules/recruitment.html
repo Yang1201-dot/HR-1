@@ -179,7 +179,7 @@
 
   </div>
 
-  <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="window.location.href='schedule-interview.html'">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
+  <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openInterviewPopup()">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
 
   <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
 
@@ -4544,6 +4544,7 @@ function _fillApplicantDropdown(dropdown, apps) {
   </main>
 
   <script src="../js/mysql-hr1-client.js"></script>
+  <script src="interview-popup.js"></script>
 <script>
 // Theme toggle
 var _themeToggle = document.getElementById("themeToggle");

@@ -1,0 +1,211 @@
+// Simple popup function that avoids modal conflicts
+function r_openInterviewPopup() {
+    // Create popup content
+    const popupContent = `
+        <div id="interview-popup" style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--surface, #ffffff);
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 999999;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            min-width: 400px;
+            max-width: 500px;
+            width: 90vw;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: var(--text-primary, #1f2937);">Schedule Interview</h3>
+                <button onclick="r_closeInterviewPopup()" style="
+                    background: none;
+                    border: none;
+                    font-size: 20px;
+                    cursor: pointer;
+                    color: var(--text-secondary, #64748b);
+                    padding: 5px;
+                ">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Applicant <span style="color: #ef4444;">*</span></label>
+                <select id="popup_applicant" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: var(--background, #f8fafc);
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                ">
+                    <option value="">Loading applicants...</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Date <span style="color: #ef4444;">*</span></label>
+                <input type="date" id="popup_date" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: var(--background, #f8fafc);
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Time <span style="color: #ef4444;">*</span></label>
+                <input type="time" id="popup_time" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: var(--background, #f8fafc);
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Type</label>
+                <select id="popup_type" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: var(--background, #f8fafc);
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                ">
+                    <option value="Phone Screen">Phone Screen</option>
+                    <option value="Video Call">Video Call</option>
+                    <option value="In-Person">In-Person</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="r_saveInterviewPopup()" style="
+                    flex: 1;
+                    padding: 10px 20px;
+                    background: var(--brand-green, #10b981);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">Schedule Interview</button>
+                <button onclick="r_closeInterviewPopup()" style="
+                    flex: 1;
+                    padding: 10px 20px;
+                    background: transparent;
+                    color: var(--text-secondary, #64748b);
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'interview-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 999998;
+    `;
+    
+    // Add to page
+    document.body.appendChild(overlay);
+    document.body.insertAdjacentHTML('beforeend', popupContent);
+    
+    // Load applicants
+    r_loadApplicantsForPopup();
+    
+    console.log('✅ Interview popup opened');
+}
+
+function r_closeInterviewPopup() {
+    const popup = document.getElementById('interview-popup');
+    const overlay = document.getElementById('interview-overlay');
+    
+    if (popup) popup.remove();
+    if (overlay) overlay.remove();
+    
+    console.log('✅ Interview popup closed');
+}
+
+async function r_loadApplicantsForPopup() {
+    try {
+        const response = await fetch('../api/simple-api-new.php?action=get_applications');
+        const data = await response.json();
+        
+        const select = document.getElementById('popup_applicant');
+        select.innerHTML = '<option value="">Select Applicant</option>';
+        
+        data.forEach(applicant => {
+            if (applicant.status === 'New' || applicant.status === 'Under Review' || applicant.status === 'Shortlisted') {
+                const option = document.createElement('option');
+                option.value = applicant.id;
+                option.textContent = `${applicant.first_name} ${applicant.last_name} - ${applicant.position}`;
+                select.appendChild(option);
+            }
+        });
+    } catch (error) {
+        console.error('Error loading applicants:', error);
+        document.getElementById('popup_applicant').innerHTML = '<option value="">Error loading applicants</option>';
+    }
+}
+
+async function r_saveInterviewPopup() {
+    const applicantId = document.getElementById('popup_applicant').value;
+    const interviewDate = document.getElementById('popup_date').value;
+    const interviewTime = document.getElementById('popup_time').value;
+    const interviewType = document.getElementById('popup_type').value;
+    
+    if (!applicantId || !interviewDate || !interviewTime) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    try {
+        const response = await fetch('../api/simple-api-new.php?action=schedule_interview', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                applicant_id: applicantId,
+                interview_date: interviewDate,
+                interview_time: interviewTime,
+                interview_type: interviewType
+            })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Interview scheduled successfully!');
+            r_closeInterviewPopup();
+            // Refresh interviews tab
+            r_tab('interviews');
+        } else {
+            alert('Error scheduling interview: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        alert('Error scheduling interview. Please try again.');
+    }
+}
