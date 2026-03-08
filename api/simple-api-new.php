@@ -409,7 +409,57 @@ switch($action) {
         }
         break;
         
-    case 'save_interview':
+    case 'save_pre_employment':
+        if ($method === 'POST') {
+            try {
+                $input = json_decode(file_get_contents('php://input'), true);
+                $applicantId = $input['applicant_id'] ?? null;
+                
+                if (!$applicantId) {
+                    jsonResponse(['error' => 'Applicant ID is required'], 400);
+                    break;
+                }
+                
+                // Create pre_employment table if it doesn't exist
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS pre_employment (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        applicant_id INT NOT NULL,
+                        criminal_check VARCHAR(20) DEFAULT 'pending',
+                        drug_test VARCHAR(20) DEFAULT 'pending',
+                        previous_employer VARCHAR(255) NULL,
+                        contact_person VARCHAR(255) NULL,
+                        overall_status VARCHAR(20) DEFAULT 'pending',
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                
+                $stmt = $pdo->prepare("INSERT INTO pre_employment (applicant_id, criminal_check, drug_test, previous_employer, contact_person, overall_status, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $applicantId,
+                    $input['criminal_check'] ?? 'pending',
+                    $input['drug_test'] ?? 'pending',
+                    $input['previous_employer'] ?? null,
+                    $input['contact_person'] ?? null,
+                    $input['overall_status'] ?? 'pending',
+                    $input['notes'] ?? ''
+                ]);
+                
+                $preEmploymentId = $pdo->lastInsertId();
+                error_log("Pre-employment data saved with ID: " . $preEmploymentId);
+                jsonResponse([
+                    'success' => true, 
+                    'message' => 'Pre-employment data saved successfully',
+                    'pre_employment_id' => $preEmploymentId
+                ]);
+            } catch(Exception $e) {
+                error_log('Error saving pre-employment data: ' . $e->getMessage());
+                jsonResponse(['error' => 'Failed to save pre-employment data: ' . $e->getMessage()], 500);
+            }
+        }
+        break;
         if ($method === 'POST') {
             try {
                 // Create interviews table if it doesn't exist

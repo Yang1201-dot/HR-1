@@ -1644,6 +1644,8 @@ function r_render() {
 
         '<button class="btn-sm bsm-blue" onclick="r_viewDetails(\'' + j.id + '\')">View Details</button>' +
 
+        '<button class="btn-sm bsm-green" onclick="r_openPreEmploymentPopup(\'' + (j.applicants && j.applicants.length > 0 ? j.applicants[0].id : '') + '\')">Pre-Employment</button>' +
+
         '<button class="btn-sm bsm-red" data-jid="' + j.id + '" onclick="r_deleteJob(this.dataset.jid)">Delete</button>' +
 
       '</div>' +
@@ -4326,6 +4328,7 @@ function _fillApplicantDropdown(dropdown, apps) {
   <script src="../js/mysql-hr1-client.js"></script>
   <script src="../js/interview-popup.js"></script>
   <script src="../js/edit-interview-popup.js"></script>
+  <script src="../js/pre-employment-popup.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>
     // Initialize Lucide icons
