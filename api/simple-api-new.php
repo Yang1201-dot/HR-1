@@ -630,11 +630,15 @@ switch($action) {
             break;
         }
         
-        // Create interviews table if it doesn't exist
+        // Force drop and recreate interviews table to ensure correct structure
         try {
-            error_log("Creating interviews table if not exists...");
+            error_log("Dropping interviews table if exists...");
+            $pdo->exec("DROP TABLE IF EXISTS interviews");
+            error_log("Interviews table dropped");
+            
+            error_log("Creating interviews table with correct structure...");
             $pdo->exec("
-                CREATE TABLE IF NOT EXISTS interviews (
+                CREATE TABLE interviews (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     applicant_id INT NOT NULL,
                     interview_date DATE NOT NULL,
@@ -647,27 +651,10 @@ switch($action) {
                     FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
                 )
             ");
-            error_log("Interviews table creation command executed");
+            error_log("Interviews table recreated with interview_notes column");
         } catch(Exception $e) {
-            error_log("Error creating interviews table: " . $e->getMessage());
+            error_log("Error recreating interviews table: " . $e->getMessage());
         }
-        
-        // Check if interview_notes column exists and add if missing
-        try {
-            $result = $pdo->query("SHOW COLUMNS FROM interviews LIKE 'interview_notes'");
-            if ($result->rowCount() == 0) {
-                error_log("interview_notes column missing, adding it...");
-                $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_notes TEXT");
-                error_log("interview_notes column added successfully");
-            } else {
-                error_log("interview_notes column already exists");
-            }
-        } catch(Exception $e) {
-            error_log("Error checking/adding interview_notes column: " . $e->getMessage());
-        }
-        
-        // Ensure status column exists
-        try { $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Scheduled'"); } catch(Exception $e) {}
         
         // Insert interview
         try {
