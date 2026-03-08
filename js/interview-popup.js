@@ -45,13 +45,13 @@ function r_openInterviewPopup() {
             </div>
             
             <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Position <span style="color: #64748b;">(Auto-filled)</span></label>
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Position <span style="color: var(--text-secondary, #64748b);">(Auto-filled)</span></label>
                 <input type="text" id="popup_position" readonly style="
                     width: 100%;
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: #f1f5f9;
+                    background: var(--background, #f8fafc);
                     color: var(--text-primary, #1f2937);
                     font-size: 14px;
                     cursor: not-allowed;
