@@ -580,6 +580,9 @@ switch($action) {
                 )
             ");
             
+            // Ensure mime_type column exists (in case table was created without it)
+            try { $pdo->exec("ALTER TABLE applicant_files ADD COLUMN mime_type VARCHAR(100) NOT NULL DEFAULT ''"); } catch(Exception $e) {}
+            
             $applicantId = $_GET['applicant_id'] ?? null;
             if ($applicantId) {
                 // Get files for specific applicant

@@ -37,6 +37,9 @@ try {
         )
     ");
 
+    // Ensure mime_type column exists (in case table was created without it)
+    try { $pdo->exec("ALTER TABLE applicant_files ADD COLUMN mime_type VARCHAR(100) NOT NULL DEFAULT ''"); } catch(Exception $e) {}
+
     $fname     = trim($_POST['first_name'] ?? '');
     $mname     = trim($_POST['middle_name'] ?? '');
     $lname     = trim($_POST['last_name'] ?? '');
