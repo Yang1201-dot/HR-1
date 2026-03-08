@@ -632,6 +632,7 @@ switch($action) {
         
         // Create interviews table if it doesn't exist
         try {
+            error_log("Creating interviews table if not exists...");
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS interviews (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -646,13 +647,27 @@ switch($action) {
                     FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
                 )
             ");
-        } catch(Exception $e) {}
+            error_log("Interviews table creation command executed");
+        } catch(Exception $e) {
+            error_log("Error creating interviews table: " . $e->getMessage());
+        }
+        
+        // Check if interview_notes column exists and add if missing
+        try {
+            $result = $pdo->query("SHOW COLUMNS FROM interviews LIKE 'interview_notes'");
+            if ($result->rowCount() == 0) {
+                error_log("interview_notes column missing, adding it...");
+                $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_notes TEXT");
+                error_log("interview_notes column added successfully");
+            } else {
+                error_log("interview_notes column already exists");
+            }
+        } catch(Exception $e) {
+            error_log("Error checking/adding interview_notes column: " . $e->getMessage());
+        }
         
         // Ensure status column exists
         try { $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Scheduled'"); } catch(Exception $e) {}
-        
-        // Ensure interview_notes column exists
-        try { $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_notes TEXT"); } catch(Exception $e) {}
         
         // Insert interview
         try {
