@@ -1,4 +1,10 @@
 <?php
+// IMMEDIATE TEST - Is this file executing?
+if (isset($_GET['test_file'])) {
+    echo json_encode(['test' => 'file_executing', 'timestamp' => date('Y-m-d H:i:s')]);
+    exit;
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
