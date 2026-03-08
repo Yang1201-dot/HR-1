@@ -500,29 +500,48 @@ switch($action) {
         
     case 'get_interviews':
         try {
-            $pdo->exec("CREATE TABLE IF NOT EXISTS interviews (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                applicant_name VARCHAR(255) NOT NULL,
-                applicant_id INT NULL,
-                interview_date DATE NOT NULL,
-                interview_time TIME NOT NULL,
-                interview_type VARCHAR(100) NOT NULL,
-                position VARCHAR(255) NULL,
-                interview_status VARCHAR(50) DEFAULT 'Scheduled',
-                notes TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )");
-            foreach (["interview_status VARCHAR(50) DEFAULT 'Scheduled'", "applicant_id INT NULL", "position VARCHAR(255) NULL"] as $colDef) {
-                try { $pdo->exec("ALTER TABLE interviews ADD COLUMN $colDef"); } catch(Exception $ignored) {}
-            }
-            // One-time migration: copy old status -> interview_status then drop
-            try {
-                if ($pdo->query("SHOW COLUMNS FROM interviews LIKE 'status'")->rowCount() > 0) {
-                    $pdo->exec("UPDATE interviews SET interview_status = status WHERE (interview_status IS NULL OR interview_status = 'Scheduled') AND status IS NOT NULL AND status != ''");
-                    $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+            // Ensure interviews table has correct structure
+            $requiredColumns = [
+                'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
+                'applicant_id' => 'INT NOT NULL',
+                'interview_date' => 'DATE NOT NULL',
+                'interview_time' => 'TIME NOT NULL',
+                'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
+                'interview_notes' => 'TEXT',
+                'position' => 'VARCHAR(255)',
+                'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
+                'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+                'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+            ];
+            
+            // Create table if it doesn't exist
+            $columns = implode(', ', array_map(function($col, $def) {
+                return "$col $def";
+            }, array_keys($requiredColumns), $requiredColumns));
+            
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS interviews (
+                    $columns,
+                    FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+                )
+            ");
+            
+            // Ensure individual columns exist
+            foreach ($requiredColumns as $col => $def) {
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN $col $def");
+                } catch(Exception $e) {
+                    // Column already exists, ignore error
                 }
-            } catch(Exception $ignored) {}
+            }
+            
+            // Drop duplicate status column if it exists
+            try {
+                $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+            } catch(Exception $e) {
+                // Column doesn't exist or already dropped, ignore error
+            }
+            
             // Get interviews with applicant names using JOIN
             $stmt = $pdo->query("
                 SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
@@ -651,7 +670,6 @@ switch($action) {
                 'interview_notes' => 'TEXT',
                 'position' => 'VARCHAR(255)',
                 'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
-                'status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
                 'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
             ];
@@ -677,6 +695,14 @@ switch($action) {
                 }
             }
             
+            // Drop duplicate status column if it exists
+            try {
+                $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+                error_log("Dropped duplicate status column");
+            } catch(Exception $e) {
+                // Column doesn't exist or already dropped, ignore error
+            }
+            
             error_log("Interviews table structure verified/updated");
         } catch(Exception $e) {
             error_log("Error updating interviews table: " . $e->getMessage());
@@ -685,7 +711,7 @@ switch($action) {
         // Insert interview
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO interviews (applicant_id, interview_date, interview_time, interview_type, interview_notes, position, status)
+                INSERT INTO interviews (applicant_id, interview_date, interview_time, interview_type, interview_notes, position, interview_status)
                 VALUES (?, ?, ?, ?, ?, ?, 'Scheduled')
             ");
             $stmt->execute([$applicantId, $interviewDate, $interviewTime, $interviewType, $interviewNotes, $position]);
