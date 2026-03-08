@@ -111,6 +111,7 @@
   <div class="form-group"><label>Description <span class="req">*</span></label><textarea id="r_desc" placeholder="Job responsibilities, requirements, qualifications..."></textarea></div>
 
   <button class="btn btn-primary" onclick="r_save()">Post Job</button>
+  <button class="btn btn-secondary" onclick="testDirectSave()">🧪 Test Direct</button>
 
   <button class="btn btn-secondary" onclick="r_close('r_modal_add')">Cancel</button>
 
@@ -3447,6 +3448,42 @@ async function r_deleteJob(id) {
 }
 
  
+
+// Test function to bypass potential onclick issues
+function testDirectSave() {
+  console.log('🧪 testDirectSave() called!');
+  var title = 'Test Job - ' + new Date().getTime();
+  var desc = 'This is a test job posting to debug the save functionality.';
+  
+  // Direct call to the API
+  fetch('../api/simple-api-new.php?action=save_job_posting', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      title: title,
+      department: 'Test Department',
+      location: 'Test Location',
+      employment_type: 'Full-time',
+      description: desc,
+      salary_range: 'Test Salary',
+      status: 'Active'
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('🧪 Test job posted successfully! ID:', data.job_id);
+      r_toast('Test job posted! ID: ' + data.job_id);
+    } else {
+      console.log('🧪 Test job failed:', data.error);
+      r_toast('Test job failed: ' + data.error, 'error');
+    }
+  })
+  .catch(error => {
+    console.log('🧪 Test job error:', error);
+    r_toast('Test job error: ' + error.message, 'error');
+  });
+}
 
 // Pre-Employment Processing Functions
 
