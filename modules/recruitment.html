@@ -2798,17 +2798,8 @@ function r_viewDetails(jobId) {
 
  
 
-  // Poll every 5 seconds to pick up new applications from careers site
-
-  setInterval(function() {
-
-    r_loadFromStorage();
-
-    r_render();
-
-    r_updateStats();
-
-  }, 5000);
+  // Auto-refresh removed - was causing infinite loop
+  // Jobs now load on demand and after posting
 
 })();
 
