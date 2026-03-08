@@ -2733,11 +2733,18 @@ function r_tab(t, btn) {
 /* ── Modal helpers ── */
 
 function r_open(id) {
-
+  console.log('r_open called with id:', id);
+  
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_OPEN_MODAL',modalId:id},'*'); return; } } catch(e) {}
 
-  var m = document.getElementById(id); if (m) m.classList.add('active');
-
+  var m = document.getElementById(id); 
+  console.log('Modal element found:', m);
+  if (m) {
+    m.classList.add('active');
+    console.log('Modal classes after adding active:', m.className);
+  } else {
+    console.error('Modal element not found for id:', id);
+  }
 }
 
 function r_close(id) {
