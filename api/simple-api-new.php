@@ -747,15 +747,28 @@ switch($action) {
         break;
         
     case 'update_interview_status':
-        error_log("update_interview_status called with POST data: " . json_encode($_POST));
+        error_log("update_interview_status called");
         
-        $interviewId = $_POST['interview_id'] ?? null;
-        $newStatus = $_POST['status'] ?? null;
+        // Get JSON input
+        $jsonInput = file_get_contents('php://input');
+        error_log("Raw JSON input: " . $jsonInput);
         
-        error_log("Parsed values - interview_id: " . ($interviewId ?? 'null') . ", status: " . ($newStatus ?? 'null'));
+        $data = json_decode($jsonInput, true);
+        error_log("Decoded JSON data: " . json_encode($data));
+        
+        // Fallback to POST if JSON fails
+        if (!$data) {
+            $data = $_POST;
+            error_log("Using POST data as fallback: " . json_encode($data));
+        }
+        
+        $interviewId = $data['interview_id'] ?? null;
+        $newStatus = $data['status'] ?? null;
+        
+        error_log("Final values - interview_id: " . ($interviewId ?? 'null') . ", status: " . ($newStatus ?? 'null'));
         
         if (!$interviewId || !$newStatus) {
-            error_log("Validation failed - interview_id: " . var_export($interviewId, true) . ", status: " . var_export($newStatus, true));
+            error_log("Validation failed");
             jsonResponse(['error' => 'Interview ID and status are required'], 400);
             break;
         }

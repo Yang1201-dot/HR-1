@@ -442,9 +442,9 @@ async function r_saveStatusChange(interviewId) {
         const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: new URLSearchParams(postData)
+            body: JSON.stringify(postData)
         });
         
         console.log('📡 Response status:', response.status);
