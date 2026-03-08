@@ -748,27 +748,35 @@ switch($action) {
         
     case 'update_interview_status':
         error_log("update_interview_status called");
+        error_log("GET data: " . json_encode($_GET));
+        error_log("POST data: " . json_encode($_POST));
         
-        // Get JSON input
-        $jsonInput = file_get_contents('php://input');
-        error_log("Raw JSON input: " . $jsonInput);
+        // Try GET parameters first
+        $interviewId = $_GET['interview_id'] ?? null;
+        $newStatus = $_GET['status'] ?? null;
         
-        $data = json_decode($jsonInput, true);
-        error_log("Decoded JSON data: " . json_encode($data));
-        
-        // Fallback to POST if JSON fails
-        if (!$data) {
-            $data = $_POST;
-            error_log("Using POST data as fallback: " . json_encode($data));
+        // Fallback to POST if GET fails
+        if (!$interviewId || !$newStatus) {
+            // Try JSON input
+            $jsonInput = file_get_contents('php://input');
+            error_log("Raw JSON input: " . $jsonInput);
+            
+            $data = json_decode($jsonInput, true);
+            error_log("Decoded JSON data: " . json_encode($data));
+            
+            if (!$data) {
+                $data = $_POST;
+                error_log("Using POST data as fallback: " . json_encode($data));
+            }
+            
+            $interviewId = $data['interview_id'] ?? $interviewId;
+            $newStatus = $data['status'] ?? $newStatus;
         }
-        
-        $interviewId = $data['interview_id'] ?? null;
-        $newStatus = $data['status'] ?? null;
         
         error_log("Final values - interview_id: " . ($interviewId ?? 'null') . ", status: " . ($newStatus ?? 'null'));
         
         if (!$interviewId || !$newStatus) {
-            error_log("Validation failed");
+            error_log("Validation failed - no valid data found");
             jsonResponse(['error' => 'Interview ID and status are required'], 400);
             break;
         }

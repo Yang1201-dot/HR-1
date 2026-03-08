@@ -439,12 +439,8 @@ async function r_saveStatusChange(interviewId) {
     console.log('📤 Sending POST data:', postData);
     
     try {
-        const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData)
+        const response = await fetch(`../api/simple-api-new.php?action=update_interview_status&interview_id=${interviewId}&status=${encodeURIComponent(newStatus)}`, {
+            method: 'GET'
         });
         
         console.log('📡 Response status:', response.status);
