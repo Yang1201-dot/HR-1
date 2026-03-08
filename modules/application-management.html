@@ -744,27 +744,27 @@ async function am_load() {
 
         
 
-        // Enhanced categorization logic using form field names
+        // Enhanced categorization logic using file_type from database
 
-        if (file.file_field) {
+        if (file.file_type) {
 
-          // Use the form field name for perfect categorization
+          // Use the file_type for perfect categorization
 
-          const fieldCategory = file.file_field.toLowerCase();
-
-          if (fieldCategory === 'resume') {
+          const fileType = file.file_type.toLowerCase();
+          
+          if (fileType === 'resume') {
 
             category = 'resume';
 
-          } else if (fieldCategory === 'birth_certificate') {
+          } else if (fileType === 'birth_certificate') {
 
             category = 'birth';
 
-          } else if (fieldCategory === 'diploma') {
+          } else if (fileType === 'diploma') {
 
             category = 'diploma';
 
-          } else if (fieldCategory === 'cover_letter') {
+          } else if (fileType === 'cover_letter') {
 
             category = 'cover';
 
