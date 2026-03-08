@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Modal</title>
+    <link rel="stylesheet" href="css/recruitment.css">
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .test-btn { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Modal Test Page</h1>
+    <p>Testing if modal works in isolation...</p>
+    
+    <button class="test-btn" onclick="testModal()">Test Interview Modal</button>
+    <button class="test-btn" onclick="testSimpleAlert()">Test Simple Alert</button>
+    
+    <!-- Modal: Schedule Interview -->
+    <div class="modal-overlay" id="r_modal_interview">
+        <div class="modal-box">
+            <button class="modal-close" onclick="r_close('r_modal_interview')">&times;</button>
+            <h2 id="r_interview_modal_title">Schedule Interview</h2>
+            <div class="form-group">
+                <label>Applicant Name <span class="req">*</span></label>
+                <select id="r_interview_applicant">
+                    <option value="">Select Applicant</option>
+                    <option value="1">Test Applicant</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Date <span class="req">*</span></label>
+                <input type="date" id="r_interview_date">
+            </div>
+            <div class="form-group">
+                <label>Time <span class="req">*</span></label>
+                <input type="time" id="r_interview_time">
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="r_interview_type">
+                    <option value="Phone Screen">Phone Screen</option>
+                    <option value="Video Call">Video Call</option>
+                    <option value="In-Person">In-Person</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="r_interview_notes"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-submit" onclick="saveInterview()">Schedule Interview</button>
+                <button class="btn-cancel-modal" onclick="r_close('r_modal_interview')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function r_open(id) {
+            console.log('r_open called with id:', id);
+            var m = document.getElementById(id);
+            console.log('Modal element found:', m);
+            if (m) {
+                m.classList.add('active');
+                console.log('Modal classes after adding active:', m.className);
+                console.log('Modal computed style:', getComputedStyle(m));
+            } else {
+                console.error('Modal element not found for id:', id);
+            }
+        }
+
+        function r_close(id) {
+            var m = document.getElementById(id);
+            if (m) m.classList.remove('active');
+        }
+
+        function testModal() {
+            console.log('Testing modal...');
+            r_open('r_modal_interview');
+        }
+
+        function testSimpleAlert() {
+            alert('Simple alert works!');
+        }
+
+        function saveInterview() {
+            alert('Interview would be saved here');
+            r_close('r_modal_interview');
+        }
+    </script>
+</body>
+</html>
