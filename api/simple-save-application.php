@@ -21,6 +21,7 @@ try {
     try { $pdo->exec("ALTER TABLE applicants ADD COLUMN birth_certificate_path VARCHAR(500) NULL"); } catch(Exception $e) {}
     try { $pdo->exec("ALTER TABLE applicants ADD COLUMN diploma_path VARCHAR(500) NULL"); } catch(Exception $e) {}
     try { $pdo->exec("ALTER TABLE applicants ADD COLUMN cover_letter_path VARCHAR(500) NULL"); } catch(Exception $e) {}
+    try { $pdo->exec("ALTER TABLE applicants ADD COLUMN message TEXT NULL"); } catch(Exception $e) {}
 
     // Create applicant_files table if it doesn't exist
     $pdo->exec("
@@ -55,6 +56,7 @@ try {
     $salary    = trim($_POST['salary'] ?? '');
     $desc      = trim($_POST['description'] ?? '');
     $jobId     = trim($_POST['job_posting_id'] ?? '');
+    $message   = trim($_POST['message'] ?? '');
 
     // Debug logging
     error_log("POST data received: " . json_encode($_POST));
@@ -94,12 +96,12 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO applicants (fname, lname, email, phone, position, dept, status, applied_at,
             resume_path, birth_certificate_path, diploma_path, cover_letter_path,
-            location, employment_type, salary, description, job_posting_id)
-        VALUES (?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            location, employment_type, salary, description, job_posting_id, message)
+        VALUES (?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([$fname, $lname, $email, $phone, $position, $dept,
         $resumePath['path'] ?? null, $birthPath['path'] ?? null, $diplomaPath['path'] ?? null, $coverPath['path'] ?? null,
-        $location, $emptype, $salary, $desc, $jobId]);
+        $location, $emptype, $salary, $desc, $jobId, $message]);
 
     $applicantId = $pdo->lastInsertId();
     error_log("Application inserted with ID: $applicantId");

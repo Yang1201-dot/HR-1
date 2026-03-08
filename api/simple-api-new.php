@@ -49,6 +49,7 @@ switch($action) {
         try { $pdo->exec("ALTER TABLE applicants ADD COLUMN salary VARCHAR(100) NULL"); } catch(Exception $ignored) {}
         try { $pdo->exec("ALTER TABLE applicants ADD COLUMN description TEXT NULL"); } catch(Exception $ignored) {}
         try { $pdo->exec("ALTER TABLE applicants ADD COLUMN job_posting_id INT NULL"); } catch(Exception $ignored) {}
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN message TEXT NULL"); } catch(Exception $ignored) {}
         
         // Remove expected_salary column if it exists
         try { $pdo->exec("ALTER TABLE applicants DROP COLUMN expected_salary"); } catch(Exception $ignored) {}
@@ -62,7 +63,7 @@ switch($action) {
                 id, fname as first_name, lname as last_name, email, phone, position,
                 dept as department, applied_at as application_date, status, updated_at,
                 location, employment_type, salary, description, job_posting_id,
-                resume_path, birth_certificate_path, diploma_path, cover_letter_path
+                resume_path, birth_certificate_path, diploma_path, cover_letter_path, message
             FROM applicants 
             ORDER BY applied_at DESC
         ");
