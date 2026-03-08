@@ -934,35 +934,7 @@ console.log('Script loading - checking function accessibility...');
 
   
 
-  // Persistence check - ensure functions remain available
-
-  setInterval(function() {
-
-    if (typeof window.r_saveInterviewStatus !== 'function') {
-
-      console.error('⚠️ r_saveInterviewStatus was lost, reassigning...');
-
-      window.r_saveInterviewStatus = r_saveInterviewStatus;
-
-    }
-
-    if (typeof window.r_saveInterview !== 'function') {
-
-      console.error('⚠️ r_saveInterview was lost, reassigning...');
-
-      window.r_saveInterview = r_saveInterview;
-
-    }
-
-    if (typeof window.r_close !== 'function') {
-
-      console.error('⚠️ r_close was lost, reassigning...');
-
-      window.r_close = r_close;
-
-    }
-
-  }, 1000);
+  // Function persistence check removed - was causing infinite loop
 
   
 
