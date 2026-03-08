@@ -2790,10 +2790,21 @@ function r_open(id) {
     
     // Force all modal content to be visible
     var allModalContent = m.querySelectorAll('*');
+    console.log('🔍 Total modal elements found:', allModalContent.length);
     for (var i = 0; i < allModalContent.length; i++) {
+        var elem = allModalContent[i];
+        console.log('🔍 Element', i, ':', elem.tagName, 'display:', getComputedStyle(elem).display, 'visibility:', getComputedStyle(elem).visibility);
         allModalContent[i].style.display = 'block';
         allModalContent[i].style.visibility = 'visible';
         allModalContent[i].style.opacity = '1';
+        allModalContent[i].style.position = 'relative';
+        allModalContent[i].style.width = 'auto';
+        allModalContent[i].style.height = 'auto';
+        allModalContent[i].style.minWidth = '100px';
+        allModalContent[i].style.minHeight = '50px';
+        allModalContent[i].style.background = 'yellow';
+        allModalContent[i].style.border = '2px solid red';
+        allModalContent[i].style.padding = '10px';
     }
     
     // Force modal-box to have proper dimensions
