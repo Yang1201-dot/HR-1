@@ -651,6 +651,9 @@ switch($action) {
         // Ensure status column exists
         try { $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Scheduled'"); } catch(Exception $e) {}
         
+        // Ensure interview_notes column exists
+        try { $pdo->exec("ALTER TABLE interviews ADD COLUMN interview_notes TEXT"); } catch(Exception $e) {}
+        
         // Insert interview
         try {
             $stmt = $pdo->prepare("
