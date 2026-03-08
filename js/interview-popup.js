@@ -237,12 +237,33 @@ async function r_loadApplicantsForPopup() {
 }
 
 async function r_saveInterviewPopup() {
-    const applicantId = document.getElementById('popup_applicant').value;
-    const interviewDate = document.getElementById('popup_date').value;
-    const interviewTime = document.getElementById('popup_time').value;
-    const interviewType = document.getElementById('popup_type').value;
-    const interviewNotes = document.getElementById('popup_notes').value;
-    const position = document.getElementById('popup_position').value;
+    const applicantEl = document.getElementById('popup_applicant');
+    const dateEl = document.getElementById('popup_date');
+    const timeEl = document.getElementById('popup_time');
+    const typeEl = document.getElementById('popup_type');
+    const notesEl = document.getElementById('popup_notes');
+    const positionEl = document.getElementById('popup_position');
+    
+    // Check if all elements exist
+    if (!applicantEl || !dateEl || !timeEl || !typeEl || !notesEl || !positionEl) {
+        console.error('❌ Missing form elements:', {
+            applicant: !!applicantEl,
+            date: !!dateEl,
+            time: !!timeEl,
+            type: !!typeEl,
+            notes: !!notesEl,
+            position: !!positionEl
+        });
+        alert('Error: Form elements not found. Please try again.');
+        return;
+    }
+    
+    const applicantId = applicantEl.value;
+    const interviewDate = dateEl.value;
+    const interviewTime = timeEl.value;
+    const interviewType = typeEl.value;
+    const interviewNotes = notesEl.value;
+    const position = positionEl.value;
     
     if (!applicantId || !interviewDate || !interviewTime) {
         alert('Please fill in all required fields.');
