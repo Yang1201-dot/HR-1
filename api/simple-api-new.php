@@ -747,6 +747,9 @@ switch($action) {
         break;
         
     case 'update_interview_status':
+        error_log("update_interview_status called - IMMEDIATE RESPONSE TEST");
+        jsonResponse(['test' => 'endpoint reached', 'timestamp' => date('Y-m-d H:i:s')]);
+        
         error_log("update_interview_status called");
         error_log("GET data: " . json_encode($_GET));
         error_log("POST data: " . json_encode($_POST));
