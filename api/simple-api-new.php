@@ -76,7 +76,7 @@ switch($action) {
             $stmt = $pdo->query("
                 SELECT 
                     af.id, af.applicant_id, af.file_name, af.file_type, af.file_size,
-                    af.file_path, af.uploaded_at, af.file_field,
+                    af.file_path, af.uploaded_at, af.mime_type,
                     CONCAT(a.fname, ' ', a.lname) as applicant_name
                 FROM applicant_files af
                 LEFT JOIN applicants a ON af.applicant_id = a.id
@@ -582,6 +582,9 @@ switch($action) {
             
             // Ensure mime_type column exists (in case table was created without it)
             try { $pdo->exec("ALTER TABLE applicant_files ADD COLUMN mime_type VARCHAR(100) NOT NULL DEFAULT ''"); } catch(Exception $e) {}
+            
+            // Drop unused file_field column if it exists
+            try { $pdo->exec("ALTER TABLE applicant_files DROP COLUMN file_field"); } catch(Exception $e) {}
             
             $applicantId = $_GET['applicant_id'] ?? null;
             if ($applicantId) {
