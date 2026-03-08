@@ -2788,15 +2788,30 @@ function r_open(id) {
     m.style.overflow = 'auto'; // Allow scrolling
     m.style.padding = '20px'; // Ensure content has space
     
+    // Force all modal content to be visible
+    var allModalContent = m.querySelectorAll('*');
+    for (var i = 0; i < allModalContent.length; i++) {
+        allModalContent[i].style.display = 'block';
+        allModalContent[i].style.visibility = 'visible';
+        allModalContent[i].style.opacity = '1';
+    }
+    
     // Force modal-box to have proper dimensions
     var modalBox = m.querySelector('.modal-box');
     if (modalBox) {
-        modalBox.style.minWidth = '400px';
-        modalBox.style.minHeight = '300px';
-        modalBox.style.maxWidth = '90vw';
-        modalBox.style.maxHeight = '90vh';
-        modalBox.style.overflow = 'auto';
-        console.log('Modal box dimensions forced');
+        modalBox.style.display = 'block !important';
+        modalBox.style.visibility = 'visible !important';
+        modalBox.style.opacity = '1 !important';
+        modalBox.style.minWidth = '400px !important';
+        modalBox.style.minHeight = '300px !important';
+        modalBox.style.maxWidth = '90vw !important';
+        modalBox.style.maxHeight = '90vh !important';
+        modalBox.style.overflow = 'auto !important';
+        modalBox.style.padding = '20px !important';
+        modalBox.style.margin = '0 !important';
+        modalBox.style.border = '1px solid #ccc !important';
+        modalBox.style.borderRadius = '8px !important';
+        console.log('Modal box dimensions forced with !important');
     }
     
     console.log('Modal forced to front with inline styles');
