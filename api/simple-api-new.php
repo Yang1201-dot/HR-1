@@ -640,31 +640,46 @@ switch($action) {
             break;
         }
         
-        // Force drop and recreate interviews table to ensure correct structure
+        // Ensure all required columns exist in interviews table
         try {
-            error_log("Dropping interviews table if exists...");
-            $pdo->exec("DROP TABLE IF EXISTS interviews");
-            error_log("Interviews table dropped");
+            $requiredColumns = [
+                'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
+                'applicant_id' => 'INT NOT NULL',
+                'interview_date' => 'DATE NOT NULL',
+                'interview_time' => 'TIME NOT NULL',
+                'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
+                'interview_notes' => 'TEXT',
+                'position' => 'VARCHAR(255)',
+                'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
+                'status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
+                'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+                'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+            ];
             
-            error_log("Creating interviews table with correct structure...");
+            // Create table if it doesn't exist
+            $columns = implode(', ', array_map(function($col, $def) {
+                return "$col $def";
+            }, array_keys($requiredColumns), $requiredColumns));
+            
             $pdo->exec("
-                CREATE TABLE interviews (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    applicant_id INT NOT NULL,
-                    interview_date DATE NOT NULL,
-                    interview_time TIME NOT NULL,
-                    interview_type VARCHAR(50) NOT NULL DEFAULT 'Phone Screen',
-                    interview_notes TEXT,
-                    position VARCHAR(255),
-                    status VARCHAR(20) NOT NULL DEFAULT 'Scheduled',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                CREATE TABLE IF NOT EXISTS interviews (
+                    $columns,
                     FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
                 )
             ");
-            error_log("Interviews table recreated with interview_notes column");
+            
+            // Ensure individual columns exist (for backward compatibility)
+            foreach ($requiredColumns as $col => $def) {
+                try {
+                    $pdo->exec("ALTER TABLE interviews ADD COLUMN $col $def");
+                } catch(Exception $e) {
+                    // Column already exists, ignore error
+                }
+            }
+            
+            error_log("Interviews table structure verified/updated");
         } catch(Exception $e) {
-            error_log("Error recreating interviews table: " . $e->getMessage());
+            error_log("Error updating interviews table: " . $e->getMessage());
         }
         
         // Insert interview
