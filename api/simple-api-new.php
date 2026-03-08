@@ -1,12 +1,8 @@
 <?php
-// IMMEDIATE TEST - Is this file executing?
-if (isset($_GET['test_file'])) {
-    echo json_encode(['test' => 'file_executing', 'timestamp' => date('Y-m-d H:i:s')]);
-    exit;
-}
-
+// Enable error output buffering to catch any errors
+ob_start();
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/api_errors.log');
 
@@ -817,5 +813,16 @@ switch($action) {
         error_log("POST: " . json_encode($_POST));
         error_log("Request URI: " . $_SERVER['REQUEST_URI']);
         jsonResponse(['error' => 'Unknown action: ' . $action, 'debug_info' => ['method' => $method, 'get' => $_GET, 'post' => $_POST]], 400);
+}
+
+// Catch any output buffer content (errors) and include in response
+$output = ob_get_clean();
+if ($output && !headers_sent()) {
+    // If there's any output (errors), return it as debug info
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'PHP output detected', 'output' => $output]);
+} elseif ($output && headers_sent()) {
+    // If headers already sent, the output was already displayed
+    error_log('PHP output sent: ' . $output);
 }
 ?>

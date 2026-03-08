@@ -432,18 +432,6 @@ async function r_saveStatusChange(interviewId) {
     const newStatus = document.getElementById('status_change_select').value;
     console.log('🔄 Updating interview status:', interviewId, 'to:', newStatus);
     
-    // First test if the API file is executing at all
-    console.log('🧪 Testing if API file executes...');
-    try {
-        const testResponse = await fetch('../api/simple-api-new.php?test_file=1');
-        const testResult = await testResponse.json();
-        console.log('✅ API file test result:', testResult);
-    } catch (e) {
-        console.error('❌ API file test failed:', e);
-        alert('API file is not executing properly');
-        return;
-    }
-    
     const postData = {
         interview_id: interviewId,
         status: newStatus
