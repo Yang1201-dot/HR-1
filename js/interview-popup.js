@@ -334,3 +334,137 @@ async function r_saveInterviewPopup() {
         alert('Error scheduling interview. Please try again.');
     }
 }
+
+// Status change popup functions
+async function r_openStatusChangePopup(interviewId, currentStatus) {
+    console.log('🔄 Opening status change popup for interview:', interviewId);
+    
+    // Create status change popup
+    const popupHtml = `
+        <div id="status_change_popup" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+        ">
+            <div style="
+                background: var(--background, #ffffff);
+                border-radius: 12px;
+                padding: 24px;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            ">
+                <h3 style="margin: 0 0 20px 0; color: var(--text-primary, #1f2937); font-size: 18px; font-weight: 600;">Change Interview Status</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Status</label>
+                    <select id="status_change_select" style="
+                        width: 100%;
+                        padding: 10px 12px;
+                        border: 1px solid var(--border-color, #e2e8f0);
+                        border-radius: 6px;
+                        background: var(--background, #f8fafc);
+                        color: var(--text-primary, #1f2937);
+                        font-size: 14px;
+                    ">
+                        <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Rescheduled">Rescheduled</option>
+                        <option value="No Show">No Show</option>
+                        <option value="Hired">Hired</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="r_saveStatusChange(${interviewId})" style="
+                        flex: 1;
+                        padding: 10px 20px;
+                        background: var(--brand-green, #10b981);
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">Update Status</button>
+                    <button onclick="r_closeStatusChangePopup()" style="
+                        flex: 1;
+                        padding: 10px 20px;
+                        background: transparent;
+                        color: var(--text-secondary, #64748b);
+                        border: 1px solid var(--border-color, #e2e8f0);
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">Cancel</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add popup to body
+    document.body.insertAdjacentHTML('beforeend', popupHtml);
+    
+    // Set current status
+    document.getElementById('status_change_select').value = currentStatus;
+    
+    console.log('✅ Status change popup opened');
+}
+
+function r_closeStatusChangePopup() {
+    const popup = document.getElementById('status_change_popup');
+    if (popup) {
+        popup.remove();
+        console.log('✅ Status change popup closed');
+    }
+}
+
+async function r_saveStatusChange(interviewId) {
+    const newStatus = document.getElementById('status_change_select').value;
+    console.log('🔄 Updating interview status:', interviewId, 'to:', newStatus);
+    
+    try {
+        const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                interview_id: interviewId,
+                status: newStatus
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            console.log('✅ Interview status updated successfully');
+            r_closeStatusChangePopup();
+            // Refresh interviews list
+            if (typeof r_loadInterviews === 'function') {
+                await r_loadInterviews();
+            }
+        } else {
+            console.error('❌ Error updating status:', result.error);
+            alert('Error updating status: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('❌ Error updating status:', error);
+        alert('Error updating status. Please try again.');
+    }
+}
+
+// Make functions globally available
+window.r_openStatusChangePopup = r_openStatusChangePopup;
+window.r_closeStatusChangePopup = r_closeStatusChangePopup;
+window.r_saveStatusChange = r_saveStatusChange;

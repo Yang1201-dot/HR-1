@@ -3281,6 +3281,32 @@ async function r_saveInterviewStatus() {
 
 window.r_saveInterviewStatus = r_saveInterviewStatus;
 
+// Change interview status function
+function r_changeInterviewStatus(interviewId) {
+  console.log('🔄 Changing status for interview:', interviewId);
+  
+  // Find the interview in the INTERVIEWS array
+  var interview = INTERVIEWS.find(function(i) { return i.id == interviewId; });
+  if (!interview) {
+    console.error('❌ Interview not found:', interviewId);
+    alert('Interview not found');
+    return;
+  }
+  
+  var currentStatus = interview.interview_status || 'Scheduled';
+  console.log('🎯 Current status:', currentStatus);
+  
+  // Open status change popup
+  if (typeof r_openStatusChangePopup === 'function') {
+    r_openStatusChangePopup(interviewId, currentStatus);
+  } else {
+    console.error('❌ r_openStatusChangePopup function not found');
+    alert('Status change function not available');
+  }
+}
+
+// Make function globally available
+window.r_changeInterviewStatus = r_changeInterviewStatus;
 
 
 async function r_deleteInterview(id) {

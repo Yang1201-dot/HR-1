@@ -740,6 +740,33 @@ switch($action) {
         }
         break;
         
+    case 'update_interview_status':
+        $interviewId = $_POST['interview_id'] ?? null;
+        $newStatus = $_POST['status'] ?? null;
+        
+        if (!$interviewId || !$newStatus) {
+            jsonResponse(['error' => 'Missing interview ID or status'], 400);
+            break;
+        }
+        
+        try {
+            $stmt = $pdo->prepare("
+                UPDATE interviews 
+                SET interview_status = ?, updated_at = CURRENT_TIMESTAMP 
+                WHERE id = ?
+            ");
+            $stmt->execute([$newStatus, $interviewId]);
+            
+            if ($stmt->rowCount() > 0) {
+                jsonResponse(['success' => true, 'message' => 'Interview status updated successfully']);
+            } else {
+                jsonResponse(['error' => 'Interview not found or no changes made'], 404);
+            }
+        } catch(Exception $e) {
+            jsonResponse(['error' => 'Failed to update interview status: ' . $e->getMessage()], 500);
+        }
+        break;
+        
     default:
         jsonResponse(['error' => 'Unknown action'], 400);
 }
