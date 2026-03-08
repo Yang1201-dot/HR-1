@@ -43,8 +43,16 @@ switch($action) {
         break;
         
     case 'get_applications':
-        // Ensure expected_salary column exists
-        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN expected_salary VARCHAR(100) NULL"); } catch(Exception $ignored) {}
+        // Ensure required columns exist
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN location VARCHAR(255) NULL"); } catch(Exception $ignored) {}
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN employment_type VARCHAR(100) NULL"); } catch(Exception $ignored) {}
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN salary VARCHAR(100) NULL"); } catch(Exception $ignored) {}
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN description TEXT NULL"); } catch(Exception $ignored) {}
+        try { $pdo->exec("ALTER TABLE applicants ADD COLUMN job_posting_id INT NULL"); } catch(Exception $ignored) {}
+        
+        // Remove expected_salary column if it exists
+        try { $pdo->exec("ALTER TABLE applicants DROP COLUMN expected_salary"); } catch(Exception $ignored) {}
+        
         $countStmt = $pdo->query("SELECT COUNT(*) as count FROM applicants");
         $count = $countStmt->fetch(PDO::FETCH_ASSOC)['count'];
         error_log("Total applicants in database: " . $count);
@@ -53,7 +61,7 @@ switch($action) {
             SELECT 
                 id, fname as first_name, lname as last_name, email, phone, position,
                 dept as department, applied_at as application_date, status, updated_at,
-                expected_salary,
+                location, employment_type, salary, description, job_posting_id,
                 resume_path, birth_certificate_path, diploma_path, cover_letter_path
             FROM applicants 
             ORDER BY applied_at DESC

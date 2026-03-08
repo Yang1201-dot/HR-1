@@ -50,11 +50,14 @@ try {
 
     $stmt = $pdo->prepare("
         INSERT INTO applicants (fname, lname, email, phone, position, dept, status, applied_at,
-            resume_path, birth_certificate_path, diploma_path, cover_letter_path)
-        VALUES (?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?)
+            resume_path, birth_certificate_path, diploma_path, cover_letter_path,
+            location, employment_type, salary, description, job_posting_id)
+        VALUES (?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([$fname, $lname, $email, $phone, $position, $dept,
-        $resumePath, $birthPath, $diplomaPath, $coverPath]);
+        $resumePath, $birthPath, $diplomaPath, $coverPath,
+        $_POST['location'] ?? '', $_POST['employment_type'] ?? '', $_POST['salary'] ?? '', 
+        $_POST['description'] ?? '', $_POST['job_posting_id'] ?? null]);
 
     $id = $pdo->lastInsertId();
     echo json_encode(['success' => true, 'id' => $id, 'message' => 'Application submitted successfully']);
