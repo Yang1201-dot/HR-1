@@ -174,6 +174,9 @@ async function r_loadApplicantsForPopup() {
         console.log('🎯 Dropdown element:', select);
         select.innerHTML = '<option value="">Select Applicant</option>';
         
+        // Initialize applicant data storage
+        window.applicantData = {};
+        
         data.forEach(applicant => {
             console.log('👤 Processing applicant:', applicant);
             console.log('🔍 Status check:', applicant.status, 'matches shortlisted:', applicant.status === 'Shortlisted');
