@@ -444,8 +444,21 @@ async function r_saveStatusChange(interviewId) {
         });
         
         console.log('📡 Response status:', response.status);
-        const result = await response.json();
-        console.log('📡 Response data:', result);
+        
+        // Get response as text first to debug
+        const responseText = await response.text();
+        console.log('📡 Raw response text:', responseText);
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+            console.log('📡 Parsed JSON data:', result);
+        } catch (e) {
+            console.error('❌ JSON parse error:', e);
+            console.error('❌ Response was not valid JSON:', responseText);
+            alert('Server returned invalid response. Please check server logs.');
+            return;
+        }
         
         if (result.success) {
             console.log('✅ Interview status updated successfully');
