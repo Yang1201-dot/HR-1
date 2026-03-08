@@ -306,8 +306,26 @@ async function r_saveInterviewPopup() {
         if (result.success) {
             alert('Interview scheduled successfully!');
             r_closeInterviewPopup();
-            // Refresh interviews tab
-            r_tab('interviews');
+            // Refresh interviews tab with delay to ensure data is saved
+            setTimeout(function() {
+                // Force refresh interviews list
+                if (typeof r_loadInterviews === 'function') {
+                    console.log('🔄 Refreshing interviews list...');
+                    r_loadInterviews().then(() => {
+                        console.log('✅ Interviews list refreshed');
+                        // Switch to interviews tab
+                        r_tab('interviews');
+                    }).catch(error => {
+                        console.error('❌ Error refreshing interviews:', error);
+                        // Fallback to tab switch
+                        r_tab('interviews');
+                    });
+                } else {
+                    // Fallback: just switch to interviews tab
+                    console.log('⚠️ r_loadInterviews not found, switching to interviews tab');
+                    r_tab('interviews');
+                }
+            }, 500); // Small delay to ensure database save is complete
         } else {
             alert('Error scheduling interview: ' + (result.error || 'Unknown error'));
         }
