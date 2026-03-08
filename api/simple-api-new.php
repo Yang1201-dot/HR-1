@@ -741,11 +741,16 @@ switch($action) {
         break;
         
     case 'update_interview_status':
+        error_log("update_interview_status called with POST data: " . json_encode($_POST));
+        
         $interviewId = $_POST['interview_id'] ?? null;
         $newStatus = $_POST['status'] ?? null;
         
+        error_log("Parsed values - interview_id: " . ($interviewId ?? 'null') . ", status: " . ($newStatus ?? 'null'));
+        
         if (!$interviewId || !$newStatus) {
-            jsonResponse(['error' => 'Missing interview ID or status'], 400);
+            error_log("Validation failed - interview_id: " . var_export($interviewId, true) . ", status: " . var_export($newStatus, true));
+            jsonResponse(['error' => 'Interview ID and status are required'], 400);
             break;
         }
         

@@ -432,19 +432,24 @@ async function r_saveStatusChange(interviewId) {
     const newStatus = document.getElementById('status_change_select').value;
     console.log('🔄 Updating interview status:', interviewId, 'to:', newStatus);
     
+    const postData = {
+        interview_id: interviewId,
+        status: newStatus
+    };
+    console.log('📤 Sending POST data:', postData);
+    
     try {
         const response = await fetch('../api/simple-api-new.php?action=update_interview_status', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: new URLSearchParams({
-                interview_id: interviewId,
-                status: newStatus
-            })
+            body: new URLSearchParams(postData)
         });
         
+        console.log('📡 Response status:', response.status);
         const result = await response.json();
+        console.log('📡 Response data:', result);
         
         if (result.success) {
             console.log('✅ Interview status updated successfully');
