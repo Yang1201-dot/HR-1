@@ -210,11 +210,14 @@ async function r_loadApplicantsForPopup() {
     }
     
     // Add event listener to update position field when applicant is selected
+    // Note: Position field auto-fill disabled due to DOM timing issues
+    /*
     document.getElementById('popup_applicant').addEventListener('change', () => {
         const applicantId = document.getElementById('popup_applicant').value;
         const position = window.applicantData[applicantId].position;
         document.getElementById('popup_position').value = position;
     });
+    */
 }
 
 async function r_saveInterviewPopup() {
