@@ -2878,11 +2878,11 @@ window.r_saveInterview = r_saveInterview;
 async function r_editInterview(id) {
   console.log('🔧 r_editInterview called with id:', id);
   
-  // Open popup window for editing
+  // Open modal popup window for editing
   const popup = window.open(
-    '../edit-interview-popup.html?id=' + id,
-    'editInterview',
-    'width=550,height=600,scrollbars=yes,resizable=yes'
+    '../edit-interview-modal.html?id=' + id,
+    'editInterviewModal',
+    'width=600,height=700,scrollbars=yes,resizable=yes'
   );
   
   // Focus on the popup
