@@ -2551,90 +2551,22 @@ function r_open(id) {
     m.classList.add('active');
     console.log('Modal classes after adding active:', m.className);
     
-    // Check computed styles
-    var computedStyle = getComputedStyle(m);
-    console.log('Modal display:', computedStyle.display);
-    console.log('Modal z-index:', computedStyle.zIndex);
-    console.log('Modal position:', computedStyle.position);
-    console.log('Modal visibility:', computedStyle.visibility);
-    console.log('Modal opacity:', computedStyle.opacity);
+    // Simple, clean modal display
+    m.style.cssText = `
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(0,0,0,0.8) !important;
+      z-index: 999999 !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+    `;
     
-    // Check if modal is actually in viewport
-    var rect = m.getBoundingClientRect();
-    console.log('Modal rect:', rect);
-    console.log('Modal top:', rect.top, 'left:', rect.left, 'width:', rect.width, 'height:', rect.height);
-    
-    // Check if modal is behind other elements
-    var zIndex = parseInt(computedStyle.zIndex) || 0;
-    console.log('Checking for elements with higher z-index...');
-    var allElements = document.querySelectorAll('*');
-    var higherElements = [];
-    for (var i = 0; i < allElements.length; i++) {
-        var elemStyle = getComputedStyle(allElements[i]);
-        var elemZIndex = parseInt(elemStyle.zIndex) || 0;
-        if (elemZIndex > zIndex && allElements[i] !== m) {
-            higherElements.push({
-                element: allElements[i],
-                zIndex: elemZIndex
-            });
-        }
-    }
-    if (higherElements.length > 0) {
-        console.log('Elements with higher z-index:', higherElements.slice(0, 5)); // Show top 5
-    }
-    
-    // Force modal to front with proper dimensions
-    m.style.zIndex = '999999';
-    m.style.position = 'fixed';
-    m.style.top = '0';
-    m.style.left = '0';
-    m.style.width = '100vw';
-    m.style.height = '100vh';
-    m.style.background = 'rgba(0,0,0,0.8)';
-    m.style.display = 'flex';
-    m.style.alignItems = 'center';
-    m.style.justifyContent = 'center';
-    m.style.overflow = 'auto'; // Allow scrolling
-    m.style.padding = '20px'; // Ensure content has space
-    
-    // Force all modal content to be visible
-    var allModalContent = m.querySelectorAll('*');
-    console.log('🔍 Total modal elements found:', allModalContent.length);
-    for (var i = 0; i < allModalContent.length; i++) {
-        var elem = allModalContent[i];
-        console.log('🔍 Element', i, ':', elem.tagName, 'display:', getComputedStyle(elem).display, 'visibility:', getComputedStyle(elem).visibility);
-        allModalContent[i].style.display = 'block';
-        allModalContent[i].style.visibility = 'visible';
-        allModalContent[i].style.opacity = '1';
-        allModalContent[i].style.position = 'relative';
-        allModalContent[i].style.width = 'auto';
-        allModalContent[i].style.height = 'auto';
-        allModalContent[i].style.minWidth = '100px';
-        allModalContent[i].style.minHeight = '50px';
-        allModalContent[i].style.background = 'yellow';
-        allModalContent[i].style.border = '2px solid red';
-        allModalContent[i].style.padding = '10px';
-    }
-    
-    // Force modal-box to have proper dimensions
-    var modalBox = m.querySelector('.modal-box');
-    if (modalBox) {
-        modalBox.style.display = 'block !important';
-        modalBox.style.visibility = 'visible !important';
-        modalBox.style.opacity = '1 !important';
-        modalBox.style.minWidth = '400px !important';
-        modalBox.style.minHeight = '300px !important';
-        modalBox.style.maxWidth = '90vw !important';
-        modalBox.style.maxHeight = '90vh !important';
-        modalBox.style.overflow = 'auto !important';
-        modalBox.style.padding = '20px !important';
-        modalBox.style.margin = '0 !important';
-        modalBox.style.border = '1px solid #ccc !important';
-        modalBox.style.borderRadius = '8px !important';
-        console.log('Modal box dimensions forced with !important');
-    }
-    
-    console.log('Modal forced to front with inline styles');
+    console.log('Modal forced visible with clean styles');
   } else {
     console.error('Modal element not found for id:', id);
   }
