@@ -110,7 +110,7 @@
 
   <div class="form-group"><label>Description <span class="req">*</span></label><textarea id="r_desc" placeholder="Job responsibilities, requirements, qualifications..."></textarea></div>
 
-  <button class="btn btn-primary" id="post_job_btn" onclick="r_save()">Post Job</button>
+  <button class="btn btn-primary" id="post_job_btn" onclick="r_save()" style="z-index: 9999; position: relative; pointer-events: auto !important;">Post Job</button>
   <button class="btn btn-secondary" onclick="testDirectSave()">🧪 Test Direct</button>
 
   <button class="btn btn-secondary" onclick="r_close('r_modal_add')">Cancel</button>
@@ -3452,12 +3452,19 @@ async function r_deleteJob(id) {
 // Add event listener to debug button click issues
 document.addEventListener('DOMContentLoaded', function() {
   const postBtn = document.getElementById('post_job_btn');
+  console.log('🔍 Post Job button found:', postBtn);
+  console.log('🔍 Button element:', postBtn);
+  console.log('🔍 Button onclick:', postBtn ? postBtn.onclick : 'Button not found');
+  
   if (postBtn) {
     postBtn.addEventListener('click', function(e) {
       console.log('🔥 Post Job button clicked via event listener!');
       e.preventDefault();
+      e.stopPropagation();
       r_save();
     });
+  } else {
+    console.error('❌ Post Job button not found in DOM!');
   }
 });
 
