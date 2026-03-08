@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Interview</title>
+    <link href="../css/recruitment.css" rel="stylesheet">
+</head>
+<body>
+    <div style="max-width: 800px; margin: 50px auto; padding: 20px; font-family: Arial, sans-serif;">
+        <h1>Edit Interview</h1>
+        <div id="edit-form"></div>
+    </div>
+    
+    <script>
+        // Get interview ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const interviewId = urlParams.get('id');
+        
+        if (!interviewId) {
+            document.getElementById('edit-form').innerHTML = '<p style="color: red;">No interview ID provided</p>';
+        } else {
+            // Load interview data
+            fetch('../api/simple-api-new.php?action=get_interviews')
+                .then(response => response.json())
+                .then(interviews => {
+                    const interview = interviews.find(i => i.id == interviewId);
+                    
+                    if (interview) {
+                        // Populate form with interview data
+                        document.getElementById('edit-form').innerHTML = `
+                            <div style="margin-bottom: 20px;">
+                                <label>Interview ID:</label>
+                                <input type="text" value="${interview.id}" readonly style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Applicant Name:</label>
+                                <input type="text" value="${interview.applicant_name || ''}" readonly style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Interview Date:</label>
+                                <input type="date" value="${interview.interview_date || ''}" style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Interview Time:</label>
+                                <input type="time" value="${interview.interview_time || ''}" style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Interview Type:</label>
+                                <select style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                                    <option value="Phone Screen" ${interview.interview_type === 'Phone Screen' ? 'selected' : ''}>Phone Screen</option>
+                                    <option value="Video Interview" ${interview.interview_type === 'Video Interview' ? 'selected' : ''}>Video Interview</option>
+                                    <option value="In-Person Interview" ${interview.interview_type === 'In-Person Interview' ? 'selected' : ''}>In-Person Interview</option>
+                                    <option value="Technical Assessment" ${interview.interview_type === 'Technical Assessment' ? 'selected' : ''}>Technical Assessment</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Position:</label>
+                                <input type="text" value="${interview.position || ''}" style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-bottom: 10px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label>Notes:</label>
+                                <textarea style="background: #f5f5f6; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; height: 100px; margin-bottom: 10px;">${interview.interview_notes || ''}</textarea>
+                            </div>
+                            <div style="margin-top: 30px;">
+                                <button onclick="saveInterview()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-right: 10px;">Save Changes</button>
+                                <button onclick="window.close()" style="background: #6c757d; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">Cancel</button>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('edit-form').innerHTML = '<p style="color: red;">Interview not found</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('edit-form').innerHTML = '<p style="color: red;">Error loading interview: ' + error.message + '</p>';
+                });
+        }
+        
+        function saveInterview() {
+            const form = document.getElementById('edit-form');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            const data = {};
+            
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    data[input.name] = input.checked;
+                } else {
+                    data[input.name] = input.value;
+                }
+            });
+            
+            fetch('../api/update-interview-status.php?action=update_interview_status&interview_id=' + interviewId + '&status=' + encodeURIComponent(document.querySelector('select').value), {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Interview updated successfully!');
+                    window.close();
+                } else {
+                    alert('Error updating interview: ' + (result.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                alert('Error saving interview: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
