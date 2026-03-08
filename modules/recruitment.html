@@ -3058,9 +3058,19 @@ window.r_saveInterview = r_saveInterview;
 
 
 async function r_editInterview(id) {
+  console.log('🔧 r_editInterview called with id:', id);
+  
   var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
-  if (!interview) { r_toast('Interview not found', 'error'); return; }
+  console.log('🔍 Found interview:', interview);
+  
+  if (!interview) { 
+    console.error('❌ Interview not found for id:', id);
+    r_toast('Interview not found', 'error'); 
+    return; 
+  }
 
+  console.log('🎯 Opening interview edit modal...');
+  
   var applicantDropdown = document.getElementById('r_interview_applicant');
   var applicantDisplay  = document.getElementById('r_interview_applicant_display');
 
