@@ -648,19 +648,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Selected job:', selectedJob);
-    console.log('All job properties:', Object.keys(selectedJob));
-    console.log('Job property values:', {
-      id: selectedJob.id,
-      title: selectedJob.title,
-      dept: selectedJob.dept,
-      department: selectedJob.department,
-      location: selectedJob.location,
-      emptype: selectedJob.emptype,
-      employment_type: selectedJob.employment_type,
-      salary: selectedJob.salary,
-      desc: selectedJob.desc,
-      description: selectedJob.description
-    });
+    console.log('Job object JSON:', JSON.stringify(selectedJob, null, 2));
+    
+    // Try different property names
+    console.log('Testing property access:');
+    console.log('- selectedJob.dept:', selectedJob.dept);
+    console.log('- selectedJob.department:', selectedJob.department);
+    console.log('- selectedJob.emptype:', selectedJob.emptype);
+    console.log('- selectedJob.employment_type:', selectedJob.employment_type);
+    console.log('- selectedJob.salary:', selectedJob.salary);
+    console.log('- selectedJob.desc:', selectedJob.desc);
+    console.log('- selectedJob.description:', selectedJob.description);
     
     // Add job posting ID to form data
     formData.append('job_posting_id', selectedJob.id);
