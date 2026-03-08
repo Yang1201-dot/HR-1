@@ -3205,21 +3205,20 @@ function r_openOffer() {
 
 function r_loadCandidatesForOffer() {
 
+  console.log('Loading candidates for offer...');
+  console.log('Total interviews available:', INTERVIEWS.length);
+  console.log('Interviews:', INTERVIEWS);
   var select = document.getElementById('r_off_candidate');
-
+  if (!select) {
+    console.error('❌ r_off_candidate element not found!');
+    return;
+  }
+  
   select.innerHTML = '<option value="">Choose a candidate...</option>';
 
  
 
-  console.log('Loading candidates for offer...');
-
-  console.log('Total interviews available:', INTERVIEWS.length);
-
-  console.log('Interviews:', INTERVIEWS);
-
   console.log('Dropdown element before populating:', select);
-
- 
 
   // Load candidates from passed interviews
 
