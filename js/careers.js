@@ -521,11 +521,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Form submit ───────────────────────────────────────────────────
+  let isSubmitting = false; // Flag to prevent duplicate submissions
+  
   if (applyForm) {
     console.log('Apply form found, adding submit listener');
     applyForm.addEventListener('submit', (e) => {
       console.log('Form submit event triggered!');
       e.preventDefault();
+      
+      // Prevent duplicate submissions
+      if (isSubmitting) {
+        console.log('Already submitting - ignoring duplicate submission');
+        return;
+      }
+      
+      isSubmitting = true; // Set submission flag
       
       // Check text fields for both new and edit applications
       const requiredTextFields = ['first_name', 'last_name', 'email', 'phone'];
@@ -539,13 +549,12 @@ document.addEventListener('DOMContentLoaded', () => {
           missingTextFields.push(fieldLabel);
         }
       });
-      
-      console.log('Missing text fields:', missingTextFields);
-      
+
       if (missingTextFields.length > 0) {
         formResult.textContent = `⚠️ Please fill in the required fields: ${missingTextFields.join(', ')}. These fields are required to process your application.`;
         formResult.style.color = '#ff6b6b';
         console.log('Validation failed - missing fields');
+        isSubmitting = false; // Reset submission flag
         return;
       }
       
@@ -599,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
           formResult.textContent = `⚠️ Please upload all required files: ${missingFiles.join(', ')}. These documents are required to process your application.`;
           formResult.style.color = '#ff6b6b';
           console.log('Validation failed - missing files');
+          isSubmitting = false; // Reset submission flag
           return;
         }
         
@@ -606,6 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
           formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
           formResult.style.color = '#ff6b6b';
           console.log('Validation failed - invalid files');
+          isSubmitting = false; // Reset submission flag
           return;
         }
       }
@@ -653,16 +664,26 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       console.log('Application saved to database with ID:', data.id);
-      // Close modal
-      closeModal();
+      // Show success message
+      const formResult = document.getElementById('formResult');
+      if (formResult) {
+        formResult.innerHTML = '<div class="success-message">✅ Application submitted successfully! We will review your application and contact you soon.</div>';
+        formResult.style.color = '#28a745';
+      }
+      // Close modal after a short delay to show success message
+      setTimeout(() => {
+        closeModal();
+        isSubmitting = false; // Reset submission flag
+      }, 2000);
     })
     .catch(error => {
       console.error('Error submitting application:', error);
       const formResult = document.getElementById('formResult');
       if (formResult) {
-        formResult.innerHTML = '<div class="error-message">Error submitting application. Please try again.</div>';
+        formResult.innerHTML = '<div class="error-message">❌ Error submitting application. Please try again.</div>';
         formResult.style.color = '#dc3545';
       }
+      isSubmitting = false; // Reset submission flag on error
     });
   }
 
