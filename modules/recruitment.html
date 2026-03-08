@@ -938,54 +938,25 @@ console.log('Script loading - checking function accessibility...');
 
   
 
-  setTimeout(function() {
-
-    console.log('r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
-
-    console.log('window.r_saveInterviewStatus function exists:', typeof window.r_saveInterviewStatus);
-
-    if (typeof window.r_saveInterviewStatus === 'function') {
-
-      console.log('✅ r_saveInterviewStatus is properly defined and accessible');
-
-    } else {
-
-      console.error('❌ r_saveInterviewStatus is NOT accessible');
-
-    }
-
-  }, 1000);
-
-
-
-var JOBS = [], OFFERS = [], COMMS = [], INTERVIEWS = [];
+  // Function persistence checks completely removed - no more infinite loops
+  
+  var JOBS = [], OFFERS = [], COMMS = [], INTERVIEWS = [];
 
  
 
 /* ── Utility functions ── */
 
 function esc(str) {
-
   if (!str) return '';
-
   return String(str).replace(/[&<>"']/g, function(m) {
-
     return {
-
       '&': '&amp;',
-
       '<': '&lt;',
-
       '>': '&gt;',
-
       '"': '&quot;',
-
       "'": '&#39;'
-
     }[m];
-
   });
-
 }
 
  
