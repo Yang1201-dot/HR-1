@@ -2749,6 +2749,44 @@ function r_open(id) {
     console.log('Modal position:', computedStyle.position);
     console.log('Modal visibility:', computedStyle.visibility);
     console.log('Modal opacity:', computedStyle.opacity);
+    
+    // Check if modal is actually in viewport
+    var rect = m.getBoundingClientRect();
+    console.log('Modal rect:', rect);
+    console.log('Modal top:', rect.top, 'left:', rect.left, 'width:', rect.width, 'height:', rect.height);
+    
+    // Check if modal is behind other elements
+    var zIndex = parseInt(computedStyle.zIndex) || 0;
+    console.log('Checking for elements with higher z-index...');
+    var allElements = document.querySelectorAll('*');
+    var higherElements = [];
+    for (var i = 0; i < allElements.length; i++) {
+        var elemStyle = getComputedStyle(allElements[i]);
+        var elemZIndex = parseInt(elemStyle.zIndex) || 0;
+        if (elemZIndex > zIndex && allElements[i] !== m) {
+            higherElements.push({
+                element: allElements[i],
+                zIndex: elemZIndex
+            });
+        }
+    }
+    if (higherElements.length > 0) {
+        console.log('Elements with higher z-index:', higherElements.slice(0, 5)); // Show top 5
+    }
+    
+    // Force modal to front
+    m.style.zIndex = '999999';
+    m.style.position = 'fixed';
+    m.style.top = '0';
+    m.style.left = '0';
+    m.style.width = '100vw';
+    m.style.height = '100vh';
+    m.style.background = 'rgba(0,0,0,0.8)';
+    m.style.display = 'flex';
+    m.style.alignItems = 'center';
+    m.style.justifyContent = 'center';
+    
+    console.log('Modal forced to front with inline styles');
   } else {
     console.error('Modal element not found for id:', id);
   }
