@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Interview</title>
+    <link href="../css/recruitment.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+        }
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #059669;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        h2 {
+            margin: 0 0 24px 0;
+            color: #333;
+            font-size: 20px;
+        }
+        .readonly {
+            background: #f8f9fa !important;
+            color: #6c757d !important;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Edit Interview</h2>
+        <div id="edit-form"></div>
+    </div>
+    
+    <script>
+        // Get interview ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const interviewId = urlParams.get('id');
+        
+        if (!interviewId) {
+            document.getElementById('edit-form').innerHTML = '<p style="color: red;">No interview ID provided</p>';
+        } else {
+            // Load interview data
+            fetch('../api/simple-api-new.php?action=get_interviews')
+                .then(response => response.json())
+                .then(interviews => {
+                    const interview = interviews.find(i => i.id == interviewId);
+                    
+                    if (interview) {
+                        // Populate form with interview data
+                        document.getElementById('edit-form').innerHTML = `
+                            <form id="interviewForm">
+                                <div class="form-group">
+                                    <label>Interview ID:</label>
+                                    <input type="text" value="${interview.id}" readonly class="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label>Applicant Name:</label>
+                                    <input type="text" value="${interview.applicant_name || ''}" readonly class="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label>Interview Date:</label>
+                                    <input type="date" id="interview_date" value="${interview.interview_date || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Interview Time:</label>
+                                    <input type="time" id="interview_time" value="${interview.interview_time || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Interview Type:</label>
+                                    <select id="interview_type">
+                                        <option value="Phone Screen" ${interview.interview_type === 'Phone Screen' ? 'selected' : ''}>Phone Screen</option>
+                                        <option value="Video Interview" ${interview.interview_type === 'Video Interview' ? 'selected' : ''}>Video Interview</option>
+                                        <option value="In-Person Interview" ${interview.interview_type === 'In-Person Interview' ? 'selected' : ''}>In-Person Interview</option>
+                                        <option value="Technical Assessment" ${interview.interview_type === 'Technical Assessment' ? 'selected' : ''}>Technical Assessment</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Position:</label>
+                                    <input type="text" id="position" value="${interview.position || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Notes:</label>
+                                    <textarea id="interview_notes">${interview.interview_notes || ''}</textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" onclick="saveInterview()" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" onclick="window.close()" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </form>
+                        `;
+                    } else {
+                        document.getElementById('edit-form').innerHTML = '<p style="color: red;">Interview not found</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('edit-form').innerHTML = '<p style="color: red;">Error loading interview: ' + error.message + '</p>';
+                });
+        }
+        
+        function saveInterview() {
+            const date = document.getElementById('interview_date').value;
+            const time = document.getElementById('interview_time').value;
+            const type = document.getElementById('interview_type').value;
+            const position = document.getElementById('position').value;
+            const notes = document.getElementById('interview_notes').value;
+            
+            // Update interview data using the save_interview endpoint
+            const apiPayload = {
+                id: interviewId,
+                applicant_name: document.querySelector('input[readonly]').value,
+                interview_date: date,
+                interview_time: time,
+                interview_type: type,
+                position: position,
+                notes: notes
+            };
+            
+            fetch('../api/simple-api-new.php?action=save_interview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(apiPayload)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Interview updated successfully!');
+                    window.close();
+                } else {
+                    alert('Error updating interview: ' + (result.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                alert('Error saving interview: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

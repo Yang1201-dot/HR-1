@@ -2878,79 +2878,19 @@ window.r_saveInterview = r_saveInterview;
 async function r_editInterview(id) {
   console.log('🔧 r_editInterview called with id:', id);
   
-  var interview = INTERVIEWS.find(function(i) { return String(i.id) === String(id); });
-  console.log('🔍 Found interview:', interview);
+  // Open popup window for editing
+  const popup = window.open(
+    '../edit-interview-popup.html?id=' + id,
+    'editInterview',
+    'width=550,height=600,scrollbars=yes,resizable=yes'
+  );
   
-  if (!interview) { 
-    console.error('❌ Interview not found for id:', id);
-    r_toast('Interview not found', 'error'); 
-    return; 
+  // Focus on the popup
+  if (popup) {
+    popup.focus();
+  } else {
+    alert('Please allow popups for this site to edit interviews');
   }
-
-  console.log('🎯 Opening interview edit modal...');
-  
-  var applicantDropdown = document.getElementById('r_interview_applicant');
-  var applicantDisplay  = document.getElementById('r_interview_applicant_display');
-
-  var currentApplicantName = interview.applicant_name || '';
-  var currentApplicantId   = String(interview.applicant_id || '');
-  var currentPosition      = interview.position || '';
-
-  // Look up position/id from cache if missing
-  if (typeof APPLICATIONS_CACHE !== 'undefined' && APPLICATIONS_CACHE && APPLICATIONS_CACHE.length) {
-    var appMatch = APPLICATIONS_CACHE.find(function(a) {
-      var full = ((a.first_name||a.fname||'') + ' ' + (a.last_name||a.lname||'')).trim();
-      return full === currentApplicantName || String(a.id) === currentApplicantId;
-    });
-    if (appMatch) {
-      if (!currentPosition)    currentPosition    = appMatch.position || appMatch.applied_position || '';
-      if (!currentApplicantId) currentApplicantId = String(appMatch.id || '');
-    }
-  }
-
-  // Hide dropdown, show readonly display
-  if (applicantDropdown) {
-    applicantDropdown.style.display = 'none';
-    applicantDropdown.dataset.currentApplicantId   = currentApplicantId;
-    applicantDropdown.dataset.currentApplicantName = currentApplicantName;
-  }
-  if (applicantDisplay) {
-    applicantDisplay.style.display = 'block';
-    applicantDisplay.disabled = true;
-    applicantDisplay.readOnly = true;
-    applicantDisplay.style.background = '#f3f4f6';
-    applicantDisplay.style.cursor = 'not-allowed';
-    applicantDisplay.value = currentApplicantName + (currentPosition ? ' — ' + currentPosition : '');
-  }
-
-  // Set hidden fields
-  var hidN = document.getElementById('r_interview_applicant_name_hidden');
-  var hidI = document.getElementById('r_interview_applicant_id_hidden');
-  if (hidN) hidN.value = currentApplicantName;
-  if (hidI) hidI.value = currentApplicantId;
-
-  // Fill other fields
-  var cleanNotes = interview.notes || '';
-  var pos = document.getElementById('r_interview_position');
-  if (pos) pos.value = currentPosition || interview.position || '';
-  var dt  = document.getElementById('r_interview_date');
-  if (dt)  dt.value  = interview.interview_date  || '';
-  var tm  = document.getElementById('r_interview_time');
-  if (tm)  tm.value  = interview.interview_time  || '';
-  var nt  = document.getElementById('r_interview_notes');
-  if (nt)  nt.value  = cleanNotes;
-  var iid = document.getElementById('r_interview_id');
-  if (iid) iid.value = interview.id || '';
-  var ttl = document.getElementById('r_interview_modal_title');
-  if (ttl) ttl.textContent = 'Edit Interview';
-  var tp  = document.getElementById('r_interview_type');
-  if (tp) {
-    var saved = interview.interview_type || 'Phone Screen';
-    for (var i = 0; i < tp.options.length; i++) {
-      if (tp.options[i].value === saved) { tp.selectedIndex = i; break; }
-    }
-  }
-  r_open('r_modal_interview');
 }
 
 
