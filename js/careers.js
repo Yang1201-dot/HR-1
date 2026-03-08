@@ -693,3 +693,5 @@ document.addEventListener('DOMContentLoaded', () => {
       isSubmitting = false; // Reset submission flag on error
     });
   }
+
+}); // Close DOMContentLoaded event listener
