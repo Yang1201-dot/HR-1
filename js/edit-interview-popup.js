@@ -29,6 +29,9 @@ async function r_loadInterviewForEditPopup(interviewId) {
 function r_createEditInterviewPopup(interview) {
     console.log('🎯 Creating edit interview popup');
     
+    // Store interview data globally for save function
+    window.currentEditInterview = interview;
+    
     // Create popup content
     const popupContent = `
         <div id="edit-interview-popup" style="
@@ -230,9 +233,12 @@ async function r_saveEditInterviewPopup(interviewId) {
     }
     
     try {
+        // Get applicant name from stored interview data
+        const applicantName = window.currentEditInterview?.applicant_name || '';
+        
         const apiPayload = {
             id: interviewId,
-            applicant_name: document.querySelector('input[readonly]:nth-of-type(2)').value,
+            applicant_name: applicantName,
             interview_date: date,
             interview_time: time,
             interview_type: type,
