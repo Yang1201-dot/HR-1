@@ -35,6 +35,10 @@ try {
     $desc      = trim($_POST['description'] ?? '');
     $jobId     = trim($_POST['job_posting_id'] ?? '');
 
+    // Debug logging
+    error_log("POST data received: " . json_encode($_POST));
+    error_log("Job posting data - dept: '$dept', location: '$location', emptype: '$emptype', salary: '$salary', desc: '$desc', jobId: '$jobId'");
+
     if (!$fname || !$lname || !$email || !$phone) {
         echo json_encode(['error' => 'Missing required fields']); exit;
     }

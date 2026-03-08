@@ -643,6 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (!selectedJob) {
       alert('Please select a job position before applying.');
+      isSubmitting = false; // Reset flag
       return;
     }
     
@@ -656,6 +657,12 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('employment_type', selectedJob.emptype);
     formData.append('salary', selectedJob.salary);
     formData.append('description', selectedJob.desc);
+
+    // Debug: Log all FormData entries
+    console.log('FormData being sent:');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
     fetch('../api/simple-save-application.php', {
       method: 'POST',
@@ -686,5 +693,3 @@ document.addEventListener('DOMContentLoaded', () => {
       isSubmitting = false; // Reset submission flag on error
     });
   }
-
-});
