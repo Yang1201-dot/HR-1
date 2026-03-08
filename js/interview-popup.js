@@ -213,14 +213,27 @@ async function r_loadApplicantsForPopup() {
     }
     
     // Add event listener to update position field when applicant is selected
-    // Note: Position field auto-fill disabled due to DOM timing issues
-    /*
-    document.getElementById('popup_applicant').addEventListener('change', () => {
-        const applicantId = document.getElementById('popup_applicant').value;
-        const position = window.applicantData[applicantId].position;
-        document.getElementById('popup_position').value = position;
+    document.getElementById('popup_applicant').addEventListener('change', function() {
+        const applicantId = this.value;
+        console.log('🎯 Applicant selected:', applicantId);
+        console.log('🎯 Applicant data available:', window.applicantData[applicantId]);
+        
+        if (applicantId && window.applicantData && window.applicantData[applicantId]) {
+            const position = window.applicantData[applicantId].position;
+            const positionField = document.getElementById('popup_position');
+            console.log('🎯 Position to fill:', position);
+            console.log('🎯 Position field:', positionField);
+            
+            if (positionField) {
+                positionField.value = position || '';
+                console.log('✅ Position field updated:', position);
+            } else {
+                console.error('❌ Position field not found');
+            }
+        } else {
+            console.log('⚠️ No applicant selected or data not available');
+        }
     });
-    */
 }
 
 async function r_saveInterviewPopup() {
