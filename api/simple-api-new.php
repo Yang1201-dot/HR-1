@@ -803,6 +803,13 @@ switch($action) {
         break;
         
     default:
-        jsonResponse(['error' => 'Unknown action'], 400);
+        error_log("Unknown action: '$action'");
+        error_log("Available actions should include: update_interview_status");
+        error_log("Full request details:");
+        error_log("Method: $method");
+        error_log("GET: " . json_encode($_GET));
+        error_log("POST: " . json_encode($_POST));
+        error_log("Request URI: " . $_SERVER['REQUEST_URI']);
+        jsonResponse(['error' => 'Unknown action: ' . $action, 'debug_info' => ['method' => $method, 'get' => $_GET, 'post' => $_POST]], 400);
 }
 ?>
