@@ -243,27 +243,22 @@
 <!-- Modal: Pre-Employment Processing -->
 
 <div class="modal-overlay" id="r_modal_offer">
-
 <div class="modal-box" style="max-width: 900px;">
-
   <button class="modal-close" onclick="r_close('r_modal_offer')">&times;</button>
-
   <h2>Pre-Employment Processing</h2>
-
- 
-
-  <div class="form-group">
-
-    <label>Select Candidate <span class="req">*</span></label>
-
-    <select id="r_off_candidate">
-
-      <option value="">Choose a candidate...</option>
-
-    </select>
-
-    <button type="button" onclick="console.log('Manual test button clicked'); if(typeof window.r_populateCandidateData === 'function') { window.r_populateCandidateData(); } else { console.error('Function not available'); }" class="btn btn-sm btn-blue" style="margin-top: 5px;">🔧 Test Auto-fill</button>
-
+  
+  <div class="form-row" style="margin-top: 20px;">
+    <div class="form-group">
+      <label>Candidate Name</label>
+      <input type="text" id="r_offer_candidate" readonly style="background: #f8f9fa; color: #6c757d;">
+    </div>
+    <div class="form-group">
+      <label>Overall Status</label>
+      <select id="r_offer_status">
+        <option value="pending">Pending</option>
+        <option value="cleared">Cleared</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
   </div>
 
  
