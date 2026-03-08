@@ -45,6 +45,19 @@ function r_openInterviewPopup() {
             </div>
             
             <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Position <span style="color: #64748b;">(Auto-filled)</span></label>
+                <input type="text" id="popup_position" readonly style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: #f1f5f9;
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                    cursor: not-allowed;
+                ">
+            
+            <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Date <span style="color: #ef4444;">*</span></label>
                 <input type="date" id="popup_date" style="
                     width: 100%;
@@ -153,7 +166,11 @@ async function r_loadApplicantsForPopup() {
         const data = await response.json();
         
         const select = document.getElementById('popup_applicant');
+        const positionField = document.getElementById('popup_position');
         select.innerHTML = '<option value="">Select Applicant</option>';
+        
+        // Store applicant data for auto-fill
+        window.applicantData = {};
         
         data.forEach(applicant => {
             if (applicant.status === 'New' || applicant.status === 'Under Review' || applicant.status === 'Shortlisted') {
@@ -161,8 +178,25 @@ async function r_loadApplicantsForPopup() {
                 option.value = applicant.id;
                 option.textContent = `${applicant.first_name} ${applicant.last_name} - ${applicant.position}`;
                 select.appendChild(option);
+                
+                // Store applicant data for auto-fill
+                window.applicantData[applicant.id] = {
+                    position: applicant.position || '',
+                    department: applicant.department || '',
+                    email: applicant.email || '',
+                    phone: applicant.phone || ''
+                };
             }
         });
+        
+        // Add change event listener for auto-fill
+        select.addEventListener('change', function() {
+            const selectedApplicant = window.applicantData[this.value];
+            if (selectedApplicant && positionField) {
+                positionField.value = selectedApplicant.position;
+            }
+        });
+        
     } catch (error) {
         console.error('Error loading applicants:', error);
         document.getElementById('popup_applicant').innerHTML = '<option value="">Error loading applicants</option>';
