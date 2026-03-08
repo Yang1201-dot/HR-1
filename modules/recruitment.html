@@ -2774,7 +2774,7 @@ function r_open(id) {
         console.log('Elements with higher z-index:', higherElements.slice(0, 5)); // Show top 5
     }
     
-    // Force modal to front
+    // Force modal to front with proper dimensions
     m.style.zIndex = '999999';
     m.style.position = 'fixed';
     m.style.top = '0';
@@ -2785,6 +2785,19 @@ function r_open(id) {
     m.style.display = 'flex';
     m.style.alignItems = 'center';
     m.style.justifyContent = 'center';
+    m.style.overflow = 'auto'; // Allow scrolling
+    m.style.padding = '20px'; // Ensure content has space
+    
+    // Force modal-box to have proper dimensions
+    var modalBox = m.querySelector('.modal-box');
+    if (modalBox) {
+        modalBox.style.minWidth = '400px';
+        modalBox.style.minHeight = '300px';
+        modalBox.style.maxWidth = '90vw';
+        modalBox.style.maxHeight = '90vh';
+        modalBox.style.overflow = 'auto';
+        console.log('Modal box dimensions forced');
+    }
     
     console.log('Modal forced to front with inline styles');
   } else {
