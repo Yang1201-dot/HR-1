@@ -377,7 +377,6 @@ async function r_openStatusChangePopup(interviewId, currentStatus) {
                         <option value="Scheduled">Scheduled</option>
                         <option value="Completed">Completed</option>
                         <option value="Cancelled">Cancelled</option>
-                        <option value="Rescheduled">Rescheduled</option>
                         <option value="No Show">No Show</option>
                         <option value="Hired">Hired</option>
                         <option value="Rejected">Rejected</option>
