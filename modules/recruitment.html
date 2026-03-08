@@ -179,7 +179,7 @@
 
   </div>
 
-  <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openInterview()">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
+  <div class="tab-panel" id="r_tab_interviews"><div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="window.location.href='schedule-interview.html'">+ Schedule Interview</button></div><div id="r_interviews"></div></div>
 
   <div class="tab-panel" id="r_tab_offers"><div id="r_offers"></div></div>
 
@@ -2831,9 +2831,12 @@ function r_openInterview() {
 
   // Open modal FIRST so dropdown has proper dimensions
 
-  r_open('r_modal_interview');
-
-  
+  // Force modal to be visible
+var modal = document.getElementById('r_modal_interview');
+if(modal) {
+  modal.style.cssText = "display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 999999 !important; background: rgba(0,0,0,0.8) !important; align-items: center !important; justify-content: center !important;";
+  console.log("Modal forced visible with inline styles");
+}
 
   // Then populate applicant dropdown after modal is fully visible
 

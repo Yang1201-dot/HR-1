@@ -618,6 +618,54 @@ switch($action) {
         }
         break;
         
+    case 'schedule_interview':
+        $applicantId = $_POST['applicant_id'] ?? null;
+        $interviewDate = $_POST['interview_date'] ?? null;
+        $interviewTime = $_POST['interview_time'] ?? null;
+        $interviewType = $_POST['interview_type'] ?? 'Phone Screen';
+        $interviewNotes = $_POST['interview_notes'] ?? '';
+        
+        if (!$applicantId || !$interviewDate || !$interviewTime) {
+            jsonResponse(['error' => 'Missing required fields'], 400);
+            break;
+        }
+        
+        // Create interviews table if it doesn't exist
+        try {
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS interviews (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    applicant_id INT NOT NULL,
+                    interview_date DATE NOT NULL,
+                    interview_time TIME NOT NULL,
+                    interview_type VARCHAR(50) NOT NULL DEFAULT 'Phone Screen',
+                    interview_notes TEXT,
+                    status VARCHAR(20) NOT NULL DEFAULT 'Scheduled',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+                )
+            ");
+        } catch(Exception $e) {}
+        
+        // Ensure status column exists
+        try { $pdo->exec("ALTER TABLE interviews ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Scheduled'"); } catch(Exception $e) {}
+        
+        // Insert interview
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO interviews (applicant_id, interview_date, interview_time, interview_type, interview_notes, status)
+                VALUES (?, ?, ?, ?, ?, 'Scheduled')
+            ");
+            $stmt->execute([$applicantId, $interviewDate, $interviewTime, $interviewType, $interviewNotes]);
+            
+            $interviewId = $pdo->lastInsertId();
+            jsonResponse(['success' => true, 'interview_id' => $interviewId, 'message' => 'Interview scheduled successfully']);
+        } catch(Exception $e) {
+            jsonResponse(['error' => 'Failed to schedule interview: ' . $e->getMessage()], 500);
+        }
+        break;
+        
     default:
         jsonResponse(['error' => 'Unknown action'], 400);
 }
