@@ -161,23 +161,27 @@ function r_closeInterviewPopup() {
 }
 
 async function r_loadApplicantsForPopup() {
+    console.log('🔍 Starting to load applicants...');
     try {
+        console.log('📡 Making API call to get_applications...');
         const response = await fetch('../api/simple-api-new.php?action=get_applications');
+        console.log('📡 Response received:', response);
         const data = await response.json();
+        console.log('📊 Data loaded:', data);
+        console.log('📊 Number of applicants:', data.length);
         
         const select = document.getElementById('popup_applicant');
-        const positionField = document.getElementById('popup_position');
+        console.log('🎯 Dropdown element:', select);
         select.innerHTML = '<option value="">Select Applicant</option>';
         
-        // Store applicant data for auto-fill
-        window.applicantData = {};
-        
         data.forEach(applicant => {
+            console.log('👤 Processing applicant:', applicant);
             if (applicant.status === 'New' || applicant.status === 'Under Review' || applicant.status === 'Shortlisted') {
                 const option = document.createElement('option');
                 option.value = applicant.id;
-                option.textContent = `${applicant.first_name} ${applicant.last_name} - ${applicant.position}`;
+                option.textContent = `${applicant.first_name} ${applicant.last_name}`;
                 select.appendChild(option);
+                console.log('✅ Added applicant to dropdown:', option.textContent);
                 
                 // Store applicant data for auto-fill
                 window.applicantData[applicant.id] = {
@@ -186,21 +190,23 @@ async function r_loadApplicantsForPopup() {
                     email: applicant.email || '',
                     phone: applicant.phone || ''
                 };
+            } else {
+                console.log('⚠️ Skipped applicant (status):', applicant.status);
             }
         });
         
-        // Add change event listener for auto-fill
-        select.addEventListener('change', function() {
-            const selectedApplicant = window.applicantData[this.value];
-            if (selectedApplicant && positionField) {
-                positionField.value = selectedApplicant.position;
-            }
-        });
-        
+        console.log('🎯 Final dropdown options count:', select.options.length);
     } catch (error) {
-        console.error('Error loading applicants:', error);
+        console.error('❌ Error loading applicants:', error);
         document.getElementById('popup_applicant').innerHTML = '<option value="">Error loading applicants</option>';
     }
+    
+    // Add event listener to update position field when applicant is selected
+    document.getElementById('popup_applicant').addEventListener('change', () => {
+        const applicantId = document.getElementById('popup_applicant').value;
+        const position = window.applicantData[applicantId].position;
+        document.getElementById('popup_position').value = position;
+    });
 }
 
 async function r_saveInterviewPopup() {
