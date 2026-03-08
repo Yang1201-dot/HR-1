@@ -162,7 +162,7 @@ function r_createEditInterviewPopup(interview) {
             </div>
             
             <div style="display: flex; gap: 10px;">
-                <button onclick="r_saveEditInterviewPopup(${interview.id})" style="
+                <button onclick="console.log('Save button clicked'); r_saveEditInterviewPopup(${interview.id})" style="
                     flex: 1;
                     padding: 10px 20px;
                     background: var(--brand-green, #10b981);
@@ -173,7 +173,7 @@ function r_createEditInterviewPopup(interview) {
                     cursor: pointer;
                     font-size: 14px;
                 ">Save Changes</button>
-                <button onclick="r_closeEditInterviewPopup()" style="
+                <button onclick="console.log('Cancel button clicked'); r_closeEditInterviewPopup()" style="
                     flex: 1;
                     padding: 10px 20px;
                     background: transparent;
@@ -219,15 +219,25 @@ function r_closeEditInterviewPopup() {
 }
 
 async function r_saveEditInterviewPopup(interviewId) {
-    console.log('💾 Saving interview changes for ID:', interviewId);
+    console.log('💾 r_saveEditInterviewPopup called with ID:', interviewId);
     
-    const date = document.getElementById('edit_popup_date').value;
-    const time = document.getElementById('edit_popup_time').value;
-    const type = document.getElementById('edit_popup_type').value;
-    const position = document.getElementById('edit_popup_position').value;
-    const notes = document.getElementById('edit_popup_notes').value;
+    const date = document.getElementById('edit_popup_date');
+    const time = document.getElementById('edit_popup_time');
+    const type = document.getElementById('edit_popup_type');
+    const position = document.getElementById('edit_popup_position');
+    const notes = document.getElementById('edit_popup_notes');
     
-    if (!date || !time) {
+    console.log('🔍 Form elements:', {date, time, type, position, notes});
+    
+    const dateValue = date ? date.value : 'NULL';
+    const timeValue = time ? time.value : 'NULL';
+    const typeValue = type ? type.value : 'NULL';
+    const positionValue = position ? position.value : 'NULL';
+    const notesValue = notes ? notes.value : 'NULL';
+    
+    console.log('📊 Form values:', {dateValue, timeValue, typeValue, positionValue, notesValue});
+    
+    if (!dateValue || !timeValue) {
         alert('Please fill in all required fields (Date and Time)');
         return;
     }
@@ -239,11 +249,11 @@ async function r_saveEditInterviewPopup(interviewId) {
         const apiPayload = {
             id: interviewId,
             applicant_name: applicantName,
-            interview_date: date,
-            interview_time: time,
-            interview_type: type,
-            position: position,
-            notes: notes
+            interview_date: dateValue,
+            interview_time: timeValue,
+            interview_type: typeValue,
+            position: positionValue,
+            notes: notesValue
         };
         
         console.log('📤 Sending update:', apiPayload);
