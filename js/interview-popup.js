@@ -176,12 +176,16 @@ async function r_loadApplicantsForPopup() {
         
         data.forEach(applicant => {
             console.log('👤 Processing applicant:', applicant);
+            console.log('🔍 Status check:', applicant.status, 'matches shortlisted:', applicant.status === 'Shortlisted');
             if (applicant.status === 'New' || applicant.status === 'Under Review' || applicant.status === 'Shortlisted') {
+                console.log('✅ Condition passed - creating option element');
                 const option = document.createElement('option');
                 option.value = applicant.id;
                 option.textContent = `${applicant.first_name} ${applicant.last_name}`;
+                console.log('🔍 Option created:', option);
                 select.appendChild(option);
                 console.log('✅ Added applicant to dropdown:', option.textContent);
+                console.log('🔍 Dropdown options after append:', select.options.length);
                 
                 // Store applicant data for auto-fill
                 window.applicantData[applicant.id] = {
