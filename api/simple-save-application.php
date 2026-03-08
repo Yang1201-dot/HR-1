@@ -54,6 +54,10 @@ try {
     error_log("POST data received: " . json_encode($_POST));
     error_log("Job posting data - dept: '$dept', location: '$location', emptype: '$emptype', salary: '$salary', desc: '$desc', jobId: '$jobId'");
 
+    // Debug: Log POST data received
+    error_log("POST data received: " . json_encode($_POST));
+    error_log("FILES data received: " . json_encode($_FILES));
+
     if (!$fname || !$lname || !$email || !$phone) {
         echo json_encode(['error' => 'Missing required fields']); exit;
     }
@@ -92,6 +96,7 @@ try {
         $location, $emptype, $salary, $desc, $jobId]);
 
     $applicantId = $pdo->lastInsertId();
+    error_log("Application inserted with ID: $applicantId");
 
     // Save individual file records to applicant_files table
     $fileStmt = $pdo->prepare("
@@ -108,6 +113,7 @@ try {
 
     foreach ($files as $fileData) {
         if ($fileData[1]) {
+            error_log("Saving file record: " . json_encode($fileData[1]));
             $fileStmt->execute([
                 $applicantId,
                 $fileData[0],
@@ -119,6 +125,7 @@ try {
         }
     }
 
+    error_log("Final response: success=true, id=$applicantId");
     echo json_encode(['success' => true, 'id' => $applicantId, 'message' => 'Application submitted successfully']);
 
 } catch (Exception $e) {
