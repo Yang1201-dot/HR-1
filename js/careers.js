@@ -647,18 +647,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
-    console.log('Selected job:', selectedJob);
-    console.log('Job object JSON:', JSON.stringify(selectedJob, null, 2));
-    
-    // Try different property names
-    console.log('Testing property access:');
-    console.log('- selectedJob.dept:', selectedJob.dept);
-    console.log('- selectedJob.department:', selectedJob.department);
-    console.log('- selectedJob.emptype:', selectedJob.emptype);
-    console.log('- selectedJob.employment_type:', selectedJob.employment_type);
-    console.log('- selectedJob.salary_range:', selectedJob.salary_range);
-    console.log('- selectedJob.description:', selectedJob.description);
-    
     // Add job posting ID to form data
     formData.append('job_posting_id', selectedJob.id);
     formData.append('position', selectedJob.title);
@@ -667,12 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('employment_type', selectedJob.employment_type);
     formData.append('salary', selectedJob.salary_range);
     formData.append('description', selectedJob.description);
-
-    // Debug: Log all FormData entries
-    console.log('FormData being sent:');
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
 
     fetch('../api/simple-save-application.php', {
       method: 'POST',
