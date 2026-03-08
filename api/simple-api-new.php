@@ -133,10 +133,10 @@ switch($action) {
     case 'save_assessment':
         if ($method === 'POST') {
             $input = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("INSERT INTO assessments (applicant_id, tech, comm, prob, fit, notes, assessed_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt = $pdo->prepare("INSERT INTO assessments (applicant_id, tech, comm, prob, fit, interview_notes, assessed_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
             $stmt->execute([
                 $input['applicant_id'], $input['tech'], $input['comm'],
-                $input['prob'], $input['fit'], $input['notes']
+                $input['prob'], $input['fit'], $input['interview_notes']
             ]);
             jsonResponse(['success' => true, 'message' => 'Assessment saved']);
         }
@@ -325,7 +325,7 @@ switch($action) {
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
                         status VARCHAR(50) DEFAULT 'Scheduled',
-                        notes TEXT,
+                        interview_notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
@@ -380,7 +380,7 @@ switch($action) {
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
                         interview_status VARCHAR(50) DEFAULT 'Scheduled',
-                        notes TEXT,
+                        interview_notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
@@ -421,7 +421,7 @@ switch($action) {
                         interview_time TIME NOT NULL,
                         interview_type VARCHAR(100) NOT NULL,
                         interview_status VARCHAR(50) DEFAULT 'Scheduled',
-                        notes TEXT,
+                        interview_notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
@@ -447,7 +447,7 @@ switch($action) {
                             }
                         } catch(Exception $ignored) {}
                     }
-                    $stmt = $pdo->prepare("UPDATE interviews SET applicant_name = ?, applicant_id = ?, interview_date = ?, interview_time = ?, interview_type = ?, position = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+                    $stmt = $pdo->prepare("UPDATE interviews SET applicant_name = ?, applicant_id = ?, interview_date = ?, interview_time = ?, interview_type = ?, position = ?, interview_notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
                     $stmt->execute([
                         $input['applicant_name'],
                         $applicantId ? (int)$applicantId : null,
@@ -481,7 +481,7 @@ switch($action) {
                             }
                         } catch(Exception $ignored) {}
                     }
-                    $stmt = $pdo->prepare("INSERT INTO interviews (applicant_name, applicant_id, interview_date, interview_time, interview_type, position, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt = $pdo->prepare("INSERT INTO interviews (applicant_name, applicant_id, interview_date, interview_time, interview_type, position, interview_notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     $stmt->execute([
                         $input['applicant_name'],
                         $applicantId ? (int)$applicantId : null,
@@ -489,7 +489,7 @@ switch($action) {
                         $input['interview_time'],
                         $input['interview_type'],
                         $position,
-                        $input['notes'] ?? ''
+                        $input['interview_notes'] ?? ''
                     ]);
                     $interviewId = $pdo->lastInsertId();
                     error_log("Interview saved with ID: " . $interviewId);
@@ -516,7 +516,7 @@ switch($action) {
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
-                'interview_notes' => 'TEXT',
+                'interview_interview_notes' => 'TEXT',
                 'position' => 'VARCHAR(255)',
                 'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
@@ -554,7 +554,7 @@ switch($action) {
             // Get interviews with applicant names using JOIN (with fallback to stored name)
             $stmt = $pdo->query("
                 SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
-                       i.interview_notes, i.position, i.interview_status, i.created_at, i.updated_at,
+                       i.interview_interview_notes, i.position, i.interview_status, i.created_at, i.updated_at,
                        COALESCE(i.applicant_name, CONCAT(a.fname, ' ', a.lname)) as applicant_name,
                        a.position as applicant_position
                 FROM interviews i
@@ -660,7 +660,7 @@ switch($action) {
         $interviewDate = $_POST['interview_date'] ?? null;
         $interviewTime = $_POST['interview_time'] ?? null;
         $interviewType = $_POST['interview_type'] ?? 'Phone Screen';
-        $interviewNotes = $_POST['interview_notes'] ?? '';
+        $interviewNotes = $_POST['interview_interview_notes'] ?? '';
         $position = $_POST['position'] ?? '';
         
         if (!$applicantId || !$interviewDate || !$interviewTime) {
@@ -677,7 +677,7 @@ switch($action) {
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
-                'interview_notes' => 'TEXT',
+                'interview_interview_notes' => 'TEXT',
                 'position' => 'VARCHAR(255)',
                 'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
@@ -736,7 +736,7 @@ switch($action) {
         // Insert interview
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO interviews (applicant_id, applicant_name, interview_date, interview_time, interview_type, interview_notes, position, interview_status)
+                INSERT INTO interviews (applicant_id, applicant_name, interview_date, interview_time, interview_type, interview_interview_notes, position, interview_status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'Scheduled')
             ");
             $stmt->execute([$applicantId, $applicantName, $interviewDate, $interviewTime, $interviewType, $interviewNotes, $position]);
