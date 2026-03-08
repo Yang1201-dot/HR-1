@@ -100,6 +100,21 @@ function r_openInterviewPopup() {
                 </select>
             </div>
             
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary, #1f2937);">Notes</label>
+                <textarea id="popup_notes" rows="3" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: var(--background, #f8fafc);
+                    color: var(--text-primary, #1f2937);
+                    font-size: 14px;
+                    resize: vertical;
+                    font-family: inherit;
+                "></textarea>
+            </div>
+            
             <div style="display: flex; gap: 10px;">
                 <button onclick="r_saveInterviewPopup()" style="
                     flex: 1;
