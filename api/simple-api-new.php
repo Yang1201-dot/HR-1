@@ -527,7 +527,7 @@ switch($action) {
             $stmt = $pdo->query("
                 SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
                        i.interview_notes, i.interview_status, i.created_at, i.updated_at,
-                       CONCAT(a.first_name, ' ', a.last_name) as applicant_name,
+                       CONCAT(a.fname, ' ', a.lname) as applicant_name,
                        a.position as applicant_position
                 FROM interviews i
                 LEFT JOIN applicants a ON i.applicant_id = a.id
