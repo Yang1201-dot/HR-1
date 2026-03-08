@@ -523,7 +523,16 @@ switch($action) {
                     $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
                 }
             } catch(Exception $ignored) {}
-            $stmt = $pdo->query("SELECT id, applicant_name, applicant_id, interview_date, interview_time, interview_type, position, interview_status, notes, created_at, updated_at FROM interviews ORDER BY created_at DESC");
+            // Get interviews with applicant names using JOIN
+            $stmt = $pdo->query("
+                SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
+                       i.interview_notes, i.status, i.created_at, i.updated_at,
+                       CONCAT(a.first_name, ' ', a.last_name) as applicant_name,
+                       a.position as applicant_position
+                FROM interviews i
+                LEFT JOIN applicants a ON i.applicant_id = a.id
+                ORDER BY i.created_at DESC
+            ");
             $interviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("Interviews query returned: " . count($interviews) . " rows");
             jsonResponse($interviews);
