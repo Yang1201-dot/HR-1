@@ -2742,6 +2742,14 @@ function r_open(id) {
   if (m) {
     m.classList.add('active');
     console.log('Modal classes after adding active:', m.className);
+    
+    // Check computed styles
+    var computedStyle = getComputedStyle(m);
+    console.log('Modal display:', computedStyle.display);
+    console.log('Modal z-index:', computedStyle.zIndex);
+    console.log('Modal position:', computedStyle.position);
+    console.log('Modal visibility:', computedStyle.visibility);
+    console.log('Modal opacity:', computedStyle.opacity);
   } else {
     console.error('Modal element not found for id:', id);
   }
