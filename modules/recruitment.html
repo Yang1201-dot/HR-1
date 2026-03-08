@@ -3364,6 +3364,7 @@ async function r_deleteInterview(id) {
 
 async function r_save() {
   var title = g('r_title'), desc = g('r_desc');
+  console.log('🔧 r_save() called! Title:', title, 'Desc:', desc);
   if (!title || !desc) { r_toast('Fill required fields', 'error'); return; }
   console.log('r_save: posting job:', title);
   try {
