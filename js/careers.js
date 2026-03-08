@@ -660,8 +660,18 @@ document.addEventListener('DOMContentLoaded', () => {
       method: 'POST',
       body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
+      console.log('Full response data:', data);
+      console.log('Response ID:', data.id);
+      console.log('Response type:', typeof data);
       console.log('Application saved to database with ID:', data.id);
       // Show success message
       const formResult = document.getElementById('formResult');
