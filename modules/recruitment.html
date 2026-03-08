@@ -2877,20 +2877,7 @@ window.r_saveInterview = r_saveInterview;
 
 async function r_editInterview(id) {
   console.log('🔧 r_editInterview called with id:', id);
-  
-  // Open modal popup window for editing
-  const popup = window.open(
-    '../edit-interview-modal.html?id=' + id,
-    'editInterviewModal',
-    'width=600,height=700,scrollbars=yes,resizable=yes'
-  );
-  
-  // Focus on the popup
-  if (popup) {
-    popup.focus();
-  } else {
-    alert('Please allow popups for this site to edit interviews');
-  }
+  r_openEditInterviewPopup(id);
 }
 
 
@@ -4338,7 +4325,9 @@ function _fillApplicantDropdown(dropdown, apps) {
 
   <script src="../js/mysql-hr1-client.js"></script>
   <script src="../js/interview-popup.js"></script>
-<script>
+  <script src="../js/edit-interview-popup.js"></script>
+</body>
+</html>
 // Theme toggle
 var _themeToggle = document.getElementById("themeToggle");
 if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark-mode");
