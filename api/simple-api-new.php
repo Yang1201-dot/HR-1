@@ -504,6 +504,7 @@ switch($action) {
             $requiredColumns = [
                 'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
                 'applicant_id' => 'INT NOT NULL',
+                'applicant_name' => 'VARCHAR(255)',
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
@@ -542,11 +543,11 @@ switch($action) {
                 // Column doesn't exist or already dropped, ignore error
             }
             
-            // Get interviews with applicant names using JOIN
+            // Get interviews with applicant names using JOIN (with fallback to stored name)
             $stmt = $pdo->query("
                 SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
                        i.interview_notes, i.position, i.interview_status, i.created_at, i.updated_at,
-                       CONCAT(a.fname, ' ', a.lname) as applicant_name,
+                       COALESCE(i.applicant_name, CONCAT(a.fname, ' ', a.lname)) as applicant_name,
                        a.position as applicant_position
                 FROM interviews i
                 LEFT JOIN applicants a ON i.applicant_id = a.id
@@ -664,6 +665,7 @@ switch($action) {
             $requiredColumns = [
                 'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
                 'applicant_id' => 'INT NOT NULL',
+                'applicant_name' => 'VARCHAR(255)',
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
@@ -708,13 +710,28 @@ switch($action) {
             error_log("Error updating interviews table: " . $e->getMessage());
         }
         
+        // Get applicant name for storage
+        $applicantName = '';
+        if ($applicantId) {
+            try {
+                $stmt = $pdo->prepare("SELECT fname, lname FROM applicants WHERE id = ?");
+                $stmt->execute([$applicantId]);
+                $applicant = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($applicant) {
+                    $applicantName = trim($applicant['fname'] . ' ' . $applicant['lname']);
+                }
+            } catch(Exception $e) {
+                error_log("Error getting applicant name: " . $e->getMessage());
+            }
+        }
+        
         // Insert interview
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO interviews (applicant_id, interview_date, interview_time, interview_type, interview_notes, position, interview_status)
-                VALUES (?, ?, ?, ?, ?, ?, 'Scheduled')
+                INSERT INTO interviews (applicant_id, applicant_name, interview_date, interview_time, interview_type, interview_notes, position, interview_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'Scheduled')
             ");
-            $stmt->execute([$applicantId, $interviewDate, $interviewTime, $interviewType, $interviewNotes, $position]);
+            $stmt->execute([$applicantId, $applicantName, $interviewDate, $interviewTime, $interviewType, $interviewNotes, $position]);
             
             $interviewId = $pdo->lastInsertId();
             jsonResponse(['success' => true, 'interview_id' => $interviewId, 'message' => 'Interview scheduled successfully']);
