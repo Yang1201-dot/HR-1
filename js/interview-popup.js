@@ -241,6 +241,8 @@ async function r_saveInterviewPopup() {
     const interviewDate = document.getElementById('popup_date').value;
     const interviewTime = document.getElementById('popup_time').value;
     const interviewType = document.getElementById('popup_type').value;
+    const interviewNotes = document.getElementById('popup_notes').value;
+    const position = document.getElementById('popup_position').value;
     
     if (!applicantId || !interviewDate || !interviewTime) {
         alert('Please fill in all required fields.');
@@ -257,7 +259,9 @@ async function r_saveInterviewPopup() {
                 applicant_id: applicantId,
                 interview_date: interviewDate,
                 interview_time: interviewTime,
-                interview_type: interviewType
+                interview_type: interviewType,
+                interview_notes: interviewNotes,
+                position: position
             })
         });
 
