@@ -554,7 +554,7 @@ switch($action) {
             // Get interviews with applicant names using JOIN (with fallback to stored name)
             $stmt = $pdo->query("
                 SELECT i.id, i.applicant_id, i.interview_date, i.interview_time, i.interview_type, 
-                       i.interview_interview_notes, i.position, i.interview_status, i.created_at, i.updated_at,
+                       i.interview_notes, i.position, i.interview_status, i.created_at, i.updated_at,
                        COALESCE(i.applicant_name, CONCAT(a.fname, ' ', a.lname)) as applicant_name,
                        a.position as applicant_position
                 FROM interviews i
