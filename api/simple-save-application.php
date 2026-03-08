@@ -22,6 +22,21 @@ try {
     try { $pdo->exec("ALTER TABLE applicants ADD COLUMN diploma_path VARCHAR(500) NULL"); } catch(Exception $e) {}
     try { $pdo->exec("ALTER TABLE applicants ADD COLUMN cover_letter_path VARCHAR(500) NULL"); } catch(Exception $e) {}
 
+    // Create applicant_files table if it doesn't exist
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS applicant_files (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            applicant_id INT NOT NULL,
+            file_type VARCHAR(50) NOT NULL,
+            file_name VARCHAR(255) NOT NULL,
+            file_path VARCHAR(500) NOT NULL,
+            file_size INT NOT NULL,
+            mime_type VARCHAR(100) NOT NULL,
+            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+        )
+    ");
+
     $fname     = trim($_POST['first_name'] ?? '');
     $mname     = trim($_POST['middle_name'] ?? '');
     $lname     = trim($_POST['last_name'] ?? '');
@@ -51,7 +66,12 @@ try {
         $file = $name . '_' . time() . '.' . $ext;
         $dest = $uploadDir . $file;
         if (move_uploaded_file($_FILES[$key]['tmp_name'], $dest)) {
-            return 'uploads/applicants/' . $file;
+            return [
+                'path' => 'uploads/applicants/' . $file,
+                'original_name' => $_FILES[$key]['name'],
+                'size' => $_FILES[$key]['size'],
+                'mime_type' => $_FILES[$key]['type']
+            ];
         }
         return null;
     }
@@ -68,11 +88,38 @@ try {
         VALUES (?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([$fname, $lname, $email, $phone, $position, $dept,
-        $resumePath, $birthPath, $diplomaPath, $coverPath,
+        $resumePath['path'] ?? null, $birthPath['path'] ?? null, $diplomaPath['path'] ?? null, $coverPath['path'] ?? null,
         $location, $emptype, $salary, $desc, $jobId]);
 
-    $id = $pdo->lastInsertId();
-    echo json_encode(['success' => true, 'id' => $id, 'message' => 'Application submitted successfully']);
+    $applicantId = $pdo->lastInsertId();
+
+    // Save individual file records to applicant_files table
+    $fileStmt = $pdo->prepare("
+        INSERT INTO applicant_files (applicant_id, file_type, file_name, file_path, file_size, mime_type)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+
+    $files = [
+        ['resume', $resumePath],
+        ['birth_certificate', $birthPath],
+        ['diploma', $diplomaPath],
+        ['cover_letter', $coverPath]
+    ];
+
+    foreach ($files as $fileData) {
+        if ($fileData[1]) {
+            $fileStmt->execute([
+                $applicantId,
+                $fileData[0],
+                $fileData[1]['original_name'],
+                $fileData[1]['path'],
+                $fileData[1]['size'],
+                $fileData[1]['mime_type']
+            ]);
+        }
+    }
+
+    echo json_encode(['success' => true, 'id' => $applicantId, 'message' => 'Application submitted successfully']);
 
 } catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);

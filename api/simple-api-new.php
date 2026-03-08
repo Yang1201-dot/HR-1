@@ -563,6 +563,54 @@ switch($action) {
         }
         break;
         
+    case 'get_applicant_files':
+        try {
+            // Ensure applicant_files table exists
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS applicant_files (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    applicant_id INT NOT NULL,
+                    file_type VARCHAR(50) NOT NULL,
+                    file_name VARCHAR(255) NOT NULL,
+                    file_path VARCHAR(500) NOT NULL,
+                    file_size INT NOT NULL,
+                    mime_type VARCHAR(100) NOT NULL,
+                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+                )
+            ");
+            
+            $applicantId = $_GET['applicant_id'] ?? null;
+            if ($applicantId) {
+                // Get files for specific applicant
+                $stmt = $pdo->prepare("
+                    SELECT id, applicant_id, file_type, file_name, file_path, file_size, mime_type, uploaded_at
+                    FROM applicant_files 
+                    WHERE applicant_id = ?
+                    ORDER BY uploaded_at DESC
+                ");
+                $stmt->execute([$applicantId]);
+                $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                jsonResponse($files);
+            } else {
+                // Get all files with applicant info
+                $stmt = $pdo->query("
+                    SELECT af.id, af.applicant_id, af.file_type, af.file_name, af.file_path, 
+                           af.file_size, af.mime_type, af.uploaded_at,
+                           a.fname, a.lname, a.email, a.position
+                    FROM applicant_files af
+                    LEFT JOIN applicants a ON af.applicant_id = a.id
+                    ORDER BY af.uploaded_at DESC
+                ");
+                $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                jsonResponse($files);
+            }
+        } catch(Exception $e) {
+            error_log("Error getting applicant files: " . $e->getMessage());
+            jsonResponse(['error' => $e->getMessage()], 500);
+        }
+        break;
+        
     default:
         jsonResponse(['error' => 'Unknown action'], 400);
 }
