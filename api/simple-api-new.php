@@ -37,6 +37,12 @@ function jsonResponse($data, $status = 200) {
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
+// Debug logging for all requests
+error_log("API Request - Method: $method, Action: $action");
+error_log("GET data: " . json_encode($_GET));
+error_log("POST data: " . json_encode($_POST));
+error_log("Request URI: " . $_SERVER['REQUEST_URI']);
+
 switch($action) {
     case 'test':
         jsonResponse(['message' => 'API is working', 'timestamp' => date('Y-m-d H:i:s')]);
