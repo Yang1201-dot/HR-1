@@ -648,6 +648,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Selected job:', selectedJob);
+    console.log('All job properties:', Object.keys(selectedJob));
+    console.log('Job property values:', {
+      id: selectedJob.id,
+      title: selectedJob.title,
+      dept: selectedJob.dept,
+      department: selectedJob.department,
+      location: selectedJob.location,
+      emptype: selectedJob.emptype,
+      employment_type: selectedJob.employment_type,
+      salary: selectedJob.salary,
+      desc: selectedJob.desc,
+      description: selectedJob.description
+    });
     
     // Add job posting ID to form data
     formData.append('job_posting_id', selectedJob.id);
