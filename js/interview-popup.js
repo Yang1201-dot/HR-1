@@ -177,7 +177,7 @@ async function r_loadApplicantsForPopup() {
         data.forEach(applicant => {
             console.log('👤 Processing applicant:', applicant);
             console.log('🔍 Status check:', applicant.status, 'matches shortlisted:', applicant.status === 'Shortlisted');
-            if (applicant.status === 'New' || applicant.status === 'Under Review' || applicant.status === 'Shortlisted') {
+            if (applicant.status.trim().toLowerCase() === 'new' || applicant.status.trim().toLowerCase() === 'under review' || applicant.status.trim().toLowerCase() === 'shortlisted') {
                 console.log('✅ Condition passed - creating option element');
                 const option = document.createElement('option');
                 option.value = applicant.id;
