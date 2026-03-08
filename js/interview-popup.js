@@ -463,10 +463,26 @@ async function r_saveStatusChange(interviewId) {
         if (result.success) {
             console.log('✅ Interview status updated successfully');
             r_closeStatusChangePopup();
-            // Refresh interviews list
-            if (typeof r_loadInterviews === 'function') {
-                await r_loadInterviews();
-            }
+            
+            // Force refresh interviews list with delay
+            console.log('🔄 Refreshing interviews list...');
+            setTimeout(async function() {
+                try {
+                    // Reload interviews from database
+                    if (typeof r_loadInterviews === 'function') {
+                        await r_loadInterviews();
+                        console.log('✅ Interviews data reloaded');
+                        
+                        // Force re-render
+                        if (typeof r_renderInterviews === 'function') {
+                            r_renderInterviews();
+                            console.log('✅ Interviews display refreshed');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error refreshing interviews:', error);
+                }
+            }, 500); // Small delay to ensure database is updated
         } else {
             console.error('❌ Error updating status:', result.error);
             alert('Error updating status: ' + (result.error || 'Unknown error'));
