@@ -95,7 +95,7 @@ try {
     $coverPath  = saveFile('cover_letter', $uploadDir);
 
     $stmt = $pdo->prepare("
-        INSERT INTO applicants (fname, mname, lname, email, phone, position, dept, status, applied_at,
+        INSERT INTO applicants (fname, middle_name, lname, email, phone, position, dept, status, applied_at,
             resume_path, birth_certificate_path, diploma_path, cover_letter_path,
             location, employment_type, salary, description, job_posting_id, message)
         VALUES (?, ?, ?, ?, ?, ?, ?, 'New', NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
