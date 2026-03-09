@@ -501,15 +501,8 @@
   <div class="form-group"><label>Interview Status <span class="req">*</span></label>
 
     <select id="r_interview_status">
-
       <option value="Scheduled">Scheduled</option>
-
       <option value="On-going">On-going</option>
-
-      <option value="Passed">Passed</option>
-
-      <option value="Failed">Failed</option>
-
     </select>
 
   </div>
@@ -3221,200 +3214,27 @@ function r_loadCandidatesForOffer() {
 
   console.log('Dropdown element before populating:', select);
 
-  // Load candidates from passed interviews
-
-  var passedCandidates = INTERVIEWS.filter(function(interview) {
-
-    var status = interview.interview_status || 'Scheduled';
-
-    console.log('Interview ID:', interview.id, 'Status:', status);
-
-    // Accept both "passed" and "Passed" (case insensitive)
-
-    return status.toLowerCase() === 'passed';
-
+  // Load candidates from hired applications
+  var hiredCandidates = APPLICATIONS_CACHE.filter(function(applicant) {
+    return applicant.status && applicant.status.toLowerCase() === 'hired';
   });
-
- 
-
-  console.log('Passed candidates found:', passedCandidates.length);
-
- 
-
-  passedCandidates.forEach(function(interview) {
-
-    var applicantName = interview.applicant_name || 'Unknown Applicant';
-
-    if (applicantName && /^\d+$/.test(applicantName)) {
-
-      var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
-
-      if (applicant) {
-
-        applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
-
-      }
-
-    }
-
- 
-
-    // Get position from multiple sources
-
-    var position = interview.position || '';
-
- 
-
-    // If no position in interview, try to get it from applicant's job application
-
-    if (!position && applicantName && applicantName !== 'Unknown Applicant') {
-
-      // Find the applicant in the cache to get their position
-
-      var applicant = APPLICATIONS_CACHE.find(function(app) { 
-
-        return (app.first_name + ' ' + app.last_name) === applicantName || 
-
-               app.id === interview.applicant_id || 
-
-               app.id === interview.applicant_name;
-
-      });
-
-      if (applicant && applicant.position) {
-
-        position = applicant.position;
-
-      }
-
-    }
-
- 
-
-    // If still no position, try to get from job posting
-
-    if (!position && interview.applicant_id) {
-
-      // Find which job this applicant applied to
-
-      var applicant = APPLICATIONS_CACHE.find(function(app) { 
-
-        return app.id === interview.applicant_id || app.id === interview.applicant_name;
-
-      });
-
-      if (applicant && applicant.job_id) {
-
-        var job = JOBS.find(function(j) { return String(j.id) === String(applicant.job_id); });
-
-        if (job && job.title) {
-
-          position = job.title;
-
-        }
-
-      }
-
-    }
-
- 
-
-    var option = document.createElement('option');
-
-    option.value = interview.id;
-
-    option.textContent = applicantName + ' - ' + (position || 'Position not specified');
-
-    option.dataset.interview = JSON.stringify(interview);
-
- 
-
-    // Add click handler to option as additional trigger
-
-    option.addEventListener('click', function() {
-
-      console.log('Option clicked:', this.value);
-
-      setTimeout(function() {
-
-        if (typeof window.r_populateCandidateData === 'function') {
-
-          window.r_populateCandidateData();
-
-        }
-
-      }, 10);
-
-    });
-
- 
-
-    select.appendChild(option);
-
-  });
-
- 
-
-  // If no passed candidates, show all interviews for testing
-
-  if (passedCandidates.length === 0 && INTERVIEWS.length > 0) {
-
-    console.log('No passed candidates found, showing all interviews for testing...');
-
-    INTERVIEWS.forEach(function(interview) {
-
-      var applicantName = interview.applicant_name || 'Unknown Applicant';
-
-      if (applicantName && /^\d+$/.test(applicantName)) {
-
-        var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
-
-        if (applicant) {
-
-          applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
-
-        }
-
-      }
-
- 
-
+  
+  console.log('Hired candidates found:', hiredCandidates.length);
+  
+  if (hiredCandidates.length > 0) {
+    hiredCandidates.forEach(function(applicant) {
+      var applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+      var position = applicant.position || applicant.applied_position || '';
+      
       var option = document.createElement('option');
-
-      option.value = interview.id;
-
-      var status = interview.interview_status || 'Scheduled';
-
-      option.textContent = applicantName + ' - ' + (interview.position || 'Position not specified') + ' [' + status + ']';
-
-      option.dataset.interview = JSON.stringify(interview);
-
- 
-
-      // Add click handler to fallback option as additional trigger
-
-      option.addEventListener('click', function() {
-
-        console.log('Fallback option clicked:', this.value);
-
-        setTimeout(function() {
-
-          if (typeof window.r_populateCandidateData === 'function') {
-
-            window.r_populateCandidateData();
-
-          }
-
-        }, 10);
-
-      });
-
- 
-
+      option.value = applicant.id;
+      option.textContent = applicantName + ' - ' + (position || 'Position not specified');
+      option.dataset.applicant = JSON.stringify(applicant);
       select.appendChild(option);
-
     });
-
+  } else {
+    console.log('No hired candidates found, showing message');
+    select.innerHTML = '<option value="">No hired candidates available</option>';
   }
 
  
