@@ -36,6 +36,57 @@
       margin: 0 auto;
       line-height: 1.7;
     }
+    
+    /* Job article styling */
+    .job {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .job:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    .job h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .job p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .job-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .job-meta span {
+      font-size: 14px;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .apply-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .apply-btn:hover {
+      background: var(--primary-hover);
+    }
   </style>
 </head>
 <body class="dark-mode">
