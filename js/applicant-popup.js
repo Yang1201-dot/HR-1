@@ -177,13 +177,13 @@ function am_loadApplicantDetails(applicantId) {
         `;
     }
     
-    // Files section
-    content += `
-        <div style="margin-bottom: 24px;">
-            <h4 style="margin: 0 0 16px 0; color: var(--text-primary);">Submitted Documents</h4>
-    `;
-    
+    // Files section - use files variable that's in scope
     if (Object.keys(files).length > 0) {
+        content += `
+            <div style="margin-bottom: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: var(--text-primary);">Submitted Documents</h4>
+        `;
+        
         // Group and display files by category
         fileCategories.forEach(category => {
             if (files[category.key]) {
@@ -228,11 +228,16 @@ function am_loadApplicantDetails(applicantId) {
                 `;
             }
         });
+        
+        content += '</div>';
     } else {
-        content += '<p style="color: var(--text-secondary); font-style: italic;">No documents submitted yet.</p>';
+        content += `
+            <div style="margin-bottom: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: var(--text-primary);">Submitted Documents</h4>
+                <p style="color: var(--text-secondary); font-style: italic;">No documents submitted yet.</p>
+            </div>
+        `;
     }
-    
-    content += '</div>';
     
     // Assessment section
     content += `
