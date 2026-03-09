@@ -3202,9 +3202,9 @@ function r_loadCandidatesForOffer() {
   console.log('Loading candidates for offer...');
   console.log('Total interviews available:', INTERVIEWS.length);
   console.log('Interviews:', INTERVIEWS);
-  var select = document.getElementById('r_off_candidate');
+  var select = document.getElementById('r_offer_candidate');
   if (!select) {
-    console.error('❌ r_off_candidate element not found!');
+    console.error('❌ r_offer_candidate element not found!');
     return;
   }
   
@@ -4151,7 +4151,8 @@ function _fillApplicantDropdown(dropdown, apps) {
     
     // Theme toggle
     var _themeToggle = document.getElementById("themeToggle");
-    if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark-mode");
+    if (localStorage.getItem("theme") === "light") document.body.classList.add("dark-mode");
+    else document.body.classList.add("dark-mode"); // Default to dark mode
     if (_themeToggle) _themeToggle.addEventListener("click", function() {
       document.body.classList.toggle("dark-mode");
       localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
