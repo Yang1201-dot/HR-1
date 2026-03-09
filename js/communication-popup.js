@@ -174,28 +174,30 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
                 ${pdfAttachment ? `
-                    <div style="padding: 12px; border: 2px solid var(--brand-green, #2ca078); border-radius: 6px; background: var(--bg-tertiary, #f1f5f9);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">📎</span>
-                                <div>
-                                    <div style="font-weight: 600; color: var(--text-primary, #1f2937);">${pdfAttachment.name}</div>
-                                    <div style="font-size: 12px; color: var(--text-secondary, #64748b);">Offer letter for ${pdfAttachment.candidateName}</div>
-                                </div>
-                            </div>
-                            <button onclick="r_viewPDFAttachment(\`${pdfAttachment.content.replace(/\`/g, '\\`')}\`, \`${pdfAttachment.name.replace(/\`/g, '\\`')}\`)" style="
-                                background: var(--brand-green, #2ca078);
-                                color: white;
-                                border: none;
-                                padding: 6px 12px;
-                                border-radius: 4px;
-                                cursor: pointer;
-                                font-size: 12px;
-                                font-weight: 600;
-                                transition: all 0.2s ease;
-                            " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">View PDF</button>
+                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; background: var(--surface, #ffffff); max-width: 400px;">
+                        <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--bg-tertiary, #f1f5f9); border-radius: 8px; margin-right: 12px;">
+                            <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
+                                <path d="M12.5 0H2C0.9 0 0 0.9 0 2V22C0 23.1 0.9 24 2 24H18C19.1 24 20 23.1 20 22V7.5L12.5 0Z" fill="#ea4335"/>
+                                <path d="M12.5 0V7.5H20L12.5 0Z" fill="#ff6b6b"/>
+                                <text x="10" y="18" font-family="Arial, sans-serif" font-size="4" font-weight="bold" text-anchor="middle" fill="white">PDF</text>
+                            </svg>
                         </div>
-                        <div style="font-size: 11px; color: var(--text-secondary, #64748b);">✅ PDF will be automatically attached when sending</div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 14px; font-weight: 500; color: var(--text-primary, #1f2937); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${pdfAttachment.name}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary, #64748b);">PDF • ${Math.round(pdfAttachment.content.length / 1024)} KB</div>
+                        </div>
+                        <button onclick="r_viewPDFAttachment(\`${pdfAttachment.content.replace(/\`/g, '\\`')}\`, \`${pdfAttachment.name.replace(/\`/g, '\\`')}\`)" style="
+                            background: none;
+                            border: none;
+                            color: var(--brand-blue, #1a73e8);
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: 500;
+                            padding: 6px 12px;
+                            border-radius: 4px;
+                            transition: background-color 0.2s ease;
+                            text-decoration: none;
+                        " onmouseover="this.style.background='var(--bg-secondary, #e8eaed)';" onmouseout="this.style.background='none';">View</button>
                     </div>
                 ` : `
                     <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
