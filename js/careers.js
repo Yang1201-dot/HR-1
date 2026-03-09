@@ -362,12 +362,11 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!input || !display) return;
       
-      // Add click event to display to trigger file input
-      // Note: Only the button should trigger file input, not the file name display
+      // Add click events to both button and display to trigger file input
       display.addEventListener('click', () => {
         if (input) input.click();
       });
-
+      
       input.addEventListener('change', () => {
         const file = input.files && input.files[0];
         if (file) {
