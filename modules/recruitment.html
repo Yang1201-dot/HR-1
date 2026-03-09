@@ -1685,7 +1685,7 @@ function r_renderOffers() {
 
   el.innerHTML = '<div style="margin-bottom:16px;text-align:left;"><button class="btn-primary" onclick="r_openOffer()">+ Create Offer Document</button></div>' +
 
-    (OFFERS.length ? OFFERS.map(function(o) {
+    (OFFERS.length ? '<div style="margin-bottom:20px;"><h3 style="color: var(--text-primary, #1f2937); font-size: 18px; font-weight: 600; margin: 0 0 10px 0;">PDF Generated</h3><div style="color: var(--text-secondary, #64748b); font-size: 14px; margin-bottom: 15px;">Offer letters that have been generated and are ready for sending</div></div>' + OFFERS.map(function(o) {
 
       var sc = o.status === 'Accepted' ? 'bd-accepted' : o.status === 'Rejected' ? 'bd-rejected' : 'bd-pending';
 
@@ -1703,9 +1703,7 @@ function r_renderOffers() {
 
  
 
-      // Check if PDF was generated
-
-      var pdfBadge = o.pdfGenerated ? '<span class="badge bd-active" style="margin-left: 8px;">📄 PDF Generated</span>' : '';
+      // Check if PDF was generated - badge removed, will show as section title
 
  
 
@@ -1724,8 +1722,6 @@ function r_renderOffers() {
           '<div style="text-align: right;">' +
 
             '<span class="badge ' + sc + '">' + o.status + '</span>' +
-
-            pdfBadge +
 
           '</div>' +
 
@@ -1763,23 +1759,19 @@ function r_renderOffers() {
 
         '<div class="offer-actions" style="display: flex; gap: 8px; margin-top: 15px;">' +
 
-          (o.pdfGenerated ? 
-
+          (o.pdfGenerated ?
             '<button class="btn-sm bsm-blue" onclick="r_viewOfferPDF(\'' + o.id + '\', \'' + candidateName + '\')">View</button>' +
-
             '<button class="btn-sm bsm-green" onclick="r_openSendCommunication(\'' + (o.candidateId || '') + '\', \'' + candidateName + '\', \'' + o.id + '\')">Send To</button>' +
             '<button class="btn-sm bsm-blue" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
-            '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>' +
-
-          '' +
-
-          '<button class="btn-sm bsm-green" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
-
-          '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>' +
+            '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>'
+          :
+            '<button class="btn-sm bsm-blue" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
+            '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>'
+          ) +
 
         '</div>' +
 
-      '</div>';
+      '</div>'
 
     }).join('') : '<p class="empty-state">No offer documents created yet. Click <strong>+ Create Offer Document</strong> to get started.</p>');
 }
