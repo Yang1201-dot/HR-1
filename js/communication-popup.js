@@ -313,12 +313,16 @@ async function r_findCandidateEmail(candidateName, offerId) {
     try {
         console.log('🌐 Fetching applicants from database...');
         const response = await fetch('../api/simple-api-new.php?action=get_applications');
-        const data = await response.json();
+        console.log('📡 API Response status:', response.status);
+        console.log('📡 API Response ok:', response.ok);
         
-        if (data.success && data.applicants && data.applicants.length > 0) {
-            console.log('📋 Database applicants loaded:', data.applicants.length);
+        const data = await response.json();
+        console.log('📊 API Response data:', data);
+        
+        if (data.success && data.applications && data.applications.length > 0) {
+            console.log('📋 Database applications loaded:', data.applications.length);
             
-            const applicant = data.applicants.find(function(app) {
+            const applicant = data.applications.find(function(app) {
                 const fullName = (app.fname + ' ' + app.lname).trim();
                 console.log('🔍 Checking DB applicant:', fullName, 'against:', candidateName);
                 return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
@@ -331,7 +335,10 @@ async function r_findCandidateEmail(candidateName, offerId) {
                 return applicant.email;
             } else if (applicant) {
                 console.log('❌ DB applicant found but no email field');
+                console.log('📋 Applicant data keys:', Object.keys(applicant));
             }
+        } else {
+            console.log('❌ API response invalid or no applications:', data);
         }
     } catch (error) {
         console.error('❌ Error fetching applicants from database:', error);
