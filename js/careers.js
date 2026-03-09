@@ -34,9 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Data jobs type:', typeof data.jobs);
       console.log('Data jobs length:', data.jobs ? data.jobs.length : 'undefined');
       
-      if (data.success && data.jobs) {
+      // Handle both response formats - direct array or wrapped in success object
+      if (Array.isArray(data)) {
+        // Direct array response
+        JOBS = data;
+        console.log('Loaded JOBS (direct array):', JOBS);
+        renderJobs();
+      } else if (data.success && data.jobs) {
+        // Wrapped in success object
         JOBS = data.jobs;
-        console.log('Loaded JOBS:', JOBS);
+        console.log('Loaded JOBS (success object):', JOBS);
         renderJobs();
       } else {
         console.error('Failed to load jobs:', data);
