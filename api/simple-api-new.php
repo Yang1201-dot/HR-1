@@ -558,6 +558,14 @@ switch($action) {
         
     case 'get_interviews':
         try {
+            // Drop duplicate status column immediately to prevent conflicts
+            try {
+                $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+                error_log("Dropped duplicate status column on get_interviews");
+            } catch(Exception $e) {
+                // Column doesn't exist, ignore
+            }
+            
             // Ensure interviews table has correct structure
             $requiredColumns = [
                 'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
