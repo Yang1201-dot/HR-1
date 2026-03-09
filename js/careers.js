@@ -72,15 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     container.innerHTML = JOBS.map(job => `
-      <article class="job">
-        <h3>${esc(job.title)}</h3>
-        <p>${esc(job.description || 'No description available.')}</p>
-        <div class="job-meta">
-          ${job.location ? `<span>Location: ${esc(job.location)}</span>` : ''}
-          ${job.emptype ? `<span>Type: ${esc(job.emptype)}</span>` : ''}
+      <div class="job-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+          <div>
+            <h3 style="font-size:17px;margin-bottom:3px;">${esc(job.title)}</h3>
+            <p style="font-size:13px;color:var(--text-secondary);">${esc(job.dept || job.department || 'General')} &bull; ${esc(job.location || 'Remote')}</p>
+          </div>
+          <span class="badge bd-active">Active</span>
         </div>
-        <button class="apply-btn" data-role="${esc(job.title)}">Apply Now</button>
-      </article>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">${esc(job.description || 'No description available.')}</p>
+        <div class="meta-row">
+          <span>${job.emptype || job.employment_type || 'Full-time'}</span>
+          <button class="btn-primary apply-btn" data-role="${esc(job.title)}">Apply Now</button>
+        </div>
+      </div>
     `).join('');
     
     // Attach event listeners to newly created apply buttons

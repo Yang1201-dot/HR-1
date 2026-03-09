@@ -37,55 +37,72 @@
       line-height: 1.7;
     }
     
-    /* Job article styling */
-    .job {
-      background: var(--bg-secondary);
+    /* Job card styling - matching recruitment module */
+    .job-card {
+      background: var(--surface);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-    .job:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-    .job h3 {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-    .job p {
-      color: var(--text-secondary);
-      line-height: 1.6;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all .2s;
       margin-bottom: 16px;
     }
-    .job-meta {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+    .job-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
     }
-    .job-meta span {
-      font-size: 14px;
-      color: var(--text-muted);
-      background: var(--bg-tertiary);
-      padding: 4px 12px;
+    
+    /* Badge styling - matching recruitment module */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
       border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
     }
+    .bd-active {
+      background: rgba(44,160,120,.12);
+      color: var(--brand-green);
+    }
+    .bd-draft {
+      background: rgba(107,114,128,.12);
+      color: #6b7280;
+    }
+    .bd-pending {
+      background: rgba(245,158,11,.12);
+      color: #d97706;
+    }
+    .bd-accepted {
+      background: rgba(44,160,120,.15);
+      color: var(--brand-green);
+    }
+    
+    /* Meta row styling */
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* Apply button styling - matching recruitment module */
     .apply-btn {
-      background: var(--primary);
+      background: var(--brand-green);
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 8px 16px;
       border-radius: 8px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all .2s;
     }
     .apply-btn:hover {
-      background: var(--primary-hover);
+      background: #2c9e78;
+      transform: translateY(-1px);
     }
   </style>
 </head>
