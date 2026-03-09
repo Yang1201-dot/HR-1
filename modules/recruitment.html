@@ -683,7 +683,7 @@ window.r_populateCandidateData = function() {
 
     // Populate candidate data from applicant record
     document.getElementById('r_off_pos').value = selectedCandidate.position || selectedCandidate.applied_position || '';
-    document.getElementById('r_off_expected_salary').value = selectedCandidate.expected_salary || '';
+    document.getElementById('r_off_expected_salary').value = selectedCandidate.salary || selectedCandidate.expected_salary || '';
 
     // Try to get job details from JOBS array
     var job = JOBS.find(function(j) { 
@@ -695,9 +695,14 @@ window.r_populateCandidateData = function() {
  
 
     if (job) {
+      console.log('Job found, autofilling fields...');
       document.getElementById('r_off_dept').value = job.department || job.dept || '';
       document.getElementById('r_off_emptype').value = job.employment_type || job.emptype || '';
       document.getElementById('r_off_location').value = job.location || '';
+      
+      console.log('Department set to:', document.getElementById('r_off_dept').value);
+      console.log('Employment type set to:', document.getElementById('r_off_emptype').value);
+      console.log('Location set to:', document.getElementById('r_off_location').value);
       
       // Set default work schedule based on employment type
       if (job.employment_type === 'Full-time' || job.emptype === 'Full-time') {
@@ -708,6 +713,8 @@ window.r_populateCandidateData = function() {
         document.getElementById('r_off_schedule').value = 'To be discussed';
       }
       
+      console.log('Schedule set to:', document.getElementById('r_off_schedule').value);
+      
       // Set default benefits based on employment type
       if (job.employment_type === 'Full-time' || job.emptype === 'Full-time') {
         document.getElementById('r_off_benefits').value = 'Health insurance, 13th month pay, vacation leaves, sick leaves, performance bonuses';
@@ -715,14 +722,19 @@ window.r_populateCandidateData = function() {
         document.getElementById('r_off_benefits').value = 'Pro-rated benefits based on hours worked';
       }
       
+      console.log('Benefits set to:', document.getElementById('r_off_benefits').value);
+      
       // Set default start date (30 days from now)
       var startDate = new Date();
       startDate.setDate(startDate.getDate() + 30);
       document.getElementById('r_off_start').value = startDate.toISOString().split('T')[0];
       
+      console.log('Start date set to:', document.getElementById('r_off_start').value);
+      
       // Set default salary (20% above expected if available, otherwise use job salary range)
-      if (selectedCandidate.expected_salary) {
-        var expectedNum = parseFloat(selectedCandidate.expected_salary.replace(/[^0-9.]/g, ''));
+      if (selectedCandidate.salary || selectedCandidate.expected_salary) {
+        var salaryAmount = selectedCandidate.salary || selectedCandidate.expected_salary;
+        var expectedNum = parseFloat(salaryAmount.replace(/[^0-9.]/g, ''));
         if (!isNaN(expectedNum)) {
           var offeredSalary = expectedNum * 1.2; // 20% above expected
           document.getElementById('r_off_salary').value = '₱' + Math.round(offeredSalary).toLocaleString();
@@ -742,8 +754,9 @@ window.r_populateCandidateData = function() {
       startDate.setDate(startDate.getDate() + 30);
       document.getElementById('r_off_start').value = startDate.toISOString().split('T')[0];
       
-      if (selectedCandidate.expected_salary) {
-        var expectedNum = parseFloat(selectedCandidate.expected_salary.replace(/[^0-9.]/g, ''));
+      if (selectedCandidate.salary || selectedCandidate.expected_salary) {
+        var salaryAmount = selectedCandidate.salary || selectedCandidate.expected_salary;
+        var expectedNum = parseFloat(salaryAmount.replace(/[^0-9.]/g, ''));
         if (!isNaN(expectedNum)) {
           document.getElementById('r_off_salary').value = '₱' + Math.round(expectedNum * 1.2).toLocaleString();
         }
