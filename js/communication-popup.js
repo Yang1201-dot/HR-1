@@ -340,13 +340,16 @@ async function r_findCandidateEmail(candidateName, offerId) {
         } else if (Array.isArray(data) && data.length > 0) {
             console.log('📋 Database applications loaded (direct array):', data.length);
             console.log('📊 First applicant data:', data[0]);
+            console.log('📋 First applicant expanded:', JSON.stringify(data[0], null, 2));
             console.log('📋 First applicant keys:', Object.keys(data[0]));
             
             const applicant = data.find(function(app) {
                 console.log('🔍 Current applicant data:', app);
+                console.log('🔍 Current applicant expanded:', JSON.stringify(app, null, 2));
                 const fullName = (app.fname + ' ' + app.lname).trim();
                 console.log('🔍 Checking DB applicant (direct):', fullName, 'against:', candidateName);
                 console.log('📋 fname:', app.fname, 'lname:', app.lname);
+                console.log('📋 email:', app.email);
                 return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
             });
             
