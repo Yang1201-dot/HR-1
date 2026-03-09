@@ -362,10 +362,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const input = picker.querySelector('input[type="file"], .real-file');
       const display = picker.querySelector('.file-name');
       const clearBtn = picker.querySelector('.file-clear');
+      const fileBtn = picker.querySelector('.file-btn');
       
       if (!input || !display) return;
       
-      // Add click events to both button and display to trigger file input
+      // Add click event to file button to trigger file input
+      if (fileBtn) {
+        fileBtn.addEventListener('click', () => {
+          if (input) input.click();
+        });
+      }
+      
+      // Add click event to display to trigger file input
       display.addEventListener('click', () => {
         if (input) input.click();
       });
