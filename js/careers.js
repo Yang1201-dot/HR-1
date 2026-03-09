@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadJobsFromAPI() {
     try {
       console.log('Loading jobs from API...');
-      const response = await fetch('../api/simple-api-new.php?action=get_jobs');
+      const response = await fetch('../api/simple-api-new.php?action=get_job_postings');
       const data = await response.json();
       console.log('Jobs API Response:', data);
       
