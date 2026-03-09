@@ -252,52 +252,25 @@ function am_loadApplicantDetails(applicantId) {
     if (assessment) {
         const avg = Math.round((parseInt(assessment.tech || 0) + parseInt(assessment.comm || 0) + parseInt(assessment.prob || 0) + parseInt(assessment.fit || 0)) / 4 * 10) / 10;
         
-        content += `
-            <div style="background: var(--surface); border: 2px solid var(--border-color); border-radius: 10px; padding: 16px;">
-                <div style="margin-bottom: 12px;">
-                    <div style="font-weight: 700; font-size: 16px; color: var(--text-primary);">Assessment Results</div>
-                    <div style="font-size: 12px; color: var(--text-secondary);">Assessed on ${new Date(assessment.created_at).toLocaleString()}</div>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px;">
-                    <div style="text-align: center; padding: 8px; background: var(--background); border-radius: 6px;">
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Technical</div>
-                        <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">${assessment.tech || 5}</div>
-                    </div>
-                    <div style="text-align: center; padding: 8px; background: var(--background); border-radius: 6px;">
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Communication</div>
-                        <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">${assessment.comm || 5}</div>
-                    </div>
-                    <div style="text-align: center; padding: 8px; background: var(--background); border-radius: 6px;">
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Problem Solving</div>
-                        <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">${assessment.prob || 5}</div>
-                    </div>
-                    <div style="text-align: center; padding: 8px; background: var(--background); border-radius: 6px;">
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Cultural Fit</div>
-                        <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">${assessment.fit || 5}</div>
-                    </div>
-                    <div style="text-align: center; padding: 8px; background: var(--brand-green, #2ca078); border-radius: 6px;">
-                        <div style="font-size: 12px; color: white; margin-bottom: 4px;">Average</div>
-                        <div style="font-size: 18px; font-weight: 700; color: white;">${avg}</div>
-                    </div>
-                </div>
-                ${assessment.notes ? `<div style="padding: 12px; background: var(--background); border-radius: 6px; font-size: 13px;"><strong style="color: var(--text-primary); display: block; margin-bottom: 8px;">Notes:</strong> ${assessment.notes}</div>` : ''}
-            </div>
-        `;
+        content += '<div class="assessment-card">' +
+          '<div style="margin-bottom:12px;">' +
+            '<div style="font-weight:700;font-size:16px;">' + ((assessment.applicant_name || assessment.fname + ' ' + assessment.lname) || 'Applicant') + '</div>' +
+            '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + (assessment.created_at || 'N/A') + '</div>' +
+          '</div>' +
+          '<div class="assess-score">' +
+            '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + (assessment.tech || 0) + '</div></div>' +
+            '<div class="score-item"><div class="score-lbl">Communication</div><div class="score-val">' + (assessment.comm || 0) + '</div></div>' +
+            '<div class="score-item"><div class="score-lbl">Problem Solving</div><div class="score-val">' + (assessment.prob || 0) + '</div></div>' +
+            '<div class="score-item"><div class="score-lbl">Cultural Fit</div><div class="score-val">' + (assessment.fit || 0) + '</div></div>' +
+            '<div class="score-item"><div class="score-lbl">Average</div><div class="score-val">' + avg + '</div></div>' +
+          '</div>' +
+          (assessment.notes ? '<div style="margin-top:16px;padding:16px;background:var(--surface);border:2px solid var(--border-color);border-radius:10px;font-size:13px;word-wrap:break-word;overflow-wrap:break-word;white-space:normal;max-width:100%;"><strong style="color:var(--text-primary);display:block;margin-bottom:8px;">Notes:</strong> ' + assessment.notes + '</div>' : '') +
+        '</div>';
     } else {
-        content += `
-            <div style="background: var(--background); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; text-align: center;">
-                <p style="color: var(--text-secondary); margin: 0 0 12px 0;">No assessment completed yet.</p>
-                <button onclick="am_openAssessmentForApplicant('${applicantId}', '${(applicant.first_name || '') + ' ' + (applicant.last_name || '')}')" style="
-                    background: var(--brand-green, #2ca078);
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Start Assessment</button>
-            </div>
-        `;
+        content += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
+          '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
+          '<button onclick="am_openAssessmentForApplicant(\'' + applicantId + '\', \'' + (applicant.first_name + ' ' + applicant.last_name) + '\')" style="background:var(--brand-green);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;">Start Assessment</button>' +
+        '</div>';
     }
     
     content += '</div>';
