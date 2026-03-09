@@ -923,7 +923,7 @@ window.r_populateCandidateData = function() {
 
  
 
-  var select = document.getElementById('r_off_candidate');
+  var select = document.getElementById('r_offer_candidate');
 
   var selectedOption = select.options[select.selectedIndex];
 
@@ -3335,21 +3335,13 @@ function r_loadCandidatesForOffer() {
       // Try blur event (when leaving dropdown)
 
       candidateSelect.addEventListener('blur', function() {
-
         setTimeout(function() {
-
-          var select = document.getElementById('r_off_candidate');
-
+          var select = document.getElementById('r_offer_candidate');
           console.log('Blur event - checking value:', select.value);
-
           if (select.value && typeof window.r_populateCandidateData === 'function') {
-
             window.r_populateCandidateData();
-
           }
-
-        }, 100);
-
+        }, 50);
       });
 
  
@@ -3398,7 +3390,7 @@ function r_generateOfferPreview() {
 
   // Get candidate name from dropdown selection
 
-  var select = document.getElementById('r_off_candidate');
+  var select = document.getElementById('r_offer_candidate');
 
   var selectedOption = select.options[select.selectedIndex];
 
@@ -3600,7 +3592,7 @@ function r_generateOfferPDF() {
 
   // Get candidate name from dropdown selection
 
-  var select = document.getElementById('r_off_candidate');
+  var select = document.getElementById('r_offer_candidate');
 
   var selectedOption = select.options[select.selectedIndex];
 
