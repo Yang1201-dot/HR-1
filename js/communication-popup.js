@@ -1,7 +1,7 @@
 // Communication Popup Functions - Following interview popup pattern
 
 // Open communication popup
-function r_openCommunicationPopup(candidateId, candidateName, offerId) {
+async function r_openCommunicationPopup(candidateId, candidateName, offerId) {
     console.log('🎯 Opening communication popup for:', {candidateId, candidateName, offerId});
     
     // Close any existing popup
@@ -88,9 +88,9 @@ function r_openCommunicationPopup(candidateId, candidateName, offerId) {
     
     console.log('✅ Communication popup opened');
     
-    // Load content after popup is created
-    setTimeout(() => {
-        r_loadCommunicationContent(candidateId, candidateName, offerId);
+    // Load content after popup is created (now async)
+    setTimeout(async () => {
+        await r_loadCommunicationContent(candidateId, candidateName, offerId);
     }, 100);
 }
 
@@ -106,7 +106,7 @@ function r_closeCommunicationPopup() {
 }
 
 // Load communication content
-function r_loadCommunicationContent(candidateId, candidateName, offerId) {
+async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     console.log('🔍 Loading communication content for:', {candidateId, candidateName, offerId});
     console.log('📋 Available applicants:', window.AM);
     console.log('📋 Available offers:', window.OFFERS);
@@ -114,8 +114,8 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     const recipientValue = candidateName || '';
     const isFromOfferCard = candidateName !== '';
     
-    // Get email with debugging
-    const emailValue = isFromOfferCard ? r_findCandidateEmail(candidateName, offerId) : '';
+    // Get email with async lookup
+    const emailValue = isFromOfferCard ? await r_findCandidateEmail(candidateName, offerId) : '';
     console.log('📧 Email value:', emailValue);
     
     const content = `
@@ -284,10 +284,10 @@ function r_sendCommunication() {
 }
 
 // Find candidate email from applicants array
-function r_findCandidateEmail(candidateName, offerId) {
+async function r_findCandidateEmail(candidateName, offerId) {
     console.log('🔍 Looking for email for candidate:', candidateName, 'offerId:', offerId);
     
-    // Try to find email from global applicants array
+    // First try to find from global applicants array
     if (window.AM && Array.isArray(window.AM)) {
         console.log('📋 Applicants array found with', window.AM.length, 'applicants');
         
@@ -300,13 +300,41 @@ function r_findCandidateEmail(candidateName, offerId) {
         console.log('👤 Found applicant:', applicant);
         
         if (applicant && applicant.email) {
-            console.log('✅ Found email:', applicant.email);
+            console.log('✅ Found email from AM array:', applicant.email);
             return applicant.email;
         } else if (applicant) {
             console.log('❌ Applicant found but no email field');
         }
     } else {
-        console.log('❌ Applicants array not found or not array');
+        console.log('❌ Applicants array not found or not array, trying database...');
+    }
+    
+    // Try to fetch from database API if AM array not available
+    try {
+        console.log('🌐 Fetching applicants from database...');
+        const response = await fetch('../api/simple-api-new.php?action=get_applicants');
+        const data = await response.json();
+        
+        if (data.success && data.applicants && data.applicants.length > 0) {
+            console.log('📋 Database applicants loaded:', data.applicants.length);
+            
+            const applicant = data.applicants.find(function(app) {
+                const fullName = (app.fname + ' ' + app.lname).trim();
+                console.log('🔍 Checking DB applicant:', fullName, 'against:', candidateName);
+                return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
+            });
+            
+            console.log('👤 Found DB applicant:', applicant);
+            
+            if (applicant && applicant.email) {
+                console.log('✅ Found email from database:', applicant.email);
+                return applicant.email;
+            } else if (applicant) {
+                console.log('❌ DB applicant found but no email field');
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error fetching applicants from database:', error);
     }
     
     // Try to find from offer data if available
