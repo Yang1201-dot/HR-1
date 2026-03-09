@@ -105,8 +105,15 @@ function am_loadApplicantDetails(applicantId) {
     console.log('📊 Found applicant:', applicant);
     
     // Find assessment data
-    const assessment = window.ASSESS ? window.ASSESS.find(ass => String(ass.applicant_id) === String(applicantId)) : null;
+    const assessment = window.ASSESS ? window.ASSESS.find(ass => String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)) : null;
     console.log('📊 Found assessment:', assessment);
+    
+    // Debug assessment lookup
+    if (window.ASSESS) {
+        window.ASSESS.forEach((ass, index) => {
+            console.log(`Assessment ${index} - applicant_id: ${ass.applicant_id} (type: ${typeof ass.applicant_id}), matches: ${String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)}`);
+        });
+    }
     
     // Get files data
     const files = window.FILES ? (window.FILES[parseInt(applicantId)] || {}) : {};
@@ -129,7 +136,17 @@ function am_loadApplicantDetails(applicantId) {
                 <div style="background: var(--background); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
                     <div style="margin-bottom: 12px;"><strong style="color: var(--text-secondary);">Position:</strong> <span style="color: var(--text-primary);">${applicant.position || ''}</span></div>
                     <div style="margin-bottom: 12px;"><strong style="color: var(--text-secondary);">Department:</strong> <span style="color: var(--text-primary);">${applicant.department || ''}</span></div>
-                    <div><strong style="color: var(--text-secondary);">Status:</strong> <span style="color: var(--text-primary);">${applicant.status || 'New'}</span></div>
+                    <div style="margin-bottom: 12px;">
+                        <strong style="color: var(--text-secondary);">Status:</strong> 
+                        <select id="applicant_status_${applicant.id}" style="margin-left: 8px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--background); color: var(--text-primary);">
+                            <option value="new" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'new' ? 'selected' : ''}>New</option>
+                            <option value="under-review" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'under-review' ? 'selected' : ''}>Under Review</option>
+                            <option value="shortlisted" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'shortlisted' ? 'selected' : ''}>Shortlisted</option>
+                            <option value="hired" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'hired' ? 'selected' : ''}>Hired</option>
+                            <option value="rejected" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'rejected' ? 'selected' : ''}>Rejected</option>
+                        </select>
+                        <input type="button" value="Update Status" onclick="console.log('Direct click!'); var status=document.getElementById('applicant_status_${applicant.id}').value; console.log('Status:', status); fetch('../api/simple-api-new.php?action=update_status', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'id=${applicant.id}&status='+status}).then(r=>r.json()).then(d=>{console.log('Response:', d); if(d.success){console.log('SUCCESS! Status updated!'); location.reload();}else{console.error('Failed:', d.error); alert('Failed to update status: ' + d.error);}}).catch(e=>console.error('Error:', e))" style="margin-left: 64px; margin-top: 8px; cursor: pointer; padding: 5px 12px; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; background: rgba(44,160,120,.12); color: var(--brand-green); transition: all .2s;" onmouseover="this.style.background='var(--brand-green)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(44,160,120,.12)'; this.style.color='var(--brand-green)';">
+                    </div>
                 </div>
             </div>
         </div>
