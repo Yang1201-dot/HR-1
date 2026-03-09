@@ -110,14 +110,26 @@ function am_loadApplicantDetails(applicantId) {
     
     // Debug assessment lookup
     if (window.ASSESS) {
+        console.log('🔍 Full ASSESS array:', window.ASSESS);
         window.ASSESS.forEach((ass, index) => {
-            console.log(`Assessment ${index} - applicant_id: ${ass.applicant_id} (type: ${typeof ass.applicant_id}), matches: ${String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)}`);
+            console.log(`Assessment ${index}:`, ass);
+            console.log(`  - applicant_id: ${ass.applicant_id} (type: ${typeof ass.applicant_id})`);
+            console.log(`  - tech: ${ass.tech}, comm: ${ass.comm}, prob: ${ass.prob}, fit: ${ass.fit}`);
+            console.log(`  - matches: ${String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)}`);
         });
     }
     
-    // Get files data
+    // Get files data with proper categorization
     const files = window.FILES ? (window.FILES[parseInt(applicantId)] || {}) : {};
     console.log('📊 Found files:', files);
+    
+    // File categories for proper display
+    const fileCategories = [
+        { key: 'resume', label: 'Resume', icon: '📄' },
+        { key: 'birth', label: 'Birth Certificate', icon: '📋' },
+        { key: 'diploma', label: 'Diploma/TOR', icon: '🎓' },
+        { key: 'cover', label: 'Cover Letter', icon: '✉️' }
+    ];
     
     // Build content HTML
     let content = `
@@ -171,31 +183,50 @@ function am_loadApplicantDetails(applicantId) {
     `;
     
     if (Object.keys(files).length > 0) {
-        content += '<div style="background: var(--background); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">';
-        
-        Object.entries(files).forEach(([category, fileData]) => {
-            content += `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                    <div>
-                        <div style="font-weight: 600; color: var(--text-primary);">${fileData.fileName || ''}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">${fileData.fileSize || ''} &bull; ${fileData.uploadedAt || ''}</div>
+        // Group and display files by category
+        fileCategories.forEach(category => {
+            if (files[category.key]) {
+                const file = files[category.key];
+                content += `
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="font-size: 16px;">${category.icon}</span>
+                            <h5 style="margin: 0; color: var(--text-primary); font-size: 14px; font-weight: 600;">${category.label}</h5>
+                        </div>
+                        <div style="background: var(--background); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="font-weight: 600; color: var(--text-primary);">${file.fileName || ''}</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">${file.fileSize || ''} &bull; ${file.uploadedAt || ''}</div>
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button onclick="window.am_viewFile('${applicantId}', '${category.key}')" style="
+                                        background: var(--brand-green, #2ca078);
+                                        color: white;
+                                        border: none;
+                                        padding: 6px 12px;
+                                        border-radius: 6px;
+                                        cursor: pointer;
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                    ">View</button>
+                                    <button onclick="window.am_downloadFile('${applicantId}', '${category.key}')" style="
+                                        background: var(--bg-tertiary, #f1f5f9);
+                                        color: var(--text-secondary, #64748b);
+                                        border: none;
+                                        padding: 6px 12px;
+                                        border-radius: 6px;
+                                        cursor: pointer;
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                    ">Download</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 6px;">
-                        <button onclick="window.open('${fileData.filePath || ''}', '_blank')" style="
-                            background: var(--brand-green, #2ca078);
-                            color: white;
-                            border: none;
-                            padding: 6px 12px;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            font-size: 12px;
-                        ">View</button>
-                    </div>
-                </div>
-            `;
+                `;
+            }
         });
-        
-        content += '</div>';
     } else {
         content += '<p style="color: var(--text-secondary); font-style: italic;">No documents submitted yet.</p>';
     }
