@@ -174,7 +174,7 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
                 ${pdfAttachment ? `
-                    <div style="display: flex; align-items: center; padding: 8px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; background: var(--surface, #ffffff); max-width: 400px;">
+                    <div style="display: flex; align-items: center; padding: 8px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; background: var(--surface, #ffffff); width: 100%;">
                         <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--bg-tertiary, #f1f5f9); border-radius: 4px; margin-right: 8px;">
                             <svg width="16" height="20" viewBox="0 0 20 24" fill="none">
                                 <path d="M12.5 0H2C0.9 0 0 0.9 0 2V22C0 23.1 0.9 24 2 24H18C19.1 24 20 23.1 20 22V7.5L12.5 0Z" fill="#ea4335"/>
