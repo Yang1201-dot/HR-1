@@ -108,9 +108,15 @@ function r_closeCommunicationPopup() {
 // Load communication content
 function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     console.log('🔍 Loading communication content for:', {candidateId, candidateName, offerId});
+    console.log('📋 Available applicants:', window.AM);
+    console.log('📋 Available offers:', window.OFFERS);
     
     const recipientValue = candidateName || '';
     const isFromOfferCard = candidateName !== '';
+    
+    // Get email with debugging
+    const emailValue = isFromOfferCard ? r_findCandidateEmail(candidateName, offerId) : '';
+    console.log('📧 Email value:', emailValue);
     
     const content = `
         <div style="margin-bottom: 20px;">
@@ -279,27 +285,42 @@ function r_sendCommunication() {
 
 // Find candidate email from applicants array
 function r_findCandidateEmail(candidateName, offerId) {
+    console.log('🔍 Looking for email for candidate:', candidateName, 'offerId:', offerId);
+    
     // Try to find email from global applicants array
     if (window.AM && Array.isArray(window.AM)) {
+        console.log('📋 Applicants array found with', window.AM.length, 'applicants');
+        
         const applicant = window.AM.find(function(app) {
             const fullName = (app.fname + ' ' + app.lname).trim();
+            console.log('🔍 Checking applicant:', fullName, 'against:', candidateName);
             return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
         });
         
+        console.log('👤 Found applicant:', applicant);
+        
         if (applicant && applicant.email) {
+            console.log('✅ Found email:', applicant.email);
             return applicant.email;
+        } else if (applicant) {
+            console.log('❌ Applicant found but no email field');
         }
+    } else {
+        console.log('❌ Applicants array not found or not array');
     }
     
     // Try to find from offer data if available
     if (window.OFFERS && offerId) {
         const offer = window.OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+        console.log('💼 Found offer:', offer);
         if (offer && offer.candidateEmail) {
+            console.log('✅ Found email from offer:', offer.candidateEmail);
             return offer.candidateEmail;
         }
     }
     
     // Return placeholder if no email found
+    console.log('❌ No email found, using placeholder');
     return 'no-email@example.com';
 }
 
