@@ -663,33 +663,73 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => {
       console.log('Response status:', response.status);
       console.log('Response ok:', response.ok);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Full response data:', data);
-      console.log('Response ID:', data.id);
-      console.log('Response type:', typeof data);
-      console.log('Application saved to database with ID:', data.id);
-      // Show success message
-      const formResult = document.getElementById('formResult');
-      if (formResult) {
-        formResult.innerHTML = '<div class="success-message">✅ Application submitted successfully! We will review your application and contact you soon.</div>';
-        formResult.style.color = '#28a745';
-      }
-      // Close modal after a short delay to show success message
-      setTimeout(() => {
-        closeModal();
         isSubmitting = false; // Reset submission flag
-      }, 2000);
-    })
-    .catch(error => {
-      console.error('Error submitting application:', error);
+        return;
+      }
+    }
+    
+    console.log('Validation passed - proceeding with submission');
+    
+    // If we get here, validation passed - submit the form
+    submitApplication();
+    
+  });
+} else {
+  console.error('Apply form not found!');
+}
+
+// ── Submit Application Function ───────────────────────────────────────
+function submitApplication() {
+  console.log('submitApplication function called');
+  const form = document.getElementById('applyForm');
+  const formData = new FormData(form);
+  
+  // Get selected job from hidden input (set when Apply Now button was clicked)
+  const jobInput = document.getElementById('inputRole');
+  const selectedJob = JOBS.find(job => job.title === jobInput.value);
+  
+  if (!selectedJob) {
+    alert('Please select a job position before applying.');
+    isSubmitting = false; // Reset flag
+    return;
+  }
+  
+  // Add job posting ID to form data
+  formData.append('job_posting_id', selectedJob.id);
+  formData.append('position', selectedJob.title);
+  formData.append('department', selectedJob.department);
+  formData.append('location', selectedJob.location);
+  formData.append('employment_type', selectedJob.employment_type);
+  formData.append('salary', selectedJob.salary_range);
+  formData.append('description', selectedJob.description);
+
+  fetch('../api/simple-save-application.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+    return response.json();
+  })
+  .then(data => {
+    console.log('Full response data:', data);
+    console.log('Response ID:', data.id);
+    console.log('Response type:', typeof data);
+    
+    // Check if response contains an error
+    if (data.error) {
+      console.error('Application submission error:', data.error);
       const formResult = document.getElementById('formResult');
       if (formResult) {
-        formResult.innerHTML = '<div class="error-message">❌ Error submitting application. Please try again.</div>';
+        // Show specific error message based on error type
+        let errorMessage = '❌ Error submitting application. Please try again.';
+        if (data.error.includes('Duplicate entry') && data.error.includes('email')) {
+          errorMessage = '❌ This email address has already been used for an application. Please use a different email address.';
+        } else if (data.error.includes('SQLSTATE')) {
+          errorMessage = '❌ Database error occurred. Please try again or contact support.';
+        }
+        formResult.innerHTML = `<div class="error-message">${errorMessage}</div>`;
         formResult.style.color = '#dc3545';
       }
       isSubmitting = false; // Reset submission flag on error

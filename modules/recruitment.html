@@ -1541,9 +1541,10 @@ function r_renderInterviews() {
         var applicant = APPLICATIONS_CACHE.find(function(app) { return app.id === applicantName; });
 
         if (applicant) {
-
-          applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
-
+          var fullName = (applicant.first_name || '');
+          if (applicant.middle_name) fullName += ' ' + (applicant.middle_name || '');
+          fullName += ' ' + (applicant.last_name || '');
+          applicantName = fullName;
         } else {
 
           applicantName = 'Unknown Applicant';
@@ -1809,9 +1810,10 @@ function r_renderTalent() {
     var unique = Object.keys(uniq).map(function(k) { return uniq[k]; });
 
     el.innerHTML = unique.length ? unique.map(function(a) {
-
-      return '<div class="talent-card"><div class="talent-name">' + esc(a.first_name + ' ' + a.last_name) + '</div><div class="talent-info">' + esc(a.email) + ' &bull; ' + esc(a.phone) + '</div><div class="talent-pos">' + esc(a.position) + '</div></div>';
-
+      var fullName = (a.first_name || '');
+      if (a.middle_name) fullName += ' ' + (a.middle_name || '');
+      fullName += ' ' + (a.last_name || '');
+      return '<div class="talent-card"><div class="talent-name">' + esc(fullName) + '</div><div class="talent-info">' + esc(a.email) + ' &bull; ' + esc(a.phone) + '</div><div class="talent-pos">' + esc(a.position) + '</div></div>';
     }).join('') : '<p class="empty-state">No talent pool yet.</p>';
 
   } catch(e) { el.innerHTML = '<p class="empty-state">Error loading talent pool.</p>'; }
@@ -2058,7 +2060,12 @@ function r_viewDetails(jobId) {
 
                       <div>
 
-                        <strong style="color: var(--text-primary);">${(app.first_name || '') + ' ' + (app.last_name || '')}</strong><br>
+                        <strong style="color: var(--text-primary);">${(function(){
+                          var fullName = (app.first_name || '');
+                          if (app.middle_name) fullName += ' ' + (app.middle_name || '');
+                          fullName += ' ' + (app.last_name || '');
+                          return fullName;
+                        })()}</strong><br>
 
                         <span style="color: var(--text-secondary); font-size: 13px;">${app.email}</span><br>
 
@@ -2975,12 +2982,14 @@ function r_loadCandidatesForOffer() {
   
   if (hiredCandidates.length > 0) {
     hiredCandidates.forEach(function(applicant) {
-      var applicantName = (applicant.first_name || '') + ' ' + (applicant.last_name || '');
+      var fullName = (applicant.first_name || '');
+      if (applicant.middle_name) fullName += ' ' + (applicant.middle_name || '');
+      fullName += ' ' + (applicant.last_name || '');
       var position = applicant.position || applicant.applied_position || '';
       
       var option = document.createElement('option');
       option.value = applicant.id;
-      option.textContent = applicantName + ' - ' + (position || 'Position not specified');
+      option.textContent = fullName + ' - ' + (position || 'Position not specified');
       option.dataset.applicant = JSON.stringify(applicant);
       select.appendChild(option);
     });
