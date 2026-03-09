@@ -381,13 +381,6 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                     </div>
                     <div id="comm_file_list" style="margin-top: 8px;"></div>
                 ` : ''}
-                
-                ${!isFromOfferCard && !pdfAttachment ? `
-                    <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
-                        <div style="margin-bottom: 8px;">📎 No attachments will be included</div>
-                        <div style="font-size: 12px;">Use "Send To" button from offer cards to include PDF attachments</div>
-                    </div>
-                ` : ''}
             </div>
         </div>
     `;
