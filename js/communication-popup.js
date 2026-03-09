@@ -337,8 +337,28 @@ async function r_findCandidateEmail(candidateName, offerId) {
                 console.log('❌ DB applicant found but no email field');
                 console.log('📋 Applicant data keys:', Object.keys(applicant));
             }
+        } else if (Array.isArray(data) && data.length > 0) {
+            console.log('📋 Database applications loaded (direct array):', data.length);
+            
+            const applicant = data.find(function(app) {
+                const fullName = (app.fname + ' ' + app.lname).trim();
+                console.log('🔍 Checking DB applicant (direct):', fullName, 'against:', candidateName);
+                return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
+            });
+            
+            console.log('👤 Found DB applicant (direct):', applicant);
+            
+            if (applicant && applicant.email) {
+                console.log('✅ Found email from database (direct):', applicant.email);
+                return applicant.email;
+            } else if (applicant) {
+                console.log('❌ DB applicant found but no email field (direct)');
+                console.log('📋 Applicant data keys (direct):', Object.keys(applicant));
+            }
         } else {
             console.log('❌ API response invalid or no applications:', data);
+            console.log('📊 Data type:', typeof data);
+            console.log('📊 Data isArray:', Array.isArray(data));
         }
     } catch (error) {
         console.error('❌ Error fetching applicants from database:', error);
