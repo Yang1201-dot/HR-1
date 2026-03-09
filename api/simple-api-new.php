@@ -570,13 +570,13 @@ switch($action) {
             $requiredColumns = [
                 'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
                 'applicant_id' => 'INT NOT NULL',
-                'applicant_name' => 'VARCHAR(255)',
+                'applicant_name' => 'VARCHAR(100)',
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
-                'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
+                'interview_type' => "ENUM('Phone Screen','Video Call','In-Person','Technical') NOT NULL DEFAULT 'Phone Screen'",
                 'interview_notes' => 'TEXT',
-                'position' => 'VARCHAR(255)',
-                'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
+                'position' => 'VARCHAR(100)',
+                'interview_status' => "ENUM('Scheduled','Completed','Cancelled','Rescheduled') NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
                 'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
             ];
@@ -734,13 +734,13 @@ switch($action) {
             $requiredColumns = [
                 'id' => 'INT AUTO_INCREMENT PRIMARY KEY',
                 'applicant_id' => 'INT NOT NULL',
-                'applicant_name' => 'VARCHAR(255)',
+                'applicant_name' => 'VARCHAR(100)',
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
-                'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
+                'interview_type' => "ENUM('Phone Screen','Video Call','In-Person','Technical') NOT NULL DEFAULT 'Phone Screen'",
                 'interview_notes' => 'TEXT',
-                'position' => 'VARCHAR(255)',
-                'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
+                'position' => 'VARCHAR(100)',
+                'interview_status' => "ENUM('Scheduled','Completed','Cancelled','Rescheduled') NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
                 'updated_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
             ];
