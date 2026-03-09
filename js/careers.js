@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Render Jobs ─────────────────────────────────────────────
   function renderJobs() {
-    const container = document.getElementById('jobsList');
+    const container = document.getElementById('jobList');
     if (!container) return;
     
     if (!JOBS || JOBS.length === 0) {
