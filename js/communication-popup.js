@@ -368,16 +368,16 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                         <div style="margin-bottom: 8px;">📎 Click to choose files or drag and drop</div>
                         <div style="font-size: 12px; margin-bottom: 8px;">Support for multiple files</div>
                         <button onclick="document.getElementById('comm_file_upload').click()" style="
-                            background: var(--brand-blue, #1a73e8);
+                            background: var(--brand-green, #2ca078);
                             color: white;
                             border: none;
-                            padding: 6px 12px;
-                            border-radius: 4px;
+                            padding: 8px 16px;
+                            border-radius: 6px;
                             cursor: pointer;
-                            font-size: 12px;
-                            font-weight: 500;
+                            font-size: 14px;
+                            font-weight: 600;
                             transition: all 0.2s ease;
-                        " onmouseover="this.style.background='#1557b0';" onmouseout="this.style.background='var(--brand-blue, #1a73e8)';">Choose Files</button>
+                        " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">Choose Files</button>
                     </div>
                     <div id="comm_file_list" style="margin-top: 8px;"></div>
                 ` : ''}
