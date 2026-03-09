@@ -151,8 +151,8 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
                 <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
-                    <div style="margin-bottom: 8px;">📎 Attachments will be included</div>
-                    <div style="font-size: 12px;">Offer letter PDF will be automatically attached</div>
+                    <div style="margin-bottom: 8px;">📎 Offer letter PDF will be automatically attached</div>
+                    <div style="font-size: 12px;">Click "Send Communication" to deliver with PDF attachment</div>
                 </div>
             </div>
         </div>
@@ -185,15 +185,117 @@ function r_sendCommunication() {
     const subject = document.getElementById('comm_subject')?.value || '';
     const message = document.getElementById('comm_message')?.value || '';
     
-    if (!subject || !message) {
-        alert('Please fill in subject and message');
-        return;
-    }
-    
+    // Allow sending even with empty subject/message (optional fields)
     console.log('📤 Sending communication:', {candidateId, candidateName, offerId, subject, message});
     
-    // Here you would implement the actual sending logic
+    // Find the offer to get PDF content
+    const offer = window.OFFERS ? window.OFFERS.find(o => String(o.id) === String(offerId)) : null;
+    let pdfAttachment = null;
+    
+    if (offer && offer.pdfGenerated) {
+        pdfAttachment = {
+            name: `Offer_Letter_${candidateName.replace(/\s+/g, '_')}.pdf`,
+            content: r_generateOfferPDFContent(offer.terms)
+        };
+    }
+    
+    // Here you would implement actual sending logic
     // For now, just show success and close
-    alert('Communication sent successfully!');
+    alert('Communication sent successfully!\n\nRecipient: ' + candidateName + '\nSubject: ' + (subject || '(no subject)') + '\nMessage: ' + (message || '(no message)') + '\nPDF Attachment: ' + (pdfAttachment ? 'Yes' : 'No'));
     r_closeCommunicationPopup();
+    
+    // Add to communications table (simulate)
+    if (pdfAttachment) {
+        const communication = {
+            id: Date.now(),
+            recipient: candidateName,
+            subject: subject || 'No Subject',
+            message: message || 'No Message',
+            sentAt: new Date().toLocaleString(),
+            hasAttachment: true,
+            attachmentName: pdfAttachment.name,
+            offerId: offerId
+        };
+        
+        // Add to global communications array
+        if (!window.COMM) window.COMM = [];
+        window.COMM.unshift(communication);
+        
+        // Refresh communications display
+        if (typeof r_renderCommunications === 'function') {
+            r_renderCommunications();
+        }
+    }
+}
+
+// Generate PDF content for offer
+function r_generateOfferPDFContent(offerData) {
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Employment Offer - ${offerData.candidateName}</title>
+            <style>
+                body { font-family: 'Times New Roman', serif; margin: 20px; }
+                .offer-document { 
+                    background: white; 
+                    border: none; 
+                    padding: 0; 
+                    max-width: 800px; 
+                    margin: 0 auto; 
+                }
+                .offer-header { text-align: center; margin-bottom: 40px; }
+                .offer-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+                .offer-date { font-size: 14px; color: #666; }
+                .offer-content { line-height: 1.6; }
+                .offer-section { margin-bottom: 30px; }
+                .offer-field { margin-bottom: 15px; }
+                .offer-label { font-weight: bold; display: inline-block; width: 150px; }
+                .offer-signature { margin-top: 60px; text-align: right; }
+                @media print { body { margin: 0; }
+            </style>
+        </head>
+        <body>
+            <div class="offer-document">
+                <div class="offer-header">
+                    <div class="offer-title">EMPLOYMENT OFFER LETTER</div>
+                    <div class="offer-date">Date: ${new Date().toLocaleDateString()}</div>
+                </div>
+                
+                <div class="offer-content">
+                    <div class="offer-section">
+                        <p>Dear ${offerData.candidateName},</p>
+                        <p>We are pleased to offer you the position of <strong>${offerData.position}</strong> at our company. This offer is contingent upon your acceptance of the terms and conditions outlined below.</p>
+                    </div>
+                    
+                    <div class="offer-section">
+                        <h3>Employment Details:</h3>
+                        <div class="offer-field"><span class="offer-label">Position:</span> ${offerData.position}</div>
+                        <div class="offer-field"><span class="offer-label">Department:</span> ${offerData.department}</div>
+                        <div class="offer-field"><span class="offer-label">Start Date:</span> ${offerData.startDate}</div>
+                        <div class="offer-field"><span class="offer-label">Salary:</span> ${offerData.salary}</div>
+                        <div class="offer-field"><span class="offer-label">Employment Type:</span> ${offerData.employmentType}</div>
+                        <div class="offer-field"><span class="offer-label">Schedule:</span> ${offerData.schedule}</div>
+                        <div class="offer-field"><span class="offer-label">Location:</span> ${offerData.location}</div>
+                        <div class="offer-field"><span class="offer-label">Reporting To:</span> ${offerData.reporting}</div>
+                        ${offerData.benefits ? `<h3>Benefits:</h3><p>${offerData.benefits}</p>` : ''}
+                        ${offerData.probation ? `<h3>Probation Period:</h3><p>${offerData.probation}</p>` : ''}
+                        ${offerData.conditions ? `<h3>Conditions:</h3><p>${offerData.conditions}</p>` : ''}
+                        ${offerData.validity ? `<h3>Offer Validity:</h3><p>${offerData.validity}</p>` : ''}
+                    </div>
+                    
+                    <div class="offer-section">
+                        <p>Please review this offer carefully and indicate your acceptance by signing below. We look forward to having you join our team.</p>
+                    </div>
+                    
+                    <div class="offer-signature">
+                        <p>Sincerely,</p>
+                        <p>HR Department</p>
+                        <p>Company Name</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
 }

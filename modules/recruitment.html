@@ -367,27 +367,15 @@
  
 
 <!-- Modal: Send Communication -->
-
 <div class="modal-overlay" id="r_modal_comm">
-
 <div class="modal-box">
-
   <button class="modal-close" onclick="r_close('r_modal_comm')">&times;</button>
-
   <h2>Send Communication</h2>
-
-  <div class="form-group"><label>Recipient <span class="req">*</span></label><input type="text" id="r_comm_to" placeholder="Applicant name or email"></div>
-
-  <div class="form-group"><label>Subject <span class="req">*</span></label><input type="text" id="r_comm_subj" placeholder="Email subject"></div>
-
-  <div class="form-group"><label>Message <span class="req">*</span></label><textarea id="r_comm_msg" placeholder="Your message..."></textarea></div>
-
-  <button class="btn btn-primary" onclick="r_saveComm()">Send Message</button>
-
-  <button class="btn btn-secondary" onclick="r_close('r_modal_comm')">Cancel</button>
-
+  <div style="text-align: center; padding: 20px;">
+    <p style="color: var(--text-secondary, #64748b); margin-bottom: 16px;">Use the "Send To" button in the offer cards to open this communication modal with pre-filled recipient and PDF attachment.</p>
+    <button class="btn btn-secondary" onclick="r_close('r_modal_comm')">Close</button>
+  </div>
 </div>
-
 </div>
 
  
