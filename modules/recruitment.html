@@ -250,7 +250,9 @@
   <div class="form-row" style="margin-top: 20px;">
     <div class="form-group">
       <label>Candidate Name</label>
-      <input type="text" id="r_offer_candidate" readonly style="background: #f8f9fa; color: #6c757d;">
+      <select id="r_offer_candidate" style="background: var(--background, #f8f9fa); color: var(--text-primary, #1f2937);">
+        <option value="">Choose a candidate...</option>
+      </select>
     </div>
     <div class="form-group">
       <label>Overall Status</label>
@@ -3240,8 +3242,7 @@ function r_loadCandidatesForOffer() {
  
 
   console.log('Dropdown element after populating:', select);
-
-  console.log('Dropdown options count:', select.options.length);
+  console.log('Dropdown options count:', select.options ? select.options.length : 'undefined');
 
  
 
@@ -3249,7 +3250,7 @@ function r_loadCandidatesForOffer() {
 
   setTimeout(function() {
 
-    var candidateSelect = document.getElementById('r_off_candidate');
+    var candidateSelect = document.getElementById('r_offer_candidate');
 
     if (candidateSelect) {
 
