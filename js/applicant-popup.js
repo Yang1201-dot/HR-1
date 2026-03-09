@@ -124,6 +124,10 @@ function am_loadApplicantDetails(applicantId) {
     ) : null;
     console.log('📊 Found assessment:', assessment);
     
+    // Get files data with proper categorization
+    const files = window.FILES ? (window.FILES[parseInt(applicantId)] || {}) : {};
+    console.log('📊 Found files:', files);
+    
     // File categories for proper display
     const fileCategories = [
         { key: 'resume', label: 'Resume', icon: '📄' },
