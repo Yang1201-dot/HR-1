@@ -114,9 +114,11 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     const recipientValue = candidateName || '';
     const isFromOfferCard = candidateName !== '';
     
-    // Get email with async lookup
+    // Get email with async lookup and PDF attachment info
     const emailValue = isFromOfferCard ? await r_findCandidateEmail(candidateName, offerId) : '';
+    const pdfAttachment = isFromOfferCard ? await r_getOfferPDFAttachment(offerId) : null;
     console.log('📧 Email value:', emailValue);
+    console.log('📎 PDF attachment:', pdfAttachment);
     
     const content = `
         <div style="margin-bottom: 20px;">
@@ -171,10 +173,36 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
-                <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
-                    <div style="margin-bottom: 8px;">📎 ${isFromOfferCard ? 'Offer letter PDF will be automatically attached' : 'No attachments will be included'}</div>
-                    <div style="font-size: 12px;">${isFromOfferCard ? 'Click "Send Communication" to deliver with PDF attachment' : 'Use "Send To" button from offer cards to include PDF attachments'}</div>
-                </div>
+                ${pdfAttachment ? `
+                    <div style="padding: 12px; border: 2px solid var(--brand-green, #2ca078); border-radius: 6px; background: var(--bg-tertiary, #f1f5f9);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px;">📎</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text-primary, #1f2937);">${pdfAttachment.name}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary, #64748b);">Offer letter for ${pdfAttachment.candidateName}</div>
+                                </div>
+                            </div>
+                            <button onclick="r_viewPDFAttachment(\`${pdfAttachment.content.replace(/\`/g, '\\`')}\`, \`${pdfAttachment.name.replace(/\`/g, '\\`')}\`)" style="
+                                background: var(--brand-green, #2ca078);
+                                color: white;
+                                border: none;
+                                padding: 6px 12px;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                font-size: 12px;
+                                font-weight: 600;
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">View PDF</button>
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-secondary, #64748b);">✅ PDF will be automatically attached when sending</div>
+                    </div>
+                ` : `
+                    <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
+                        <div style="margin-bottom: 8px;">📎 No attachments will be included</div>
+                        <div style="font-size: 12px;">Use "Send To" button from offer cards to include PDF attachments</div>
+                    </div>
+                `}
             </div>
         </div>
     `;
@@ -281,6 +309,31 @@ function r_sendCommunication() {
     if (typeof r_renderCommunications === 'function') {
         r_renderCommunications();
     }
+}
+
+// Get offer PDF attachment info
+async function r_getOfferPDFAttachment(offerId) {
+    if (!offerId) return null;
+    
+    const offer = window.OFFERS ? window.OFFERS.find(o => String(o.id) === String(offerId)) : null;
+    if (!offer || !offer.pdfGenerated) {
+        return null;
+    }
+    
+    return {
+        name: `Offer_Letter_${offer.candidateName.replace(/\s+/g, '_')}.pdf`,
+        content: r_generateOfferPDFContent(offer.terms),
+        candidateName: offer.candidateName,
+        offerId: offerId
+    };
+}
+
+// View PDF attachment
+function r_viewPDFAttachment(pdfContent, fileName) {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(pdfContent);
+    printWindow.document.close();
+    printWindow.focus();
 }
 
 // Find candidate email from applicants array
