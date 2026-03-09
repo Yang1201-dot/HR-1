@@ -121,7 +121,7 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: ${isFromOfferCard ? 'var(--bg-tertiary, #f1f5f9)' : 'var(--background, #ffffff)'};
+                    background: ${isFromOfferCard ? 'var(--bg-tertiary, #f1f5f9)' : 'var(--surface, #ffffff)'};
                     color: var(--text-primary, #1f2937);
                 ">
             </div>
@@ -133,7 +133,7 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: var(--background, #ffffff);
+                    background: var(--surface, #f8fafc);
                     color: var(--text-primary, #1f2937);
                 ">
             </div>
@@ -145,7 +145,7 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: var(--background, #ffffff);
+                    background: var(--surface, #f8fafc);
                     color: var(--text-primary, #1f2937);
                     resize: vertical;
                 "></textarea>
