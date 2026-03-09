@@ -292,9 +292,9 @@ async function r_findCandidateEmail(candidateName, offerId) {
         console.log('📋 Applicants array found with', window.AM.length, 'applicants');
         
         const applicant = window.AM.find(function(app) {
-            const fullName = (app.fname + ' ' + app.lname).trim();
+            const fullName = (app.first_name + ' ' + app.last_name).trim();
             console.log('🔍 Checking applicant:', fullName, 'against:', candidateName);
-            return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
+            return fullName === candidateName || app.first_name === candidateName || app.last_name === candidateName;
         });
         
         console.log('👤 Found applicant:', applicant);
@@ -346,11 +346,11 @@ async function r_findCandidateEmail(candidateName, offerId) {
             const applicant = data.find(function(app) {
                 console.log('🔍 Current applicant data:', app);
                 console.log('🔍 Current applicant expanded:', JSON.stringify(app, null, 2));
-                const fullName = (app.fname + ' ' + app.lname).trim();
+                const fullName = (app.first_name + ' ' + app.last_name).trim();
                 console.log('🔍 Checking DB applicant (direct):', fullName, 'against:', candidateName);
-                console.log('📋 fname:', app.fname, 'lname:', app.lname);
+                console.log('📋 first_name:', app.first_name, 'last_name:', app.last_name);
                 console.log('📋 email:', app.email);
-                return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
+                return fullName === candidateName || app.first_name === candidateName || app.last_name === candidateName;
             });
             
             console.log('👤 Found DB applicant (direct):', applicant);
@@ -365,7 +365,7 @@ async function r_findCandidateEmail(candidateName, offerId) {
                 console.log('❌ No matching applicant found');
                 console.log('🔍 All applicants names:');
                 data.forEach(function(app, index) {
-                    console.log(`  ${index + 1}. "${app.fname}" "${app.lname}" -> "${(app.fname + ' ' + app.lname).trim()}"`);
+                    console.log(`  ${index + 1}. "${app.first_name}" "${app.last_name}" -> "${(app.first_name + ' ' + app.last_name).trim()}"`);
                 });
             }
         } else {
