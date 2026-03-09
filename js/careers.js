@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── File Picker Functions ─────────────────────────────────────
   function initializeFilePickers() {
     document.querySelectorAll('.file-picker').forEach(picker => {
-      const input = picker.querySelector('input[type="file"]');
+      const input = picker.querySelector('input[type="file"], .real-file');
       const display = picker.querySelector('.file-name');
       const clearBtn = picker.querySelector('.file-clear');
       
