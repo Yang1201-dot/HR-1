@@ -186,7 +186,7 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                             <div style="font-size: 14px; font-weight: 500; color: var(--text-primary, #1f2937); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${pdfAttachment.name}</div>
                             <div style="font-size: 12px; color: var(--text-secondary, #64748b);">PDF • ${Math.round(pdfAttachment.content.length / 1024)} KB</div>
                         </div>
-                        <button onclick="r_viewPDFAttachment(\`${pdfAttachment.content.replace(/\`/g, '\\`')}\`, \`${pdfAttachment.name.replace(/\`/g, '\\`')}\`)" style="
+                        <button onclick="r_viewOfferPDF('${pdfAttachment.offerId}')" style="
                             background: none;
                             border: none;
                             color: var(--brand-blue, #1a73e8);
