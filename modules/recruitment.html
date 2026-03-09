@@ -2566,11 +2566,20 @@ function r_open(id) {
 }
 
 function r_close(id) {
-
+  console.log('r_close called with id:', id);
+  
   try { if (window.parent !== window) { window.parent.postMessage({type:'HR1_CLOSE_MODAL'},'*'); return; } } catch(e) {}
 
-  var m = document.getElementById(id); if (m) m.classList.remove('active');
-
+  var m = document.getElementById(id); 
+  if (m) {
+    console.log('Modal element found, removing active class and inline styles');
+    m.classList.remove('active');
+    // Remove inline styles to hide the modal
+    m.style.cssText = '';
+    console.log('Modal closed successfully');
+  } else {
+    console.error('Modal element not found for id:', id);
+  }
 }
 
 window.r_close = r_close;
