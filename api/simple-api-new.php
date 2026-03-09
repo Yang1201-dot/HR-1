@@ -131,6 +131,111 @@ switch($action) {
         break;
         
     case 'save_assessment':
+        $input = json_decode(file_get_contents('php://input'), true);
+        $applicantId = $input['applicant_id'] ?? null;
+        $tech = $input['tech'] ?? 5;
+        $comm = $input['comm'] ?? 5;
+        $prob = $input['prob'] ?? 5;
+        $fit = $input['fit'] ?? 5;
+        $notes = $input['notes'] ?? '';
+        
+        if (!$applicantId) {
+            jsonResponse(['error' => 'Missing applicant ID'], 400);
+            break;
+        }
+        
+        try {
+            // Check if assessment table exists, create if not
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS assessments (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    applicant_id INT NOT NULL,
+                    tech INT NOT NULL DEFAULT 5,
+                    comm INT NOT NULL DEFAULT 5,
+                    prob INT NOT NULL DEFAULT 5,
+                    fit INT NOT NULL DEFAULT 5,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+                )
+            ");
+            
+            // Insert or update assessment
+            $stmt = $pdo->prepare("
+                INSERT INTO assessments (applicant_id, tech, comm, prob, fit, notes)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                tech = VALUES(tech), comm = VALUES(comm), prob = VALUES(prob), fit = VALUES(fit), notes = VALUES(notes)
+            ");
+            $stmt->execute([$applicantId, $tech, $comm, $prob, $fit, $notes]);
+            
+            $assessmentId = $pdo->lastInsertId();
+            error_log("Assessment saved with ID: $assessmentId");
+            
+            jsonResponse([
+                'success' => true, 
+                'assessment_id' => $assessmentId,
+                'message' => 'Assessment saved successfully'
+            ]);
+        } catch(Exception $e) {
+            error_log("Error saving assessment: " . $e->getMessage());
+            jsonResponse(['error' => 'Failed to save assessment: ' . $e->getMessage()], 500);
+        }
+        break;
+        
+    case 'get_assessment':
+        $applicantId = $_GET['applicant_id'] ?? null;
+        
+        if (!$applicantId) {
+            jsonResponse(['error' => 'Missing applicant ID'], 400);
+            break;
+        }
+        
+        try {
+            $stmt = $pdo->prepare("
+                SELECT a.*, tech, comm, prob, fit, notes, s.created_at, s.updated_at
+                FROM assessments s
+                LEFT JOIN applicants a ON s.applicant_id = a.id
+                WHERE s.applicant_id = ?
+                ORDER BY s.created_at DESC
+                LIMIT 1
+            ");
+            $stmt->execute([$applicantId]);
+            $assessment = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($assessment) {
+                jsonResponse([
+                    'success' => true,
+                    'assessment' => $assessment
+                ]);
+            } else {
+                jsonResponse([
+                    'success' => true,
+                    'assessment' => null
+                ]);
+            }
+        } catch(Exception $e) {
+            error_log("Error getting assessment: " . $e->getMessage());
+            jsonResponse(['error' => 'Failed to get assessment: ' . $e->getMessage()], 500);
+        }
+        break;
+        
+    case 'get_assessments':
+        try {
+            $stmt = $pdo->query("
+                SELECT a.*, s.tech, s.comm, s.prob, s.fit, s.notes, s.created_at, s.updated_at
+                FROM assessments s
+                LEFT JOIN applicants a ON s.applicant_id = a.id
+                ORDER BY s.created_at DESC
+            ");
+            $assessments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            jsonResponse($assessments);
+        } catch(Exception $e) {
+            error_log("Error getting assessments: " . $e->getMessage());
+            jsonResponse(['error' => $e->getMessage()], 500);
+        }
+        break;
         if ($method === 'POST') {
             $input = json_decode(file_get_contents('php://input'), true);
             $stmt = $pdo->prepare("INSERT INTO assessments (applicant_id, tech, comm, prob, fit, interview_notes, assessed_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");

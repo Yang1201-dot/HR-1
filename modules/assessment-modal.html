@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assess Applicant</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .assessment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .assessment-dialog {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .assessment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .assessment-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .assessment-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .assessment-form {
+            display: grid;
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .rating-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .rating-input input[type="number"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .rating-input label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .assessment-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--brand-green);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2c9e78;
+        }
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="assessmentModal" class="assessment-modal">
+        <div class="assessment-dialog">
+            <div class="assessment-header">
+                <h3 class="assessment-title">Assess Applicant</h3>
+                <button class="assessment-close" onclick="closeAssessmentModal()">&times;</button>
+            </div>
+            
+            <form id="assessmentForm" class="assessment-form">
+                <input type="hidden" id="applicantId" name="applicant_id">
+                <input type="hidden" id="applicantName" name="applicant_name">
+                
+                <div class="form-group">
+                    <label>Technical Skills</label>
+                    <div class="rating-input">
+                        <input type="number" id="techRating" name="tech" min="1" max="10" value="5">
+                        <label for="techRating">Technical</label>
+                    </div>
+                    <div class="rating-input">
+                        <input type="number" id="commRating" name="comm" min="1" max="10" value="5">
+                        <label for="commRating">Communication</label>
+                    </div>
+                    <div class="rating-input">
+                        <input type="number" id="probRating" name="prob" min="1" max="10" value="5">
+                        <label for="probRating">Problem Solving</label>
+                    </div>
+                    <div class="rating-input">
+                        <input type="number" id="fitRating" name="fit" min="1" max="10" value="5">
+                        <label for="fitRating">Cultural Fit</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Assessment Notes</label>
+                    <textarea id="assessmentNotes" name="notes" rows="4" placeholder="Enter detailed assessment notes..."></textarea>
+                </div>
+                
+                <div class="assessment-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAssessmentModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAssessment()">Save Assessment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/mysql-hr1-client.js"></script>
+    <script>
+        // Assessment Modal Functions
+        function openAssessmentModal(applicantId, applicantName) {
+            document.getElementById('applicantId').value = applicantId;
+            document.getElementById('applicantName').value = applicantName;
+            document.getElementById('assessmentModal').style.display = 'flex';
+            
+            // Load existing assessment if exists
+            loadAssessment(applicantId);
+        }
+        
+        function closeAssessmentModal() {
+            document.getElementById('assessmentModal').style.display = 'none';
+        }
+        
+        function loadAssessment(applicantId) {
+            // Fetch existing assessment for this applicant
+            fetch(`../api/simple-api-new.php?action=get_assessment&applicant_id=${applicantId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.assessment) {
+                        // Populate form with existing assessment
+                        document.getElementById('techRating').value = data.assessment.tech || 5;
+                        document.getElementById('commRating').value = data.assessment.comm || 5;
+                        document.getElementById('probRating').value = data.assessment.prob || 5;
+                        document.getElementById('fitRating').value = data.assessment.fit || 5;
+                        document.getElementById('assessmentNotes').value = data.assessment.notes || '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading assessment:', error);
+                });
+        }
+        
+        function saveAssessment() {
+            const applicantId = document.getElementById('applicantId').value;
+            const assessment = {
+                tech: parseInt(document.getElementById('techRating').value) || 5,
+                comm: parseInt(document.getElementById('commRating').value) || 5,
+                prob: parseInt(document.getElementById('probRating').value) || 5,
+                fit: parseInt(document.getElementById('fitRating').value) || 5,
+                notes: document.getElementById('assessmentNotes').value
+            };
+            
+            fetch('../api/simple-api-new.php?action=save_assessment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    applicant_id: applicantId,
+                    ...assessment
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeAssessmentModal();
+                    // Refresh parent page
+                    if (window.opener) {
+                        window.opener.location.reload();
+                    }
+                } else {
+                    alert('Assessment saved successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving assessment:', error);
+                alert('Error saving assessment: ' + error.message);
+            });
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('assessmentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAssessmentModal();
+            }
+        });
+    </script>
+</body>
+</html>
