@@ -565,6 +565,28 @@ console.log('Script loading - checking function accessibility...');
 
  
 
+// Load offers from localStorage for persistence
+
+try {
+
+  const savedOffers = localStorage.getItem('hr1_offers');
+
+  if (savedOffers) {
+
+    OFFERS = JSON.parse(savedOffers);
+
+    console.log('📦 Loaded', OFFERS.length, 'offers from localStorage');
+
+  }
+
+} catch(e) {
+
+  console.error('Error loading offers from localStorage:', e);
+
+}
+
+ 
+
 /* ── Utility functions ── */
 
 function esc(str) {
@@ -1721,7 +1743,7 @@ function r_renderOffers() {
 
           '<div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">' +
 
-            '<strong>Extended:</strong> ' + extendedAt +
+            '<strong>Extended:</strong> ' + new Date(extendedAt).toLocaleDateString() +
 
           '</div>' +
 
@@ -3437,11 +3459,23 @@ function r_generateOfferPDF() {
 
  
 
-  // Update button state but don't close modal
+  // Update button state and close modal
 
   document.getElementById('generate_pdf_btn').textContent = '📄 PDF Generated';
 
   document.getElementById('generate_pdf_btn').disabled = true;
+
+ 
+
+  // Auto-close modal after successful PDF generation
+
+  setTimeout(function() {
+
+    r_close('r_modal_offer');
+
+    console.log('🔒 Pre-employment modal auto-closed after PDF generation');
+
+  }, 1500); // Close after 1.5 seconds to show success state
 
  
 
@@ -3461,7 +3495,13 @@ function r_updateOfferCardWithPDF(offer) {
 
  
 
-  console.log('✅ Offer card updated with PDF buttons');
+  // Save offers to localStorage for persistence
+
+  localStorage.setItem('hr1_offers', JSON.stringify(OFFERS));
+
+ 
+
+  console.log('✅ Offer card updated with PDF buttons and saved to localStorage');
 
 }
 
@@ -3928,29 +3968,55 @@ async function r_saveOfferStatusChange(offerId) {
 
     }
 
-    
+        }
 
-    // Update offer status
+        
 
-    offer.status = newStatus;
+        console.log('💾 Saving offer status change:', { offerId, newStatus });
 
-    
+        
 
-    // Close popup
+        // Find the offer
 
-    r_closeOfferStatusChangePopup();
+        const offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
 
-    
+        if (!offer) {
 
-    // Refresh offers display
+            r_toast('Offer not found', 'error');
 
-    r_renderOffers();
+            return;
 
-    
+        }
 
-    // Show success message
+        
 
-    r_toast('Offer status updated to ' + newStatus);
+        // Update offer status
+
+        offer.status = newStatus;
+
+        
+
+        // Save to localStorage for persistence
+
+        localStorage.setItem('hr1_offers', JSON.stringify(OFFERS));
+
+        
+
+        // Close popup
+
+        r_closeOfferStatusChangePopup();
+
+        
+
+        // Refresh offers display
+
+        r_renderOffers();
+
+        
+
+        // Show success message
+
+        r_toast('Offer status updated to ' + newStatus);
 
     
 
@@ -3981,6 +4047,14 @@ function r_deleteOffer(offerId) {
   if (index > -1) {
 
     OFFERS.splice(index, 1);
+
+    
+
+    // Save to localStorage for persistence
+
+    localStorage.setItem('hr1_offers', JSON.stringify(OFFERS));
+
+    
 
     r_renderOffers();
 
