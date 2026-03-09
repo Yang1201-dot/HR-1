@@ -36,16 +36,6 @@ function am_openApplicantPopup() {
             </div>
             
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                <button onclick="am_openAssessmentForApplicant(document.getElementById('applicant-popup').dataset.applicantId, document.getElementById('applicant-popup').dataset.applicantName)" style="
-                    background: var(--brand-green, #2ca078);
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    transition: all 0.2s ease;
-                " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">Assess Applicant</button>
                 <button onclick="am_closeApplicantPopup()" style="
                     background: var(--surface, #f8fafc);
                     color: var(--text-primary, #1f2937);
