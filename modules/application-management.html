@@ -1054,7 +1054,7 @@ function am_saveAssess() {
 
   var fit  = parseInt(g('am_assess_fit')||5);
 
-  var notes = g('am_assess_notes');
+  var notes = g('am_assess_notes').replace(/<[^>]*>/g, '').trim();
 
   
 
