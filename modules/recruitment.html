@@ -1771,7 +1771,7 @@ function r_renderComms() {
 
   var el = document.getElementById('r_comms'); if (!el) return;
 
-  el.innerHTML = '<div style="margin-bottom:16px;"><button class="btn-primary" onclick="r_openComm()">+ Send Communication</button></div>' +
+  el.innerHTML = '<div style="margin-bottom:16px;"><button class="btn-primary" onclick="r_openSendCommunication(\'\', \'\', \'\')">+ Send Communication</button></div>' +
 
     (COMMS.length ? '<div class="comm-log">' + COMMS.map(function(c) {
 

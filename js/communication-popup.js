@@ -109,16 +109,19 @@ function r_closeCommunicationPopup() {
 function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     console.log('🔍 Loading communication content for:', {candidateId, candidateName, offerId});
     
+    const recipientValue = candidateName || '';
+    const isFromOfferCard = candidateName !== '';
+    
     const content = `
         <div style="margin-bottom: 20px;">
             <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Recipient</label>
-                <input type="text" id="comm_recipient" value="${candidateName}" readonly style="
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Recipient ${!isFromOfferCard ? '<span style="color: red;">*</span>' : ''}</label>
+                <input type="text" id="comm_recipient" value="${recipientValue}" ${isFromOfferCard ? 'readonly' : ''} placeholder="${isFromOfferCard ? 'Recipient pre-filled' : 'Enter recipient name...'}" style="
                     width: 100%;
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: var(--bg-tertiary, #f1f5f9);
+                    background: ${isFromOfferCard ? 'var(--bg-tertiary, #f1f5f9)' : 'var(--background, #ffffff)'};
                     color: var(--text-primary, #1f2937);
                 ">
             </div>
@@ -151,8 +154,8 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
                 <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
-                    <div style="margin-bottom: 8px;">📎 Offer letter PDF will be automatically attached</div>
-                    <div style="font-size: 12px;">Click "Send Communication" to deliver with PDF attachment</div>
+                    <div style="margin-bottom: 8px;">📎 ${isFromOfferCard ? 'Offer letter PDF will be automatically attached' : 'No attachments will be included'}</div>
+                    <div style="font-size: 12px;">${isFromOfferCard ? 'Click "Send Communication" to deliver with PDF attachment' : 'Use "Send To" button from offer cards to include PDF attachments'}</div>
                 </div>
             </div>
         </div>
@@ -170,6 +173,7 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
         popup.dataset.candidateId = candidateId;
         popup.dataset.candidateName = candidateName;
         popup.dataset.offerId = offerId;
+        popup.dataset.isFromOfferCard = isFromOfferCard;
     }
 }
 
@@ -179,52 +183,68 @@ function r_sendCommunication() {
     if (!popup) return;
     
     const candidateId = popup.dataset.candidateId;
-    const candidateName = popup.dataset.candidateName;
+    let candidateName = popup.dataset.candidateName;
     const offerId = popup.dataset.offerId;
+    const isFromOfferCard = popup.dataset.isFromOfferCard === 'true';
     
     const subject = document.getElementById('comm_subject')?.value || '';
     const message = document.getElementById('comm_message')?.value || '';
     
+    // Get recipient value (might be empty if from Send Communications button)
+    const recipientInput = document.getElementById('comm_recipient');
+    const recipient = recipientInput?.value || '';
+    
+    // Validate recipient if not from offer card
+    if (!isFromOfferCard && !recipient.trim()) {
+        alert('Please enter a recipient name');
+        return;
+    }
+    
+    // Use recipient as candidateName if not from offer card
+    if (!isFromOfferCard) {
+        candidateName = recipient;
+    }
+    
     // Allow sending even with empty subject/message (optional fields)
-    console.log('📤 Sending communication:', {candidateId, candidateName, offerId, subject, message});
+    console.log('📤 Sending communication:', {candidateId, candidateName, offerId, subject, message, isFromOfferCard});
     
-    // Find the offer to get PDF content
-    const offer = window.OFFERS ? window.OFFERS.find(o => String(o.id) === String(offerId)) : null;
+    // Find the offer to get PDF content (only if from offer card)
     let pdfAttachment = null;
-    
-    if (offer && offer.pdfGenerated) {
-        pdfAttachment = {
-            name: `Offer_Letter_${candidateName.replace(/\s+/g, '_')}.pdf`,
-            content: r_generateOfferPDFContent(offer.terms)
-        };
+    if (isFromOfferCard && offerId) {
+        const offer = window.OFFERS ? window.OFFERS.find(o => String(o.id) === String(offerId)) : null;
+        if (offer && offer.pdfGenerated) {
+            pdfAttachment = {
+                name: `Offer_Letter_${candidateName.replace(/\s+/g, '_')}.pdf`,
+                content: r_generateOfferPDFContent(offer.terms)
+            };
+        }
     }
     
     // Here you would implement actual sending logic
     // For now, just show success and close
-    alert('Communication sent successfully!\n\nRecipient: ' + candidateName + '\nSubject: ' + (subject || '(no subject)') + '\nMessage: ' + (message || '(no message)') + '\nPDF Attachment: ' + (pdfAttachment ? 'Yes' : 'No'));
+    const attachmentInfo = pdfAttachment ? 'Yes (' + pdfAttachment.name + ')' : 'No';
+    alert('Communication sent successfully!\n\nRecipient: ' + candidateName + '\nSubject: ' + (subject || '(no subject)') + '\nMessage: ' + (message || '(no message)') + '\nPDF Attachment: ' + attachmentInfo);
     r_closeCommunicationPopup();
     
     // Add to communications table (simulate)
-    if (pdfAttachment) {
-        const communication = {
-            id: Date.now(),
-            recipient: candidateName,
-            subject: subject || 'No Subject',
-            message: message || 'No Message',
-            sentAt: new Date().toLocaleString(),
-            hasAttachment: true,
-            attachmentName: pdfAttachment.name,
-            offerId: offerId
-        };
-        
-        // Add to global communications array
-        if (!window.COMM) window.COMM = [];
-        window.COMM.unshift(communication);
-        
-        // Refresh communications display
-        if (typeof r_renderCommunications === 'function') {
-            r_renderCommunications();
-        }
+    const communication = {
+        id: Date.now(),
+        recipient: candidateName,
+        subject: subject || 'No Subject',
+        message: message || 'No Message',
+        sentAt: new Date().toLocaleString(),
+        hasAttachment: !!pdfAttachment,
+        attachmentName: pdfAttachment?.name || null,
+        offerId: offerId
+    };
+    
+    // Add to global communications array
+    if (!window.COMM) window.COMM = [];
+    window.COMM.unshift(communication);
+    
+    // Refresh communications display
+    if (typeof r_renderCommunications === 'function') {
+        r_renderCommunications();
     }
 }
 
