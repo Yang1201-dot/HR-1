@@ -120,6 +120,164 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
     console.log('📧 Email value:', emailValue);
     console.log('📎 PDF attachment:', pdfAttachment);
     
+    // Initialize uploaded files array
+    let uploadedFiles = [];
+    
+    // Add file upload handlers
+    setTimeout(() => {
+        const fileInput = document.getElementById('comm_file_upload');
+        const uploadArea = document.getElementById('comm_upload_area');
+        
+        if (fileInput && uploadArea) {
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // Handle drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = 'var(--bg-secondary, #e8eaed)';
+            });
+            
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = 'var(--surface, #ffffff)';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = 'var(--surface, #ffffff)';
+                handleFiles(e.dataTransfer.files);
+            });
+        }
+    }, 100);
+    
+    function handleFileUpload(e) {
+        handleFiles(e.target.files);
+    }
+    
+    function handleFiles(files) {
+        const uploadArea = document.getElementById('comm_upload_area');
+        const fileList = document.getElementById('comm_file_list');
+        
+        for (let file of files) {
+            const fileData = {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                content: null // For now, we'll store the file object
+            };
+            
+            uploadedFiles.push(fileData);
+            
+            // Create file card
+            const fileCard = createFileCard(fileData, uploadedFiles.length - 1);
+            if (fileList) {
+                fileList.appendChild(fileCard);
+            }
+        }
+        
+        // Hide upload area if files exist
+        if (uploadedFiles.length > 0 && uploadArea) {
+            uploadArea.style.display = 'none';
+        }
+    }
+    
+    function createFileCard(fileData, index) {
+        const div = document.createElement('div');
+        div.className = 'uploaded-file-card';
+        div.style.cssText = `
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: var(--surface, #ffffff);
+            margin-bottom: 8px;
+            width: 100%;
+        `;
+        
+        const iconColor = getFileIconColor(fileData.type);
+        const fileIcon = getFileIcon(fileData.type);
+        const fileSize = formatFileSize(fileData.size);
+        
+        div.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--bg-tertiary, #f1f5f9); border-radius: 4px; margin-right: 8px;">
+                ${fileIcon}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 13px; font-weight: 500; color: var(--text-primary, #1f2937); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${fileData.name}</div>
+                <div style="font-size: 11px; color: var(--text-secondary, #64748b);">${fileData.type.split('/')[0]?.toUpperCase() || 'FILE'} • ${fileSize}</div>
+            </div>
+            <button onclick="removeUploadedFile(${index})" style="
+                background: none;
+                border: none;
+                color: var(--text-secondary, #64748b);
+                cursor: pointer;
+                font-size: 16px;
+                padding: 4px;
+                border-radius: 4px;
+                transition: background-color 0.2s ease;
+            " onmouseover="this.style.background='var(--bg-secondary, #e8eaed)';" onmouseout="this.style.background='none';">×</button>
+        `;
+        
+        return div;
+    }
+    
+    function getFileIconColor(fileType) {
+        if (fileType.includes('pdf')) return '#ea4335';
+        if (fileType.includes('word') || fileType.includes('document')) return '#2b579a';
+        if (fileType.includes('excel') || fileType.includes('spreadsheet')) return '#217346';
+        if (fileType.includes('powerpoint') || fileType.includes('presentation')) return '#d24726';
+        if (fileType.includes('image')) return '#f4b400';
+        return '#5f6368';
+    }
+    
+    function getFileIcon(fileType) {
+        if (fileType.includes('pdf')) {
+            return `<svg width="16" height="20" viewBox="0 0 20 24" fill="none">
+                <path d="M12.5 0H2C0.9 0 0 0.9 0 2V22C0 23.1 0.9 24 2 24H18C19.1 24 20 23.1 20 22V7.5L12.5 0Z" fill="${getFileIconColor(fileType)}"/>
+                <path d="M12.5 0V7.5H20L12.5 0Z" fill="#ff6b6b"/>
+                <text x="10" y="18" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="white">PDF</text>
+            </svg>`;
+        }
+        
+        return `<svg width="16" height="20" viewBox="0 0 20 24" fill="none">
+            <path d="M12.5 0H2C0.9 0 0 0.9 0 2V22C0 23.1 0.9 24 2 24H18C19.1 24 20 23.1 20 22V7.5L12.5 0Z" fill="${getFileIconColor(fileType)}"/>
+            <path d="M12.5 0V7.5H20L12.5 0Z" fill="rgba(255,255,255,0.3)"/>
+            <text x="10" y="18" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="white">${(fileType.split('/')[0] || 'FILE').substring(0, 3).toUpperCase()}</text>
+        </svg>`;
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+    
+    // Make removeUploadedFile globally available
+    window.removeUploadedFile = function(index) {
+        uploadedFiles.splice(index, 1);
+        refreshFileList();
+    };
+    
+    function refreshFileList() {
+        const fileList = document.getElementById('comm_file_list');
+        const uploadArea = document.getElementById('comm_upload_area');
+        
+        if (fileList) {
+            fileList.innerHTML = '';
+            uploadedFiles.forEach((file, index) => {
+                const fileCard = createFileCard(file, index);
+                fileList.appendChild(fileCard);
+            });
+        }
+        
+        if (uploadArea) {
+            uploadArea.style.display = uploadedFiles.length > 0 ? 'none' : 'block';
+        }
+    }
+    
     const content = `
         <div style="margin-bottom: 20px;">
             <div style="margin-bottom: 16px;">
@@ -173,8 +331,10 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Attachments</label>
+                
+                <!-- Show PDF attachment if from offer card -->
                 ${pdfAttachment ? `
-                    <div style="display: flex; align-items: center; padding: 8px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; background: var(--surface, #ffffff); width: 100%;">
+                    <div style="display: flex; align-items: center; padding: 8px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; background: var(--surface, #ffffff); width: 100%; margin-bottom: 8px;">
                         <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--bg-tertiary, #f1f5f9); border-radius: 4px; margin-right: 8px;">
                             <svg width="16" height="20" viewBox="0 0 20 24" fill="none">
                                 <path d="M12.5 0H2C0.9 0 0 0.9 0 2V22C0 23.1 0.9 24 2 24H18C19.1 24 20 23.1 20 22V7.5L12.5 0Z" fill="#ea4335"/>
@@ -199,12 +359,35 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                             text-decoration: none;
                         " onmouseover="this.style.background='var(--bg-secondary, #e8eaed)';" onmouseout="this.style.background='none';">View</button>
                     </div>
-                ` : `
+                ` : ''}
+                
+                <!-- File upload area for manual communications -->
+                ${!isFromOfferCard ? `
+                    <div id="comm_upload_area" style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b); background: var(--surface, #ffffff);">
+                        <input type="file" id="comm_file_upload" multiple style="display: none;">
+                        <div style="margin-bottom: 8px;">📎 Click to choose files or drag and drop</div>
+                        <div style="font-size: 12px; margin-bottom: 8px;">Support for multiple files</div>
+                        <button onclick="document.getElementById('comm_file_upload').click()" style="
+                            background: var(--brand-blue, #1a73e8);
+                            color: white;
+                            border: none;
+                            padding: 6px 12px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 12px;
+                            font-weight: 500;
+                            transition: all 0.2s ease;
+                        " onmouseover="this.style.background='#1557b0';" onmouseout="this.style.background='var(--brand-blue, #1a73e8)';">Choose Files</button>
+                    </div>
+                    <div id="comm_file_list" style="margin-top: 8px;"></div>
+                ` : ''}
+                
+                ${!isFromOfferCard && !pdfAttachment ? `
                     <div style="padding: 12px; border: 2px dashed var(--border-color, #e2e8f0); border-radius: 6px; text-align: center; color: var(--text-secondary, #64748b);">
                         <div style="margin-bottom: 8px;">📎 No attachments will be included</div>
                         <div style="font-size: 12px;">Use "Send To" button from offer cards to include PDF attachments</div>
                     </div>
-                `}
+                ` : ''}
             </div>
         </div>
     `;
