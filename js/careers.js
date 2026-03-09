@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isSubmitting = true;
       
       // Check text fields
-      const requiredTextFields = ['first_name', 'last_name', 'middle_name', 'email', 'phone'];
+      const requiredTextFields = ['first_name', 'last_name', 'email', 'phone'];
       const missingTextFields = [];
       
       requiredTextFields.forEach(fieldName => {
