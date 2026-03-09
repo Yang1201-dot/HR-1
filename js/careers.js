@@ -693,49 +693,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Load jobs from API
-  loadJobsFromAPI();
-});
+  // ── Utility Functions ─────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    return str.toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-// ── Utility Functions ─────────────────────────────────────────
-function esc(str) {
-  if (!str) return '';
-  return str.toString()
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-// ── File Picker Functions ─────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  const filePickers = document.querySelectorAll('.file-picker');
-  
-  filePickers.forEach(picker => {
-    const input = picker.querySelector('input[type="file"]');
-    const display = picker.querySelector('.file-name');
-    const clearBtn = picker.querySelector('.file-clear');
+  // ── File Picker Functions ─────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+    const filePickers = document.querySelectorAll('.file-picker');
     
-    if (!input || !display) return;
-    
-    input.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        display.textContent = file.name;
-        if (clearBtn) clearBtn.style.display = 'inline-block';
-      } else {
-        display.textContent = 'No file chosen';
-        if (clearBtn) clearBtn.style.display = 'none';
+    filePickers.forEach(picker => {
+      const input = picker.querySelector('input[type="file"]');
+      const display = picker.querySelector('.file-name');
+      const clearBtn = picker.querySelector('.file-clear');
+      
+      if (!input || !display) return;
+      
+      input.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          display.textContent = file.name;
+          if (clearBtn) clearBtn.style.display = 'inline-block';
+        } else {
+          display.textContent = 'No file chosen';
+          if (clearBtn) clearBtn.style.display = 'none';
+        }
+      });
+      
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          input.value = '';
+          display.textContent = 'No file chosen';
+          clearBtn.style.display = 'none';
+        });
       }
     });
-    
-    if (clearBtn) {
-      clearBtn.addEventListener('click', function() {
-        input.value = '';
-        display.textContent = 'No file chosen';
-        clearBtn.style.display = 'none';
-      });
-    }
   });
-});
