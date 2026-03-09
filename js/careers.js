@@ -363,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!input || !display) return;
       
       // Add click event to display to trigger file input
+      // Note: Only the button should trigger file input, not the file name display
       display.addEventListener('click', () => {
         if (input) input.click();
       });
