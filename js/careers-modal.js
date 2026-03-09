@@ -32,8 +32,10 @@
     const firstInput = form.querySelector('input[name="first_name"]');
     if (firstInput) firstInput.focus();
     
-    // Initialize file pickers for modal
-    initializeModalFilePickers();
+    // Initialize file pickers AFTER modal is visible
+    setTimeout(() => {
+      initializeModalFilePickers();
+    }, 100);
     
     console.log('Careers modal opened for job:', jobTitle);
   }
