@@ -44,16 +44,18 @@ function am_openApplicantPopup() {
                     border-radius: 6px;
                     cursor: pointer;
                     font-weight: 600;
-                ">Assess Applicant</button>
+                    transition: all 0.2s ease;
+                " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">Assess Applicant</button>
                 <button onclick="am_closeApplicantPopup()" style="
                     background: var(--bg-tertiary, #f1f5f9);
                     color: var(--text-secondary, #64748b);
-                    border: none;
+                    border: 1px solid var(--border-color, #e2e8f0);
                     padding: 8px 16px;
                     border-radius: 6px;
                     cursor: pointer;
                     font-weight: 600;
-                ">Close</button>
+                    transition: all 0.2s ease;
+                " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)';" onmouseout="this.style.background='var(--bg-tertiary, #f1f5f9)';">Close</button>
             </div>
         </div>
     `;
@@ -162,7 +164,7 @@ function am_loadApplicantDetails(applicantId) {
                             <option value="hired" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'hired' ? 'selected' : ''}>Hired</option>
                             <option value="rejected" ${(applicant.status || 'new').toLowerCase().replace(/ /g, '-') === 'rejected' ? 'selected' : ''}>Rejected</option>
                         </select>
-                        <input type="button" value="Update Status" onclick="console.log('Direct click!'); var status=document.getElementById('applicant_status_${applicant.id}').value; console.log('Status:', status); fetch('../api/simple-api-new.php?action=update_status', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'id=${applicant.id}&status='+status}).then(r=>r.json()).then(d=>{console.log('Response:', d); if(d.success){console.log('SUCCESS! Status updated!'); location.reload();}else{console.error('Failed:', d.error); alert('Failed to update status: ' + d.error);}}).catch(e=>console.error('Error:', e))" style="margin-left: 64px; margin-top: 8px; cursor: pointer; padding: 5px 12px; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; background: rgba(44,160,120,.12); color: var(--brand-green); transition: all .2s;" onmouseover="this.style.background='var(--brand-green)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(44,160,120,.12)'; this.style.color='var(--brand-green)';">
+                        <input type="button" value="Update Status" onclick="console.log('Direct click!'); var status=document.getElementById('applicant_status_${applicant.id}').value; console.log('Status:', status); fetch('../api/simple-api-new.php?action=update_status', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'id=${applicant.id}&status='+status}).then(r=>r.json()).then(d=>{console.log('Response:', d); if(d.success){console.log('SUCCESS! Status updated!'); location.reload();}else{console.error('Failed:', d.error); alert('Failed to update status: ' + d.error);}}).catch(e=>console.error('Error:', e))" style="margin-left: 8px; margin-top: 8px; cursor: pointer; padding: 4px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--brand-green, #2ca078); color: white; transition: all 0.2s ease;" onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">
                     </div>
                 </div>
             </div>
@@ -214,17 +216,19 @@ function am_loadApplicantDetails(applicantId) {
                                         cursor: pointer;
                                         font-size: 12px;
                                         font-weight: 600;
-                                    ">View</button>
+                                        transition: all 0.2s ease;
+                                    " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">View</button>
                                     <button onclick="window.am_downloadFile('${applicantId}', '${category.key}')" style="
                                         background: var(--bg-tertiary, #f1f5f9);
                                         color: var(--text-secondary, #64748b);
-                                        border: none;
+                                        border: 1px solid var(--border-color, #e2e8f0);
                                         padding: 6px 12px;
                                         border-radius: 6px;
                                         cursor: pointer;
                                         font-size: 12px;
                                         font-weight: 600;
-                                    ">Download</button>
+                                        transition: all 0.2s ease;
+                                    " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)';" onmouseout="this.style.background='var(--bg-tertiary, #f1f5f9)';">Download</button>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +273,7 @@ function am_loadApplicantDetails(applicantId) {
     } else {
         content += '<div style="background:var(--background);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center;">' +
           '<p style="color:var(--text-secondary);margin:0 0 12px 0;">No assessment completed yet.</p>' +
-          '<button onclick="am_openAssessmentForApplicant(\'' + applicantId + '\', \'' + (applicant.first_name + ' ' + applicant.last_name) + '\')" style="background:var(--brand-green);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;">Start Assessment</button>' +
+          '<button onclick="am_openAssessmentForApplicant(\'' + applicantId + '\', \'' + (applicant.first_name + ' ' + applicant.last_name) + '\')" style="background:var(--brand-green, #2ca078);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;transition: all 0.2s ease;" onmouseover="this.style.background=\'var(--brand-green-hover, #23a068)\';" onmouseout="this.style.background=\'var(--brand-green, #2ca078)\';">Start Assessment</button>' +
         '</div>';
     }
     
