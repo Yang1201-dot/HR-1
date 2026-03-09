@@ -585,7 +585,7 @@ switch($action) {
                 )
             ");
             
-            // Ensure individual columns exist
+            // Ensure individual columns exist (for backward compatibility)
             foreach ($requiredColumns as $col => $def) {
                 try {
                     $pdo->exec("ALTER TABLE interviews ADD COLUMN $col $def");
@@ -597,9 +597,12 @@ switch($action) {
             // Drop duplicate status column if it exists
             try {
                 $pdo->exec("ALTER TABLE interviews DROP COLUMN status");
+                error_log("Dropped duplicate status column");
             } catch(Exception $e) {
                 // Column doesn't exist or already dropped, ignore error
             }
+            
+            error_log("Interviews table structure verified/updated");
             
             // Get interviews with applicant names using JOIN (with fallback to stored name)
             $stmt = $pdo->query("
