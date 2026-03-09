@@ -104,24 +104,25 @@ function am_loadApplicantDetails(applicantId) {
     
     console.log('📊 Found applicant:', applicant);
     
-    // Find assessment data
-    const assessment = window.ASSESS ? window.ASSESS.find(ass => String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)) : null;
-    console.log('📊 Found assessment:', assessment);
-    
     // Debug assessment lookup
     if (window.ASSESS) {
         console.log('🔍 Full ASSESS array:', window.ASSESS);
         window.ASSESS.forEach((ass, index) => {
             console.log(`Assessment ${index}:`, ass);
+            console.log(`  - id: ${ass.id} (type: ${typeof ass.id})`);
             console.log(`  - applicant_id: ${ass.applicant_id} (type: ${typeof ass.applicant_id})`);
             console.log(`  - tech: ${ass.tech}, comm: ${ass.comm}, prob: ${ass.prob}, fit: ${ass.fit}`);
-            console.log(`  - matches: ${String(ass.applicant_id) === String(applicantId) || parseInt(ass.applicant_id) === parseInt(applicantId)}`);
+            console.log(`  - matches id: ${String(ass.id) === String(applicantId)}`);
+            console.log(`  - matches applicant_id: ${String(ass.applicant_id) === String(applicantId)}`);
         });
     }
     
-    // Get files data with proper categorization
-    const files = window.FILES ? (window.FILES[parseInt(applicantId)] || {}) : {};
-    console.log('📊 Found files:', files);
+    // Find assessment data - try both id and applicant_id fields
+    const assessment = window.ASSESS ? window.ASSESS.find(ass => 
+        (String(ass.id) === String(applicantId) || String(ass.applicant_id) === String(applicantId)) &&
+        (ass.tech !== undefined || ass.comm !== undefined || ass.prob !== undefined || ass.fit !== undefined)
+    ) : null;
+    console.log('📊 Found assessment:', assessment);
     
     // File categories for proper display
     const fileCategories = [
