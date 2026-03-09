@@ -47,15 +47,15 @@ function am_openApplicantPopup() {
                     transition: all 0.2s ease;
                 " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">Assess Applicant</button>
                 <button onclick="am_closeApplicantPopup()" style="
-                    background: var(--bg-tertiary, #f1f5f9);
-                    color: var(--text-secondary, #64748b);
+                    background: var(--surface, #f8fafc);
+                    color: var(--text-primary, #1f2937);
                     border: 1px solid var(--border-color, #e2e8f0);
                     padding: 8px 16px;
                     border-radius: 6px;
                     cursor: pointer;
                     font-weight: 600;
                     transition: all 0.2s ease;
-                " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)';" onmouseout="this.style.background='var(--bg-tertiary, #f1f5f9)';">Close</button>
+                " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)'; this.style.color='var(--text-primary, #1f2937)';" onmouseout="this.style.background='var(--surface, #f8fafc)'; this.style.color='var(--text-primary, #1f2937)';">Close</button>
             </div>
         </div>
     `;
@@ -219,8 +219,8 @@ function am_loadApplicantDetails(applicantId) {
                                         transition: all 0.2s ease;
                                     " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">View</button>
                                     <button onclick="window.am_downloadFile('${applicantId}', '${category.key}')" style="
-                                        background: var(--bg-tertiary, #f1f5f9);
-                                        color: var(--text-secondary, #64748b);
+                                        background: var(--surface, #f8fafc);
+                                        color: var(--text-primary, #1f2937);
                                         border: 1px solid var(--border-color, #e2e8f0);
                                         padding: 6px 12px;
                                         border-radius: 6px;
@@ -228,7 +228,7 @@ function am_loadApplicantDetails(applicantId) {
                                         font-size: 12px;
                                         font-weight: 600;
                                         transition: all 0.2s ease;
-                                    " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)';" onmouseout="this.style.background='var(--bg-tertiary, #f1f5f9)';">Download</button>
+                                    " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)'; this.style.color='var(--text-primary, #1f2937)';" onmouseout="this.style.background='var(--surface, #f8fafc)'; this.style.color='var(--text-primary, #1f2937)';">Download</button>
                                 </div>
                             </div>
                         </div>
