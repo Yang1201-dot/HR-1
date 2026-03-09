@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('../api/simple-api-new.php?action=get_job_postings');
       const data = await response.json();
       console.log('Jobs API Response:', data);
+      console.log('Data success:', data.success);
+      console.log('Data jobs:', data.jobs);
+      console.log('Data jobs type:', typeof data.jobs);
+      console.log('Data jobs length:', data.jobs ? data.jobs.length : 'undefined');
       
       if (data.success && data.jobs) {
         JOBS = data.jobs;
