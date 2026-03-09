@@ -249,7 +249,7 @@ function am_loadApplicantDetails(applicantId) {
         content += '<div class="assessment-card">' +
           '<div style="margin-bottom:12px;">' +
             '<div style="font-weight:700;font-size:16px;">' + ((assessment.applicant_name || assessment.fname + ' ' + assessment.lname) || 'Applicant') + '</div>' +
-            '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + (assessment.created_at || 'N/A') + '</div>' +
+            '<div style="font-size:12px;color:var(--text-secondary);">Assessed on ' + (assessment.created_at ? new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + new Date(assessment.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A') + '</div>' +
           '</div>' +
           '<div class="assess-score">' +
             '<div class="score-item"><div class="score-lbl">Technical</div><div class="score-val">' + (assessment.tech || 0) + '</div></div>' +
