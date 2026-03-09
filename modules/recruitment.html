@@ -1765,13 +1765,13 @@ function r_renderOffers() {
 
           (o.pdfGenerated ? 
 
-            '<button class="btn-sm bsm-blue" onclick="r_viewOfferPDF(\'' + o.id + '\', \'' + candidateName + '\')">📄 View</button>' +
+            '<button class="btn-sm bsm-blue" onclick="r_viewOfferPDF(\'' + o.id + '\', \'' + candidateName + '\')">View</button>' +
 
-            '<button class="btn-sm bsm-green" onclick="r_openSendCommunication(\'' + (o.candidateId || '') + '\', \'' + candidateName + '\', \'' + o.id + '\')">📤 Send To</button>' +
+            '<button class="btn-sm bsm-green" onclick="r_openSendCommunication(\'' + (o.candidateId || '') + '\', \'' + candidateName + '\', \'' + o.id + '\')">Send To</button>' +
+            '<button class="btn-sm bsm-blue" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
+            '<button class="btn-sm bsm-red" onclick="r_deleteOffer(\'' + o.id + '\')">Delete</button>' +
 
-            '<button class="btn-sm bsm-blue" onclick="r_reprintOffer(\'' + o.id + '\')">📄 Reprint</button>'
-
-          : '') +
+          '') +
 
           '<button class="btn-sm bsm-green" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
 
