@@ -3968,55 +3968,23 @@ async function r_saveOfferStatusChange(offerId) {
 
     }
 
-        }
+    // Update offer status
 
-        
+    offer.status = newStatus;
 
-        console.log('💾 Saving offer status change:', { offerId, newStatus });
+    // Save to localStorage for persistence
 
-        
+    localStorage.setItem('hr1_offers', JSON.stringify(OFFERS));
 
-        // Find the offer
+    // Close popup
 
-        const offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+    r_closeOfferStatusChangePopup();
 
-        if (!offer) {
+    // Refresh offers display
 
-            r_toast('Offer not found', 'error');
+    r_renderOffers();
 
-            return;
-
-        }
-
-        
-
-        // Update offer status
-
-        offer.status = newStatus;
-
-        
-
-        // Save to localStorage for persistence
-
-        localStorage.setItem('hr1_offers', JSON.stringify(OFFERS));
-
-        
-
-        // Close popup
-
-        r_closeOfferStatusChangePopup();
-
-        
-
-        // Refresh offers display
-
-        r_renderOffers();
-
-        
-
-        // Show success message
-
-        r_toast('Offer status updated to ' + newStatus);
+    r_toast('Offer status updated to ' + newStatus);
 
     
 
