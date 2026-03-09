@@ -121,7 +121,7 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
                     border-radius: 6px;
-                    background: ${isFromOfferCard ? 'var(--bg-tertiary, #f1f5f9)' : 'var(--surface, #ffffff)'};
+                    background: ${isFromOfferCard ? 'var(--surface, #f8fafc)' : 'var(--surface, #f8fafc)'};
                     color: var(--text-primary, #1f2937);
                 ">
             </div>
