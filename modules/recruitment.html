@@ -684,6 +684,9 @@ window.r_populateCandidateData = function() {
     // Populate candidate data from applicant record
     document.getElementById('r_off_pos').value = selectedCandidate.position || selectedCandidate.applied_position || '';
     document.getElementById('r_off_expected_salary').value = selectedCandidate.salary || selectedCandidate.expected_salary || '';
+    
+    console.log('Position set to:', document.getElementById('r_off_pos').value);
+    console.log('Expected salary set to:', document.getElementById('r_off_expected_salary').value);
 
     // Try to get job details from JOBS array
     var job = JOBS.find(function(j) { 
@@ -696,7 +699,7 @@ window.r_populateCandidateData = function() {
 
     if (job) {
       console.log('Job found, autofilling fields...');
-      document.getElementById('r_off_dept').value = job.department || job.dept || '';
+      document.getElementById('r_off_dept').value = job.dept || job.department || '';
       document.getElementById('r_off_emptype').value = job.employment_type || job.emptype || '';
       document.getElementById('r_off_location').value = job.location || '';
       
@@ -738,9 +741,11 @@ window.r_populateCandidateData = function() {
         if (!isNaN(expectedNum)) {
           var offeredSalary = expectedNum * 1.2; // 20% above expected
           document.getElementById('r_off_salary').value = '₱' + Math.round(offeredSalary).toLocaleString();
+          console.log('Offered salary calculated:', document.getElementById('r_off_salary').value);
         }
       } else if (job.salary_range) {
         document.getElementById('r_off_salary').value = job.salary_range;
+        console.log('Offered salary set from job range:', document.getElementById('r_off_salary').value);
       }
     } else {
       // Set defaults if no job found
