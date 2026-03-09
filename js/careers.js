@@ -734,4 +734,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     });
-  });
+  });    } 
+ } ) ;  
+ 
