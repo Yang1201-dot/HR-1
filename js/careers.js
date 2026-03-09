@@ -440,4 +440,3 @@ function esc(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
-}
