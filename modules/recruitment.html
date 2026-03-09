@@ -3662,46 +3662,311 @@ function r_openSendCommunication(candidateId, candidateName, offerId) {
  
 
 function r_updateOfferStatus(offerId) {
-
+  console.log('🔄 Changing status for offer:', offerId);
+  
+  // Find the offer in the OFFERS array
   var offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
-
   if (!offer) {
-
+    console.error('❌ Offer not found:', offerId);
     r_toast('Offer not found', 'error');
-
     return;
-
   }
-
- 
-
-  var newStatus = prompt('Update offer status:\n\nCurrent: ' + offer.status + '\n\nOptions: Pending, Accepted, Rejected', offer.status);
-
-  if (!newStatus) return;
-
- 
-
-  // Validate status
-
-  var validStatuses = ['Pending', 'Accepted', 'Rejected'];
-
-  if (!validStatuses.includes(newStatus)) {
-
-    r_toast('Invalid status. Please use: Pending, Accepted, or Rejected', 'error');
-
-    return;
-
+  
+  var currentStatus = offer.status || 'Pending';
+  console.log('🎯 Current status:', currentStatus);
+  
+  // Open offer status change popup
+  if (typeof r_openOfferStatusChangePopup === 'function') {
+    r_openOfferStatusChangePopup(offerId, currentStatus);
+  } else {
+    console.error('❌ r_openOfferStatusChangePopup function not found');
+    // Fallback to prompt if popup function not available
+    var newStatus = prompt('Update offer status:\n\nCurrent: ' + currentStatus + '\n\nOptions: Pending, Accepted, Rejected', currentStatus);
+    if (!newStatus) return;
+    
+    // Validate status
+    var validStatuses = ['Pending', 'Accepted', 'Rejected'];
+    if (!validStatuses.includes(newStatus)) {
+      r_toast('Invalid status. Please use: Pending, Accepted, or Rejected', 'error');
+      return;
+    }
+    
+    // Update offer status
+    offer.status = newStatus;
+    r_renderOffers();
+    r_toast('Offer status updated to ' + newStatus);
   }
+}
 
  
 
-  offer.status = newStatus;
+async function r_openOfferStatusChangePopup(offerId, currentStatus) {
 
-  r_renderOffers();
+    console.log('🔄 Opening status change popup for offer:', offerId);
 
-  r_toast('Offer status updated to ' + newStatus);
+    
+
+    // Create status change popup
+
+    const popupHtml = `
+
+        <div id="offer_status_change_popup" style="
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100vw;
+
+            height: 100vh;
+
+            background: rgba(0, 0, 0, 0.5);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 999999;
+
+        ">
+
+            <div style="
+
+                background: var(--surface, #ffffff);
+
+                border-radius: 12px;
+
+                padding: 24px;
+
+                width: 90%;
+
+                max-width: 400px;
+
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+            ">
+
+                <h3 style="margin: 0 0 20px 0; color: var(--text-primary, #1f2937); font-size: 18px; font-weight: 600;">Change Offer Status</h3>
+
+                
+
+                <div style="margin-bottom: 20px;">
+
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Status</label>
+
+                    <select id="offer_status_change_select" style="
+
+                        width: 100%;
+
+                        padding: 10px 12px;
+
+                        border: 1px solid var(--border-color, #e2e8f0);
+
+                        border-radius: 6px;
+
+                        background: var(--background, #f8fafc);
+
+                        color: var(--text-primary, #1f2937);
+
+                        font-size: 14px;
+
+                    ">
+
+                        <option value="Pending">Pending</option>
+
+                        <option value="Accepted">Accepted</option>
+
+                        <option value="Rejected">Rejected</option>
+
+                    </select>
+
+                </div>
+
+                
+
+                <div style="display: flex; gap: 10px;">
+
+                    <button onclick="r_saveOfferStatusChange(${offerId})" style="
+
+                        flex: 1;
+
+                        padding: 10px 20px;
+
+                        background: var(--brand-green, #2ca078);
+
+                        color: white;
+
+                        border: none;
+
+                        border-radius: 6px;
+
+                        font-weight: 600;
+
+                        cursor: pointer;
+
+                        font-size: 14px;
+
+                        transition: all 0.2s ease;
+
+                    " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">Update Status</button>
+
+                    <button onclick="r_closeOfferStatusChangePopup()" style="
+
+                        flex: 1;
+
+                        padding: 10px 20px;
+
+                        background: transparent;
+
+                        color: var(--text-secondary, #64748b);
+
+                        border: 1px solid var(--border-color, #e2e8f0);
+
+                        border-radius: 6px;
+
+                        font-weight: 600;
+
+                        cursor: pointer;
+
+                        font-size: 14px;
+
+                        transition: all 0.2s ease;
+
+                    " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)';" onmouseout="this.style.background='transparent';">Cancel</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+    
+
+    // Add popup to body
+
+    document.body.insertAdjacentHTML('beforeend', popupHtml);
+
+    
+
+    // Set current status
+
+    const statusSelect = document.getElementById('offer_status_change_select');
+
+    if (statusSelect) {
+
+        statusSelect.value = currentStatus;
+
+    }
+
+    
+
+    console.log('✅ Offer status change popup opened');
 
 }
+
+ 
+
+// Close offer status change popup
+
+function r_closeOfferStatusChangePopup() {
+
+    const popup = document.getElementById('offer_status_change_popup');
+
+    if (popup) {
+
+        popup.remove();
+
+    }
+
+    
+
+    console.log('✅ Offer status change popup closed');
+
+}
+
+ 
+
+// Save offer status change
+
+async function r_saveOfferStatusChange(offerId) {
+
+    const statusSelect = document.getElementById('offer_status_change_select');
+
+    const newStatus = statusSelect ? statusSelect.value : null;
+
+    
+
+    if (!newStatus) {
+
+        r_toast('Please select a status', 'error');
+
+        return;
+
+    }
+
+    
+
+    console.log('💾 Saving offer status change:', { offerId, newStatus });
+
+    
+
+    // Find the offer
+
+    const offer = OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+
+    if (!offer) {
+
+        r_toast('Offer not found', 'error');
+
+        return;
+
+    }
+
+    
+
+    // Update offer status
+
+    offer.status = newStatus;
+
+    
+
+    // Close popup
+
+    r_closeOfferStatusChangePopup();
+
+    
+
+    // Refresh offers display
+
+    r_renderOffers();
+
+    
+
+    // Show success message
+
+    r_toast('Offer status updated to ' + newStatus);
+
+    
+
+    console.log('✅ Offer status updated successfully');
+
+}
+
+ 
+
+// Make functions globally available
+
+window.r_openOfferStatusChangePopup = r_openOfferStatusChangePopup;
+
+window.r_closeOfferStatusChangePopup = r_closeOfferStatusChangePopup;
+
+window.r_saveOfferStatusChange = r_saveOfferStatusChange;
 
  
 
