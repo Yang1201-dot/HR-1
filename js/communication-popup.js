@@ -127,6 +127,18 @@ function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             </div>
             
             <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Email ${!isFromOfferCard ? '<span style="color: red;">*</span>' : ''}</label>
+                <input type="email" id="comm_email" value="${isFromOfferCard ? r_findCandidateEmail(candidateName, offerId) : ''}" ${isFromOfferCard ? 'readonly' : ''} placeholder="${isFromOfferCard ? 'Email auto-filled' : 'Enter email address...'}" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    border-radius: 6px;
+                    background: ${isFromOfferCard ? 'var(--surface, #f8fafc)' : 'var(--surface, #f8fafc)'};
+                    color: var(--text-primary, #1f2937);
+                ">
+            </div>
+            
+            <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Subject</label>
                 <input type="text" id="comm_subject" placeholder="Enter subject..." style="
                     width: 100%;
@@ -194,9 +206,25 @@ function r_sendCommunication() {
     const recipientInput = document.getElementById('comm_recipient');
     const recipient = recipientInput?.value || '';
     
+    // Get email value
+    const emailInput = document.getElementById('comm_email');
+    const email = emailInput?.value || '';
+    
     // Validate recipient if not from offer card
     if (!isFromOfferCard && !recipient.trim()) {
         alert('Please enter a recipient name');
+        return;
+    }
+    
+    // Validate email if not from offer card
+    if (!isFromOfferCard && !email.trim()) {
+        alert('Please enter an email address');
+        return;
+    }
+    
+    // Basic email validation
+    if (email && !email.includes('@')) {
+        alert('Please enter a valid email address');
         return;
     }
     
@@ -206,7 +234,7 @@ function r_sendCommunication() {
     }
     
     // Allow sending even with empty subject/message (optional fields)
-    console.log('📤 Sending communication:', {candidateId, candidateName, offerId, subject, message, isFromOfferCard});
+    console.log('📤 Sending communication:', {candidateId, candidateName, offerId, subject, message, email, isFromOfferCard});
     
     // Find the offer to get PDF content (only if from offer card)
     let pdfAttachment = null;
@@ -223,13 +251,14 @@ function r_sendCommunication() {
     // Here you would implement actual sending logic
     // For now, just show success and close
     const attachmentInfo = pdfAttachment ? 'Yes (' + pdfAttachment.name + ')' : 'No';
-    alert('Communication sent successfully!\n\nRecipient: ' + candidateName + '\nSubject: ' + (subject || '(no subject)') + '\nMessage: ' + (message || '(no message)') + '\nPDF Attachment: ' + attachmentInfo);
+    alert('Communication sent successfully!\n\nRecipient: ' + candidateName + '\nEmail: ' + email + '\nSubject: ' + (subject || '(no subject)') + '\nMessage: ' + (message || '(no message)') + '\nPDF Attachment: ' + attachmentInfo);
     r_closeCommunicationPopup();
     
     // Add to communications table (simulate)
     const communication = {
         id: Date.now(),
         recipient: candidateName,
+        email: email,
         subject: subject || 'No Subject',
         message: message || 'No Message',
         sentAt: new Date().toLocaleString(),
@@ -246,6 +275,32 @@ function r_sendCommunication() {
     if (typeof r_renderCommunications === 'function') {
         r_renderCommunications();
     }
+}
+
+// Find candidate email from applicants array
+function r_findCandidateEmail(candidateName, offerId) {
+    // Try to find email from global applicants array
+    if (window.AM && Array.isArray(window.AM)) {
+        const applicant = window.AM.find(function(app) {
+            const fullName = (app.fname + ' ' + app.lname).trim();
+            return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
+        });
+        
+        if (applicant && applicant.email) {
+            return applicant.email;
+        }
+    }
+    
+    // Try to find from offer data if available
+    if (window.OFFERS && offerId) {
+        const offer = window.OFFERS.find(function(o) { return String(o.id) === String(offerId); });
+        if (offer && offer.candidateEmail) {
+            return offer.candidateEmail;
+        }
+    }
+    
+    // Return placeholder if no email found
+    return 'no-email@example.com';
 }
 
 // Generate PDF content for offer
