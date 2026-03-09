@@ -1,3 +1,4 @@
+// Careers Page JavaScript - Simple job application system
 document.addEventListener('DOMContentLoaded', () => {
   // ── Theme ──────────────────────────────────────────
   const themeToggle = document.getElementById('themeToggle');
@@ -19,453 +20,95 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Global Variables ─────────────────────────────────────
-  var JOBS = [];
+  let JOBS = [];
 
-  // ── Load job postings from API (same as Recruitment module) ──
-  (function loadCareersJobs() {
-    console.log('Loading jobs from API...');
-    
-    // Load from API instead of localStorage
-    fetch('../api/simple-api-new.php?action=get_job_postings')
-      .then(function(response) { return response.json(); })
-      .then(function(data) {
-        var jobs = data.error ? [] : data;
-        console.log('Loaded jobs:', jobs);
-        JOBS = jobs;
-        
-        // Populate job dropdown
-        var jobSelect = document.getElementById('jobTitle');
-        if (jobSelect) {
-          jobSelect.innerHTML = '<option value="">Select a position</option>' + 
-            jobs.map(job => '<option value="' + esc(job.title) + '">' + esc(job.title) + '</option>').join('');
-        }
-      })
-      .catch(function(error) {
-        console.error('Error loading jobs:', error);
-        JOBS = [];
-      });
-  })();
-
-  // ── Remove duplicate "Choose File" buttons ─────────────────────────────
-  // REMOVED: This was removing all buttons including working ones
-  // (function removeDuplicateFileButtons() {
-  //   console.log('Removing duplicate "Choose File" buttons...');
-  //   
-  //   // Find all elements with text containing "Choose File"
-  //   const allElements = document.querySelectorAll('*');
-  //   const elementsToRemove = [];
-  //   
-  //   allElements.forEach(element => {
-  //     if (element.textContent && element.textContent.includes('Choose File')) {
-  //       console.log('Found potential duplicate:', element.textContent, element.tagName, element.className);
-  //       
-  //       // Check if it's not the main working button
-  //       const parent = element.closest('.file-picker');
-  //       if (parent) {
-  //         // Check if it's not the main file input (has type="file")
-  //         const fileInput = parent.querySelector('input[type="file"]');
-  //         if (fileInput) {
-  //           // This is a duplicate button, remove it
-  //           console.log('Removing duplicate button:', element.textContent);
-  //           elementsToRemove.push(element);
-  //         } else {
-  //           console.log('Keeping non-duplicate element:', element.textContent, element.tagName, element.className);
-  //         }
-  //       }
-  //     }
-  //   });
-  //   
-  //   // Remove all duplicate buttons
-  //   elementsToRemove.forEach(element => {
-  //     element.remove();
-  //   });
-  //   
-  //   console.log(`Removed ${elementsToRemove.length} duplicate "Choose File" buttons`);
-  //   console.log('Remaining elements with "Choose File" text:', 
-  //     Array.from(document.querySelectorAll('*')).filter(el => 
-  //       el.textContent && el.textContent.includes('Choose File')
-  //     ).map(el => el.textContent)
-  //   );
-  // })();
-
-  // ── Initialize File Pickers ─────────────────────────────────
-  // Make green "Choose File" buttons trigger the hidden file input
-  function initFilePickers() {
-    document.querySelectorAll('.file-picker').forEach(picker => {
-      const fileInput = picker.querySelector('input[type="file"].real-file');
-      const fileBtn = picker.querySelector('.file-btn');
-      const fileName = picker.querySelector('.file-name');
-      const clearBtn = picker.querySelector('.file-clear');
+  // ── Load jobs from API ────────────────────────────────────
+  async function loadJobsFromAPI() {
+    try {
+      console.log('Loading jobs from API...');
+      const response = await fetch('../api/simple-api-new.php?action=get_jobs');
+      const data = await response.json();
+      console.log('Jobs API Response:', data);
       
-      if (!fileInput || !fileBtn || !fileName) return;
-      
-      // Click green button → open file dialog
-      fileBtn.addEventListener('click', () => {
-        fileInput.click();
-      });
-      
-      // File selected → update display
-      fileInput.addEventListener('change', () => {
-        const file = fileInput.files[0];
-        if (file) {
-          fileName.textContent = file.name;
-          fileName.style.color = 'var(--brand-green)';
-          if (clearBtn) clearBtn.style.display = 'inline-block';
-        } else {
-          fileName.textContent = 'No file chosen';
-          fileName.style.color = 'var(--text-secondary)';
-          if (clearBtn) clearBtn.style.display = 'none';
-        }
-      });
-      
-      // Clear button → remove file
-      if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-          fileInput.value = '';
-          fileName.textContent = 'No file chosen';
-          fileName.style.color = 'var(--text-secondary)';
-          clearBtn.style.display = 'none';
-          delete fileInput.dataset.existingFile;
-        });
+      if (data.success && data.jobs) {
+        JOBS = data.jobs;
+        console.log('Loaded JOBS:', JOBS);
+        renderJobs();
+      } else {
+        console.error('Failed to load jobs:', data);
+        renderJobs(); // Render empty state
       }
-    });
-  }
-  
-  // Initialize on page load
-  initFilePickers();
-
-  // ── Check applied jobs and update UI ─────────────────────────────────
-  function updateJobButtons() {
-    let appliedJobs = [];
-    try { 
-      appliedJobs = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
-    } catch(err) {}
-    
-    const appliedJobTitles = appliedJobs.map(app => app.position.toLowerCase());
-    
-    document.querySelectorAll('.job').forEach(jobElement => {
-      const applyBtn = jobElement.querySelector('.apply-btn');
-      const jobTitle = jobElement.querySelector('h3').textContent.toLowerCase();
-      
-      if (applyBtn) {
-        if (appliedJobTitles.includes(jobTitle)) {
-          // Job already applied - change to Applied state
-          applyBtn.textContent = 'Applied';
-          applyBtn.classList.add('applied-btn');
-          applyBtn.disabled = true;
-          applyBtn.removeAttribute('data-role');
-          
-          // Check if Edit/Delete buttons already exist
-          let buttonContainer = jobElement.querySelector('.job-actions');
-          if (!buttonContainer) {
-            // Add Edit and Delete buttons only if they don't exist
-            buttonContainer = document.createElement('div');
-            buttonContainer.className = 'job-actions';
-            buttonContainer.innerHTML = `
-              <button class="edit-btn" data-job="${jobTitle}">Edit</button>
-              <button class="delete-btn" data-job="${jobTitle}">Delete</button>
-            `;
-            jobElement.appendChild(buttonContainer);
-          }
-        } else {
-          // Job not applied - normal state
-          applyBtn.textContent = 'Apply';
-          applyBtn.classList.remove('applied-btn');
-          applyBtn.disabled = false;
-          applyBtn.setAttribute('data-role', 'apply');
-        }
-      }
-    });
-  }
-
-  // ── Edit Application ───────────────────────────────────────────────
-  function editApplication(jobTitle) {
-    console.log('Editing application for job:', jobTitle);
-    
-    // Find most recent application for this job
-    let applications = [];
-    try { 
-      applications = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
-    } catch(err) {}
-    
-    // Find most recent application for this job
-    const jobApplications = applications.filter(app => app.position.toLowerCase() === jobTitle);
-    const application = jobApplications[jobApplications.length - 1];
-    
-    console.log('Job title:', jobTitle);
-    console.log('Job applications found:', jobApplications);
-    console.log('Selected application:', application);
-    console.log('Application structure:', JSON.stringify(application, null, 2));
-    
-    if (application) {
-      // Open modal with existing application data
-      const modal = document.getElementById('applyModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const inputRole = document.getElementById('inputRole');
-      const formResult = document.getElementById('formResult');
-      const submitBtn = document.querySelector('#applyForm .btn-primary');
-      
-      if (modalTitle) modalTitle.textContent = 'Edit Application for ' + application.position;
-      if (inputRole) inputRole.value = application.position;
-      if (modal) modal.setAttribute('aria-hidden', 'false');
-      if (formResult) formResult.textContent = '';
-      if (submitBtn) submitBtn.textContent = 'Update Application';
-      
-      // Remove required attribute from file inputs when editing
-      const form = document.getElementById('applyForm');
-      if (form) {
-        form.querySelectorAll('input[type="file"]').forEach(input => {
-          input.removeAttribute('required');
-        });
-      }
-      
-      // Fill form with existing data
-      const applicationForm = document.getElementById('applyForm');
-      if (applicationForm) {
-        applicationForm.querySelector('input[name="first_name"]').value = application.fname || '';
-        applicationForm.querySelector('input[name="last_name"]').value = application.lname || '';
-        applicationForm.querySelector('input[name="email"]').value = application.email || '';
-        applicationForm.querySelector('input[name="phone"]').value = application.phone || '';
-      }
+    } catch (error) {
+      console.error('Error loading jobs:', error);
+      renderJobs(); // Render empty state
     }
   }
 
-  // ── Delete Application ─────────────────────────────────────────────
-  function deleteApplication(jobTitle) {
-    console.log('Deleting application for job:', jobTitle);
+  // ── Render Jobs ─────────────────────────────────────────────
+  function renderJobs() {
+    const container = document.getElementById('jobsList');
+    if (!container) return;
     
-    if (!confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+    if (!JOBS || JOBS.length === 0) {
+      container.innerHTML = `
+        <div class="no-jobs-msg">
+          <div class="no-jobs-icon">💼</div>
+          <h3>No Open Positions</h3>
+          <p>Check back soon for new opportunities or follow our company page for updates.</p>
+        </div>
+      `;
       return;
     }
     
-    // Remove application from localStorage
-    let applications = [];
-    try { 
-      applications = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
-    } catch(err) {}
-    
-    applications = applications.filter(app => app.position.toLowerCase() !== jobTitle);
-    localStorage.setItem('careers_applications', JSON.stringify(applications));
-    
-    // Update job counts
-    try {
-      let jobs = JSON.parse(localStorage.getItem('careers_job_postings') || '[]');
-      jobs = jobs.map(j => {
-        if (j.title.toLowerCase() === jobTitle) {
-          j.apps = Math.max(0, (j.apps || 0) - 1);
-        }
-        return j;
-      });
-      localStorage.setItem('careers_job_postings', JSON.stringify(jobs));
-    } catch(err) {}
-    
-    // Remove from DOM
-    const jobElements = document.querySelectorAll('.job');
-    jobElements.forEach(jobElement => {
-      const title = jobElement.querySelector('h3').textContent.toLowerCase();
-      if (title === jobTitle) {
-        jobElement.remove();
-      }
-    });
-    
-    // Create custom confirmation modal
-    const modalHtml = `
-      <div id="deleteConfirmModal" class="delete-confirm-modal" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-      ">
-        <div style="
-          background: white;
-          padding: 2rem;
-          border-radius: 8px;
-          max-width: 400px;
-          text-align: center;
-        ">
-          <h3>Delete Application</h3>
-          <p>Are you sure you want to delete this application?</p>
-          <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
-            <button id="deleteYesBtn" style="
-              background: #dc3545;
-              color: white;
-              border: none;
-              padding: 0.5rem 1rem;
-              border-radius: 4px;
-              cursor: pointer;
-            ">Yes, Delete</button>
-            <button id="deleteNoBtn" style="
-              background: #6c757d;
-              color: white;
-              border: none;
-              padding: 0.5rem 1rem;
-              border-radius: 4px;
-              cursor: pointer;
-            ">Cancel</button>
+    container.innerHTML = JOBS.map(job => `
+      <div class="job-card" data-job-id="${job.id}">
+        <div class="job-header">
+          <h3>${esc(job.title)}</h3>
+          <div class="job-meta">
+            <span class="job-dept">${esc(job.dept || job.department || 'General')}</span>
+            <span class="job-type">${esc(job.emptype || job.employment_type || 'Full-time')}</span>
           </div>
         </div>
+        <div class="job-body">
+          <p>${esc(job.description || 'No description available.')}</p>
+          <div class="job-details">
+            ${job.location ? `<span class="job-detail">📍 ${esc(job.location)}</span>` : ''}
+            ${job.salary_range ? `<span class="job-detail">💰 ${esc(job.salary_range)}</span>` : ''}
+          </div>
+        </div>
+        <div class="job-footer">
+          <button class="btn-primary apply-btn" data-role="${esc(job.title)}">
+            Apply Now
+          </button>
+        </div>
       </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    
-    // Get modal elements
-    const modal = document.getElementById('deleteConfirmModal');
-    const yesBtn = document.getElementById('deleteYesBtn');
-    const noBtn = document.getElementById('deleteNoBtn');
-    
-    // Add event listeners
-    const closeModal = () => {
-      if (modal) modal.remove();
-    };
-    
-    if (yesBtn) yesBtn.addEventListener('click', () => {
-      // Delete confirmed - proceed with deletion
-      deleteApplicationConfirmed(jobTitle);
-      closeModal();
-    });
-    
-    if (noBtn) noBtn.addEventListener('click', closeModal);
-    
-    // Handle clicking outside modal
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
+    `).join('');
   }
 
-  function deleteApplicationConfirmed(jobTitle) {
-    // Remove application from localStorage
-    let applications = [];
-    try { 
-      applications = JSON.parse(localStorage.getItem('careers_applications') || '[]'); 
-    } catch(err) {}
+  // ── Modal Functions ───────────────────────────────────────────
+  function openApplyModal(jobTitle) {
+    const modal = document.getElementById('applyModal');
+    const form = document.getElementById('applyForm');
+    const roleInput = document.getElementById('inputRole');
     
-    applications = applications.filter(app => app.position.toLowerCase() !== jobTitle);
-    localStorage.setItem('careers_applications', JSON.stringify(applications));
+    if (!modal || !form) return;
     
-    // Update job counts
-    try {
-      let jobs = JSON.parse(localStorage.getItem('careers_job_postings') || '[]');
-      jobs = jobs.map(j => {
-        if (j.title.toLowerCase() === jobTitle) {
-          j.apps = Math.max(0, (j.apps || 0) - 1);
-        }
-        return j;
-      });
-      localStorage.setItem('careers_job_postings', JSON.stringify(jobs));
-    } catch(err) {}
+    // Set the job title
+    if (roleInput) roleInput.value = jobTitle;
     
-    // Remove associated files
-    let filesMeta = {};
-    try {
-      filesMeta = JSON.parse(localStorage.getItem('careers_files') || '{}');
-    } catch(err) {}
+    // Show modal
+    modal.setAttribute('aria-hidden', 'false');
     
-    if (filesMeta[application.id]) {
-      delete filesMeta[application.id];
-      localStorage.setItem('careers_files', JSON.stringify(filesMeta));
-      console.log('Deleted application files for:', application.id);
-    }
+    // Focus first input
+    const firstInput = form.querySelector('input[name="first_name"]');
+    if (firstInput) firstInput.focus();
   }
-
-  // ── Apply buttons (set by dynamic job loader in index.html) ───────────────
-  const applyBtns = document.querySelectorAll('.apply-btn');
-  const modal     = document.getElementById('applyModal');
-  const modalClose = document.getElementById('modalClose');
-  const cancelBtn  = document.getElementById('cancelBtn');
-  const modalTitle = document.getElementById('modalTitle');
-  const inputRole = document.getElementById('inputRole');
-  const applyForm = document.getElementById('applyForm');
-  const formResult = document.getElementById('formResult');
-
-  if (applyBtns) {
-    applyBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const role = btn.getAttribute('data-role') || 'Position';
-        if (modalTitle) modalTitle.textContent = `Apply for ${role}`;
-        if (inputRole) inputRole.value = role;
-        if (modal) modal.setAttribute('aria-hidden', 'false');
-        if (formResult) formResult.textContent = '';
-      });
-    });
-  }
-
-  // ── File picker utilities ─────────────────────────────────────────────
-  function initializeFilePickers() {
-    document.querySelectorAll('.file-picker').forEach(picker => {
-      const input = picker.querySelector('input[type="file"]');
-      const clearBtn = picker.querySelector('.file-clear');
-      const nameSpan = picker.querySelector('.file-name');
-      
-      if (!input || !clearBtn || !nameSpan) return;
-      
-      // Clone clear button and get reference to the new one
-      let newClearBtn = null;
-      if (clearBtn) {
-        newClearBtn = clearBtn.cloneNode(true);
-        clearBtn.parentNode.replaceChild(newClearBtn, clearBtn);
-      }
-
-      // Add click event to name span to trigger file input
-      nameSpan.addEventListener('click', () => {
-        if (input) input.click();
-      });
-
-      input.addEventListener('change', () => {
-        const f = input.files && input.files[0];
-        if (f) {
-          nameSpan.textContent = f.name;
-          if (newClearBtn) newClearBtn.style.display = 'inline-block';
-        } else {
-          nameSpan.textContent = 'No file chosen';
-          if (newClearBtn) newClearBtn.style.display = 'none';
-        }
-        
-        // Manually trigger file name display update
-        setTimeout(() => {
-          nameSpan.click();
-        }, 100);
-      });
-
-      if (newClearBtn) {
-        newClearBtn.addEventListener('click', () => {
-          input.value = '';
-          nameSpan.textContent = 'No file chosen';
-          newClearBtn.style.display = 'none';
-          
-          // Don't immediately delete from localStorage during edit
-          // Files will be properly updated after successful submission
-        });
-      }
-    });
-  }
-
-  // ── FAQ accordion ─────────────────────────────────────────────────
-  document.querySelectorAll('.faq-item .faq-question').forEach(btn => {
-    btn.addEventListener('click', () => btn.closest('.faq-item').classList.toggle('open'));
-  });
-
-  // ── Lucide icons ──────────────────────────────────────────────────
-  try {
-    const lucide = window.lucide;
-    if (lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
-  } catch(err) {}
-
-  // ── Modal & form ──────────────────────────────────────────────────
-  if (!modal || !applyForm) return;
 
   function closeModal() {
     const modal = document.getElementById('applyModal');
     if (modal) {
       modal.setAttribute('aria-hidden', 'true');
+      
       // Reset form when closing
       const modalForm = document.getElementById('applyForm');
       const modalTitle = document.getElementById('modalTitle');
@@ -499,29 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (modalTitle) modalTitle.textContent = 'Apply for Role';
       if (submitBtn) submitBtn.textContent = 'Submit Application';
       
-      // Hide edit warning when modal is closed
-      const editWarningEl = document.getElementById('editWarning');
-      if (editWarningEl) editWarningEl.style.display = 'none';
+      // Clear form result
+      const formResult = document.getElementById('formResult');
+      if (formResult) formResult.textContent = '';
     }
   }
 
-  if (modalClose) modalClose.addEventListener('click', closeModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-
-  // Phone validation
-  const phoneInput   = applyForm.querySelector('input[name="phone"]');
-  const phoneWarning = applyForm.querySelector('.phone-warning');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', () => {
-      const raw    = phoneInput.value;
-      const digits = raw.replace(/\D/g, '').slice(0, 11);
-      if (phoneInput.value !== digits) phoneInput.value = digits;
-      if (phoneWarning) phoneWarning.textContent = /[A-Za-z]/.test(raw) ? 'Only numbers allowed.' : '';
-    });
-  }
-
-  // ── Form submit ───────────────────────────────────────────────────
-  let isSubmitting = false; // Flag to prevent duplicate submissions
+  // ── Form Submit ───────────────────────────────────────────
+  let isSubmitting = false;
+  
+  const applyForm = document.getElementById('applyForm');
+  const formResult = document.getElementById('formResult');
   
   if (applyForm) {
     console.log('Apply form found, adding submit listener');
@@ -535,9 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       
-      isSubmitting = true; // Set submission flag
+      isSubmitting = true;
       
-      // Check text fields for both new and edit applications
+      // Check text fields
       const requiredTextFields = ['first_name', 'last_name', 'middle_name', 'email', 'phone'];
       const missingTextFields = [];
       
@@ -551,79 +182,74 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (missingTextFields.length > 0) {
-        formResult.textContent = `⚠️ Please fill in the required fields: ${missingTextFields.join(', ')}. These fields are required to process your application.`;
+        formResult.textContent = `⚠️ Please fill in required fields: ${missingTextFields.join(', ')}. These fields are required to process your application.`;
         formResult.style.color = '#ff6b6b';
         console.log('Validation failed - missing fields');
-        isSubmitting = false; // Reset submission flag
+        isSubmitting = false;
         return;
       }
       
-      // Check required files for new applications
-      const modalTitle = document.getElementById('modalTitle');
-      const isEditing = modalTitle && modalTitle.textContent.includes('Edit Application');
+      // Check required files
+      const requiredFiles = [
+        { field: 'resume', name: 'Resume/CV' },
+        { field: 'birth_certificate', name: 'Birth Certificate' },
+        { field: 'diploma', name: 'Diploma/TOR' }
+      ];
+
+      const missingFiles = [];
+      const invalidFiles = [];
       
-      if (!isEditing) {
-        const requiredFiles = [
-          { field: 'resume', name: 'Resume/CV' },
-          { field: 'birth_certificate', name: 'Birth Certificate' },
-          { field: 'diploma', name: 'Diploma/TOR' }
-        ];
-
-        const missingFiles = [];
-        const invalidFiles = [];
-        
-        requiredFiles.forEach(fileInfo => {
-          const fileInput = applyForm.querySelector(`input[name="${fileInfo.field}"]`);
-          console.log(`Looking for file input with name: ${fileInfo.field}, found:`, fileInput);
-          if (fileInput && fileInput.files && fileInput.files[0]) {
-            const f = fileInput.files[0];
-            
-            // Check file size
-            if (f.size > 2 * 1024 * 1024) {
-              const fileSizeMB = (f.size / (1024 * 1024)).toFixed(2);
-              invalidFiles.push(`${f.name} is too large (${fileSizeMB} MB)`);
-            }
-            
-            // Check file type
-            const allowedTypes = [
-              'application/pdf',
-              'application/msword',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-              'application/vnd.ms-excel',
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-              'image/jpeg',
-              'image/png',
-              'image/jpg'
-            ];
-            
-            if (!allowedTypes.includes(f.type) && f.type !== '') {
-              invalidFiles.push(`${f.name} has unsupported file type`);
-            }
-          } else {
-            missingFiles.push(fileInfo.name);
+      requiredFiles.forEach(fileInfo => {
+        const fileInput = applyForm.querySelector(`input[name="${fileInfo.field}"]`);
+        console.log(`Looking for file input with name: ${fileInfo.field}, found:`, fileInput);
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const f = fileInput.files[0];
+          
+          // Check file size
+          if (f.size > 2 * 1024 * 1024) {
+            const fileSizeMB = (f.size / (1024 * 1024)).toFixed(2);
+            invalidFiles.push(`${f.name} is too large (${fileSizeMB} MB)`);
           }
-        });
+          
+          // Check file type
+          const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'image/jpeg',
+            'image/png',
+            'image/jpg'
+          ];
+          
+          if (!allowedTypes.includes(f.type) && f.type !== '') {
+            invalidFiles.push(`${f.name} has unsupported file type`);
+          }
+        } else {
+          missingFiles.push(fileInfo.name);
+        }
+      });
 
-        if (missingFiles.length > 0) {
-          formResult.textContent = `⚠️ Please upload all required files: ${missingFiles.join(', ')}. These documents are required to process your application.`;
-          formResult.style.color = '#ff6b6b';
-          console.log('Validation failed - missing files');
-          isSubmitting = false; // Reset submission flag
-          return;
-        }
-        
-        if (invalidFiles.length > 0) {
-          formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
-          formResult.style.color = '#ff6b6b';
-          console.log('Validation failed - invalid files');
-          isSubmitting = false; // Reset submission flag on error
-          return;
-        }
+      if (missingFiles.length > 0) {
+        formResult.textContent = `⚠️ Please upload all required files: ${missingFiles.join(', ')}. These documents are required to process your application.`;
+        formResult.style.color = '#ff6b6b';
+        console.log('Validation failed - missing files');
+        isSubmitting = false;
+        return;
+      }
+      
+      if (invalidFiles.length > 0) {
+        formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
+        formResult.style.color = '#ff6b6b';
+        console.log('Validation failed - invalid files');
+        isSubmitting = false;
+        return;
       }
       
       console.log('Validation passed - proceeding with submission');
       
-      // If we get here, validation passed - submit the form
+      // Submit the form
       submitApplication();
       
     });
@@ -631,19 +257,19 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Apply form not found!');
   }
 
-  // ── Submit Application Function ───────────────────────────────────────
+  // ── Submit Application Function ───────────────────────────────────
   function submitApplication() {
     console.log('submitApplication function called');
     const form = document.getElementById('applyForm');
     const formData = new FormData(form);
     
-    // Get selected job from hidden input (set when Apply Now button was clicked)
+    // Get selected job from hidden input
     const jobInput = document.getElementById('inputRole');
     const selectedJob = JOBS.find(job => job.title === jobInput.value);
     
     if (!selectedJob) {
       alert('Please select a job position before applying.');
-      isSubmitting = false; // Reset flag
+      isSubmitting = false;
       return;
     }
     
@@ -688,35 +314,50 @@ document.addEventListener('DOMContentLoaded', () => {
           formResult.innerHTML = `<div class="error-message">${errorMessage}</div>`;
           formResult.style.color = '#dc3545';
         }
-        isSubmitting = false; // Reset submission flag on error
+        isSubmitting = false;
+      } else {
+        // Success
+        console.log('Application saved to database with ID:', data.id);
+        const formResult = document.getElementById('formResult');
+        if (formResult) {
+          formResult.innerHTML = '<div class="success-message">✅ Application submitted successfully! We will review your application and contact you soon.</div>';
+          formResult.style.color = '#28a745';
+        }
+        
+        // Close modal after a short delay
+        setTimeout(() => {
+          closeModal();
+          isSubmitting = false;
+        }, 2000);
       }
+    })
+    .catch(error => {
+      console.error('Error submitting application:', error);
+      const formResult = document.getElementById('formResult');
+      if (formResult) {
+        formResult.innerHTML = '<div class="error-message">❌ Error submitting application. Please try again.</div>';
+        formResult.style.color = '#dc3545';
+      }
+      isSubmitting = false;
     });
   }
 
-  // ── Utility Functions ─────────────────────────────────────────
-  function esc(str) {
-    if (!str) return '';
-    return str.toString()
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  // ── File Picker Functions ─────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', function() {
-    const filePickers = document.querySelectorAll('.file-picker');
-    
-    filePickers.forEach(picker => {
+  // ── File Picker Functions ─────────────────────────────────────
+  function initializeFilePickers() {
+    document.querySelectorAll('.file-picker').forEach(picker => {
       const input = picker.querySelector('input[type="file"]');
       const display = picker.querySelector('.file-name');
       const clearBtn = picker.querySelector('.file-clear');
       
       if (!input || !display) return;
       
-      input.addEventListener('change', function(e) {
-        const file = e.target.files[0];
+      // Add click event to display to trigger file input
+      display.addEventListener('click', () => {
+        if (input) input.click();
+      });
+
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
         if (file) {
           display.textContent = file.name;
           if (clearBtn) clearBtn.style.display = 'inline-block';
@@ -725,15 +366,74 @@ document.addEventListener('DOMContentLoaded', () => {
           if (clearBtn) clearBtn.style.display = 'none';
         }
       });
-      
+
       if (clearBtn) {
-        clearBtn.addEventListener('click', function() {
+        clearBtn.addEventListener('click', () => {
           input.value = '';
           display.textContent = 'No file chosen';
           clearBtn.style.display = 'none';
         });
       }
     });
-  });    } 
- } ) ;  
- 
+  }
+
+  // ── Modal Event Listeners ───────────────────────────────────
+  const modalClose = document.getElementById('modalClose');
+  const cancelBtn = document.getElementById('cancelBtn');
+  
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+  // ── Phone Validation ─────────────────────────────────────
+  const phoneInput = applyForm ? applyForm.querySelector('input[name="phone"]') : null;
+  const phoneWarning = applyForm ? applyForm.querySelector('.phone-warning') : null;
+  
+  if (phoneInput) {
+    phoneInput.addEventListener('input', () => {
+      const raw = phoneInput.value;
+      const digits = raw.replace(/\D/g, '').slice(0, 11);
+      if (phoneInput.value !== digits) phoneInput.value = digits;
+      if (phoneWarning) phoneWarning.textContent = /[A-Za-z]/.test(raw) ? 'Only numbers allowed.' : '';
+    });
+  }
+
+  // ── Apply Button Event Listeners ─────────────────────────────
+  const applyBtns = document.querySelectorAll('.apply-btn');
+  if (applyBtns) {
+    applyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const role = btn.getAttribute('data-role') || 'Position';
+        openApplyModal(role);
+      });
+    });
+  }
+
+  // ── FAQ Accordion ───────────────────────────────────────────
+  document.querySelectorAll('.faq-item .faq-question').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.faq-item').classList.toggle('open'));
+  });
+
+  // ── Lucide Icons ───────────────────────────────────────────
+  try {
+    const lucide = window.lucide;
+    if (lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
+  } catch(err) {}
+
+  // ── Initialize Everything ─────────────────────────────────────
+  // Load jobs from API
+  loadJobsFromAPI();
+  
+  // Initialize file pickers
+  initializeFilePickers();
+});
+
+// ── Utility Functions ─────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return str.toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
