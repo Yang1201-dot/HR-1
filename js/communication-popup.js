@@ -134,7 +134,7 @@ async function r_loadCommunicationContent(candidateId, candidateName, offerId) {
             
             <div style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #1f2937);">Email ${!isFromOfferCard ? '<span style="color: red;">*</span>' : ''}</label>
-                <input type="email" id="comm_email" value="${isFromOfferCard ? r_findCandidateEmail(candidateName, offerId) : ''}" ${isFromOfferCard ? 'readonly' : ''} placeholder="${isFromOfferCard ? 'Email auto-filled' : 'Enter email address...'}" style="
+                <input type="email" id="comm_email" value="${emailValue}" ${isFromOfferCard ? 'readonly' : ''} placeholder="${isFromOfferCard ? 'Email auto-filled' : 'Enter email address...'}" style="
                     width: 100%;
                     padding: 8px 12px;
                     border: 1px solid var(--border-color, #e2e8f0);
