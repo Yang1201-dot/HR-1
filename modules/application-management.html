@@ -954,7 +954,7 @@ function am_render() {
 
         '<button class="btn-sm bsm-blue" data-id="' + a.id + '" onclick="am_openAssessmentForApplicant(\'' + a.id + '\', \'' + (a.first_name + ' ' + a.last_name) + '\')">Assess</button>' +
 
-        '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_viewApplicant(this.dataset.id)">View</button>' +
+        '<button class="btn-sm bsm-green" data-id="' + a.id + '" onclick="am_openApplicantDetailsPopup(\'' + a.id + '\', \'' + (a.first_name + ' ' + a.last_name) + '\')">View</button>' +
 
       '</td></tr>';
 
@@ -1926,6 +1926,7 @@ document.querySelectorAll('.nav-item.has-submenu').forEach(function(item) {
 })();
 </script>
   <script src="../js/assessment-popup.js"></script>
+  <script src="../js/applicant-popup.js"></script>
   <script>lucide.createIcons();</script>
 </body>
 </html>
