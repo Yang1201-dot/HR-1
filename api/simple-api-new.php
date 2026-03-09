@@ -566,7 +566,7 @@ switch($action) {
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
-                'interview_interview_notes' => 'TEXT',
+                'interview_notes' => 'TEXT',
                 'position' => 'VARCHAR(255)',
                 'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
@@ -710,7 +710,7 @@ switch($action) {
         $interviewDate = $_POST['interview_date'] ?? null;
         $interviewTime = $_POST['interview_time'] ?? null;
         $interviewType = $_POST['interview_type'] ?? 'Phone Screen';
-        $interviewNotes = $_POST['interview_interview_notes'] ?? '';
+        $interviewNotes = $_POST['interview_notes'] ?? '';
         $position = $_POST['position'] ?? '';
         
         if (!$applicantId || !$interviewDate || !$interviewTime) {
@@ -727,7 +727,7 @@ switch($action) {
                 'interview_date' => 'DATE NOT NULL',
                 'interview_time' => 'TIME NOT NULL',
                 'interview_type' => "VARCHAR(50) NOT NULL DEFAULT 'Phone Screen'",
-                'interview_interview_notes' => 'TEXT',
+                'interview_notes' => 'TEXT',
                 'position' => 'VARCHAR(255)',
                 'interview_status' => "VARCHAR(20) NOT NULL DEFAULT 'Scheduled'",
                 'created_at' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
@@ -786,7 +786,7 @@ switch($action) {
         // Insert interview
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO interviews (applicant_id, applicant_name, interview_date, interview_time, interview_type, interview_interview_notes, position, interview_status)
+                INSERT INTO interviews (applicant_id, applicant_name, interview_date, interview_time, interview_type, interview_notes, position, interview_status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'Scheduled')
             ");
             $stmt->execute([$applicantId, $applicantName, $interviewDate, $interviewTime, $interviewType, $interviewNotes, $position]);
