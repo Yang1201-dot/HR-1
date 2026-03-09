@@ -1233,6 +1233,10 @@ function am_viewApplicant(id) {
 
   var existingAssessment = ASSESS.find(function(ass) { return String(ass.applicant_id) === String(id); });
 
+  console.log('Looking for assessment for applicant ID:', id);
+  console.log('ASSESS array:', ASSESS);
+  console.log('Found assessment:', existingAssessment);
+
   
 
   // Build HTML content

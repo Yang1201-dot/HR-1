@@ -150,6 +150,7 @@ switch($action) {
                 CREATE TABLE IF NOT EXISTS assessments (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     applicant_id INT NOT NULL,
+                    applicant_name VARCHAR(255),
                     tech INT NOT NULL DEFAULT 5,
                     comm INT NOT NULL DEFAULT 5,
                     prob INT NOT NULL DEFAULT 5,
@@ -162,13 +163,28 @@ switch($action) {
             ");
             
             // Insert or update assessment
+            // Get applicant name for storage
+            $applicantName = '';
+            if ($applicantId) {
+                try {
+                    $stmt = $pdo->prepare("SELECT CONCAT(first_name, ' ', last_name) as name FROM applicants WHERE id = ?");
+                    $stmt->execute([$applicantId]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($result) {
+                        $applicantName = $result['name'];
+                    }
+                } catch(Exception $e) {
+                    error_log("Error getting applicant name: " . $e->getMessage());
+                }
+            }
+            
             $stmt = $pdo->prepare("
-                INSERT INTO assessments (applicant_id, tech, comm, prob, fit, notes)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO assessments (applicant_id, applicant_name, tech, comm, prob, fit, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE 
-                tech = VALUES(tech), comm = VALUES(comm), prob = VALUES(prob), fit = VALUES(fit), notes = VALUES(notes)
+                applicant_name = VALUES(applicant_name), tech = VALUES(tech), comm = VALUES(comm), prob = VALUES(prob), fit = VALUES(fit), notes = VALUES(notes)
             ");
-            $stmt->execute([$applicantId, $tech, $comm, $prob, $fit, $notes]);
+            $stmt->execute([$applicantId, $applicantName, $tech, $comm, $prob, $fit, $notes]);
             
             $assessmentId = $pdo->lastInsertId();
             error_log("Assessment saved with ID: $assessmentId");
@@ -240,6 +256,7 @@ switch($action) {
             ");
             
             // Ensure individual columns exist
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN applicant_name VARCHAR(255)"); } catch(Exception $e) {}
             try { $pdo->exec("ALTER TABLE assessments ADD COLUMN tech INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
             try { $pdo->exec("ALTER TABLE assessments ADD COLUMN comm INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
             try { $pdo->exec("ALTER TABLE assessments ADD COLUMN prob INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
