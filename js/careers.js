@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isSubmitting = true; // Set submission flag
       
       // Check text fields for both new and edit applications
-      const requiredTextFields = ['first_name', 'last_name', 'email', 'phone'];
+      const requiredTextFields = ['first_name', 'last_name', 'middle_name', 'email', 'phone'];
       const missingTextFields = [];
       
       requiredTextFields.forEach(fieldName => {
@@ -616,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
           formResult.textContent = `⚠️ Please fix these file issues: ${invalidFiles.join(', ')}. Maximum file size is 2MB. Allowed types: PDF, Word, Excel, JPEG, PNG.`;
           formResult.style.color = '#ff6b6b';
           console.log('Validation failed - invalid files');
-          isSubmitting = false; // Reset submission flag
+          isSubmitting = false; // Reset submission flag on error
           return;
         }
       }
@@ -663,77 +663,79 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => {
       console.log('Response status:', response.status);
       console.log('Response ok:', response.ok);
-        isSubmitting = false; // Reset submission flag
-        return;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    }
-    
-    console.log('Validation passed - proceeding with submission');
-    
-    // If we get here, validation passed - submit the form
-    submitApplication();
-    
-  });
-} else {
-  console.error('Apply form not found!');
-}
-
-// ── Submit Application Function ───────────────────────────────────────
-function submitApplication() {
-  console.log('submitApplication function called');
-  const form = document.getElementById('applyForm');
-  const formData = new FormData(form);
-  
-  // Get selected job from hidden input (set when Apply Now button was clicked)
-  const jobInput = document.getElementById('inputRole');
-  const selectedJob = JOBS.find(job => job.title === jobInput.value);
-  
-  if (!selectedJob) {
-    alert('Please select a job position before applying.');
-    isSubmitting = false; // Reset flag
-    return;
-  }
-  
-  // Add job posting ID to form data
-  formData.append('job_posting_id', selectedJob.id);
-  formData.append('position', selectedJob.title);
-  formData.append('department', selectedJob.department);
-  formData.append('location', selectedJob.location);
-  formData.append('employment_type', selectedJob.employment_type);
-  formData.append('salary', selectedJob.salary_range);
-  formData.append('description', selectedJob.description);
-
-  fetch('../api/simple-save-application.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
-    return response.json();
-  })
-  .then(data => {
-    console.log('Full response data:', data);
-    console.log('Response ID:', data.id);
-    console.log('Response type:', typeof data);
-    
-    // Check if response contains an error
-    if (data.error) {
-      console.error('Application submission error:', data.error);
-      const formResult = document.getElementById('formResult');
-      if (formResult) {
-        // Show specific error message based on error type
-        let errorMessage = '❌ Error submitting application. Please try again.';
-        if (data.error.includes('Duplicate entry') && data.error.includes('email')) {
-          errorMessage = '❌ This email address has already been used for an application. Please use a different email address.';
-        } else if (data.error.includes('SQLSTATE')) {
-          errorMessage = '❌ Database error occurred. Please try again or contact support.';
+      return response.json();
+    })
+    .then(data => {
+      console.log('Full response data:', data);
+      console.log('Response ID:', data.id);
+      console.log('Response type:', typeof data);
+      
+      // Check if response contains an error
+      if (data.error) {
+        console.error('Application submission error:', data.error);
+        const formResult = document.getElementById('formResult');
+        if (formResult) {
+          // Show specific error message based on error type
+          let errorMessage = '❌ Error submitting application. Please try again.';
+          if (data.error.includes('Duplicate entry') && data.error.includes('email')) {
+            errorMessage = '❌ This email address has already been used for an application. Please use a different email address.';
+          } else if (data.error.includes('SQLSTATE')) {
+            errorMessage = '❌ Database error occurred. Please try again or contact support.';
+          }
+          formResult.innerHTML = `<div class="error-message">${errorMessage}</div>`;
+          formResult.style.color = '#dc3545';
         }
-        formResult.innerHTML = `<div class="error-message">${errorMessage}</div>`;
-        formResult.style.color = '#dc3545';
+        isSubmitting = false; // Reset submission flag on error
       }
-      isSubmitting = false; // Reset submission flag on error
     });
   }
 
-}); // Close DOMContentLoaded event listener
+  // Load jobs from API
+  loadJobsFromAPI();
+});
+
+// ── Utility Functions ─────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return str.toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ── File Picker Functions ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  const filePickers = document.querySelectorAll('.file-picker');
+  
+  filePickers.forEach(picker => {
+    const input = picker.querySelector('input[type="file"]');
+    const display = picker.querySelector('.file-name');
+    const clearBtn = picker.querySelector('.file-clear');
+    
+    if (!input || !display) return;
+    
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        display.textContent = file.name;
+        if (clearBtn) clearBtn.style.display = 'inline-block';
+      } else {
+        display.textContent = 'No file chosen';
+        if (clearBtn) clearBtn.style.display = 'none';
+      }
+    });
+    
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        display.textContent = 'No file chosen';
+        clearBtn.style.display = 'none';
+      });
+    }
+  });
+});
