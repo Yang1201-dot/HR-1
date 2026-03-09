@@ -339,10 +339,14 @@ async function r_findCandidateEmail(candidateName, offerId) {
             }
         } else if (Array.isArray(data) && data.length > 0) {
             console.log('📋 Database applications loaded (direct array):', data.length);
+            console.log('📊 First applicant data:', data[0]);
+            console.log('📋 First applicant keys:', Object.keys(data[0]));
             
             const applicant = data.find(function(app) {
+                console.log('🔍 Current applicant data:', app);
                 const fullName = (app.fname + ' ' + app.lname).trim();
                 console.log('🔍 Checking DB applicant (direct):', fullName, 'against:', candidateName);
+                console.log('📋 fname:', app.fname, 'lname:', app.lname);
                 return fullName === candidateName || app.fname === candidateName || app.lname === candidateName;
             });
             
@@ -354,6 +358,12 @@ async function r_findCandidateEmail(candidateName, offerId) {
             } else if (applicant) {
                 console.log('❌ DB applicant found but no email field (direct)');
                 console.log('📋 Applicant data keys (direct):', Object.keys(applicant));
+            } else {
+                console.log('❌ No matching applicant found');
+                console.log('🔍 All applicants names:');
+                data.forEach(function(app, index) {
+                    console.log(`  ${index + 1}. "${app.fname}" "${app.lname}" -> "${(app.fname + ' ' + app.lname).trim()}"`);
+                });
             }
         } else {
             console.log('❌ API response invalid or no applications:', data);
