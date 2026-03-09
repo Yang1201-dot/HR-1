@@ -89,31 +89,54 @@
 
   // ── Modal File Picker Functions ───────────────────────────────
   function initializeModalFilePickers() {
-    document.querySelectorAll('#applyModal .file-picker').forEach(picker => {
+    console.log('Initializing modal file pickers...');
+    const pickers = document.querySelectorAll('#applyModal .file-picker');
+    console.log('Found file pickers:', pickers.length);
+    
+    pickers.forEach((picker, index) => {
+      console.log(`Processing picker ${index}:`, picker);
       const input = picker.querySelector('input[type="file"], .real-file');
       const display = picker.querySelector('.file-name');
       const clearBtn = picker.querySelector('.file-clear');
       const fileBtn = picker.querySelector('.file-btn');
       
-      if (!input || !display) return;
+      console.log('Picker elements:', { input: !!input, display: !!display, clearBtn: !!clearBtn, fileBtn: !!fileBtn });
+      
+      if (!input || !display) {
+        console.log('Skipping picker - missing input or display');
+        return;
+      }
       
       // Add click event to file button to trigger file input
       if (fileBtn) {
-        fileBtn.addEventListener('click', () => {
-          if (input) input.click();
+        console.log('Adding click event to file button');
+        fileBtn.addEventListener('click', (e) => {
+          console.log('File button clicked!', e);
+          if (input) {
+            console.log('Triggering file input click');
+            input.click();
+          }
         });
+      } else {
+        console.log('No file button found in picker');
       }
       
       // Add click event to display to trigger file input
-      display.addEventListener('click', () => {
-        if (input) input.click();
+      display.addEventListener('click', (e) => {
+        console.log('File display clicked!', e);
+        if (input) {
+          console.log('Triggering file input click from display');
+          input.click();
+        }
       });
       
-      input.addEventListener('change', () => {
+      input.addEventListener('change', (e) => {
+        console.log('File input changed!', e);
         const file = input.files && input.files[0];
         if (file) {
           display.textContent = file.name;
           if (clearBtn) clearBtn.style.display = 'inline-block';
+          console.log('File selected:', file.name);
         } else {
           display.textContent = 'No file chosen';
           if (clearBtn) clearBtn.style.display = 'none';
@@ -121,13 +144,16 @@
       });
 
       if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
+        clearBtn.addEventListener('click', (e) => {
+          console.log('Clear button clicked!', e);
           input.value = '';
           display.textContent = 'No file chosen';
           clearBtn.style.display = 'none';
         });
       }
     });
+    
+    console.log('File picker initialization complete');
   }
 
   // ── Form Submit ───────────────────────────────────────────
