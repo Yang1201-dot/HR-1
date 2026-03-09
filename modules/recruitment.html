@@ -1753,7 +1753,15 @@ function r_renderOffers() {
 
         '<div class="offer-actions" style="display: flex; gap: 8px; margin-top: 15px;">' +
 
-          (o.pdfGenerated ? '<button class="btn-sm bsm-blue" onclick="r_reprintOffer(\'' + o.id + '\')">📄 Reprint PDF</button>' : '') +
+          (o.pdfGenerated ? 
+
+            '<button class="btn-sm bsm-blue" onclick="r_viewOfferPDF(\'' + o.id + '\', \'' + candidateName + '\')">📄 View</button>' +
+
+            '<button class="btn-sm bsm-green" onclick="r_openSendCommunication(\'' + (o.candidateId || '') + '\', \'' + candidateName + '\', \'' + o.id + '\')">📤 Send To</button>' +
+
+            '<button class="btn-sm bsm-blue" onclick="r_reprintOffer(\'' + o.id + '\')">📄 Reprint</button>'
+
+          : '') +
 
           '<button class="btn-sm bsm-green" onclick="r_updateOfferStatus(\'' + o.id + '\')">Update Status</button>' +
 
@@ -3435,13 +3443,13 @@ function r_generateOfferPDF() {
 
  
 
-  // Show PDF card instead of opening new window
+  // Update offer card with PDF buttons instead of showing popup
 
-  r_showPDFCard(offerData, offer);
+  r_updateOfferCardWithPDF(offer);
 
  
 
-  // Mark PDF as generated
+  // Update button state but don't close modal
 
   document.getElementById('generate_pdf_btn').textContent = '📄 PDF Generated';
 
@@ -3449,219 +3457,23 @@ function r_generateOfferPDF() {
 
  
 
-  console.log('PDF generated and card displayed');
+  console.log('PDF generated and card updated');
 
 }
 
  
 
-// Show PDF card
+// Update offer card with PDF buttons
 
-function r_showPDFCard(offerData, offer) {
+function r_updateOfferCardWithPDF(offer) {
 
-  // Close any existing PDF card
+  // Refresh the offers display to show the new card with PDF buttons
 
-  r_closePDFCard();
-
- 
-
-  // Create PDF card
-
-  const card = document.createElement('div');
-
-  card.id = 'pdf-card';
-
-  card.style.cssText = `
-
-    position: fixed;
-
-    top: 50%;
-
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-
-    background: var(--surface, #ffffff);
-
-    border: 1px solid var(--border-color, #e2e8f0);
-
-    border-radius: 12px;
-
-    padding: 20px;
-
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-
-    z-index: 10000;
-
-    max-width: 400px;
-
-    width: 90%;
-
-  `;
+  r_renderOffers();
 
  
 
-  card.innerHTML = `
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-
-      <h4 style="margin: 0; color: var(--text-primary, #1f2937);">📄 PDF Generated</h4>
-
-      <button onclick="r_closePDFCard()" style="
-
-        background: none;
-
-        border: none;
-
-        font-size: 20px;
-
-        cursor: pointer;
-
-        color: var(--text-secondary, #64748b);
-
-        padding: 5px;
-
-      ">&times;</button>
-
-    </div>
-
-    
-
-    <div style="margin-bottom: 16px;">
-
-      <div style="font-weight: 600; color: var(--text-primary, #1f2937); margin-bottom: 8px;">Offer Letter</div>
-
-      <div style="font-size: 14px; color: var(--text-secondary, #64748b); margin-bottom: 4px;">Candidate: ${offerData.candidateName}</div>
-
-      <div style="font-size: 14px; color: var(--text-secondary, #64748b); margin-bottom: 4px;">Position: ${offerData.position}</div>
-
-      <div style="font-size: 12px; color: var(--text-secondary, #64748b);">Generated: ${new Date().toLocaleString()}</div>
-
-    </div>
-
-    
-
-    <div style="display: flex; gap: 8px;">
-
-      <button onclick="r_viewPDF('${offer.id}', '${offerData.candidateName}')" style="
-
-        background: var(--brand-green, #2ca078);
-
-        color: white;
-
-        border: none;
-
-        padding: 6px 12px;
-
-        border-radius: 6px;
-
-        cursor: pointer;
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        transition: all 0.2s ease;
-
-      " onmouseover="this.style.background='var(--brand-green-hover, #23a068)';" onmouseout="this.style.background='var(--brand-green, #2ca078)';">View</button>
-
-      
-
-      <button onclick="r_openSendCommunication('${offerData.candidateId || ''}', '${offerData.candidateName}', '${offer.id}')" style="
-
-        background: var(--surface, #f8fafc);
-
-        color: var(--text-primary, #1f2937);
-
-        border: 1px solid var(--border-color, #e2e8f0);
-
-        padding: 6px 12px;
-
-        border-radius: 6px;
-
-        cursor: pointer;
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        transition: all 0.2s ease;
-
-      " onmouseover="this.style.background='var(--bg-secondary, #e2e8f0)'; this.style.color='var(--text-primary, #1f2937)';" onmouseout="this.style.background='var(--surface, #f8fafc)'; this.style.color='var(--text-primary, #1f2937)';">Send To</button>
-
-    </div>
-
-  `;
-
- 
-
-  // Create overlay
-
-  const overlay = document.createElement('div');
-
-  overlay.id = 'pdf-card-overlay';
-
-  overlay.style.cssText = `
-
-    position: fixed;
-
-    top: 0;
-
-    left: 0;
-
-    right: 0;
-
-    bottom: 0;
-
-    background: rgba(0, 0, 0, 0.5);
-
-    z-index: 9999;
-
-  `;
-
-  overlay.onclick = r_closePDFCard;
-
- 
-
-  // Add to page
-
-  document.body.appendChild(overlay);
-
-  document.body.appendChild(card);
-
- 
-
-  // Store offer data for viewing
-
-  card.dataset.offerId = offer.id;
-
-  card.dataset.candidateName = offerData.candidateName;
-
- 
-
-  console.log('✅ PDF card displayed');
-
-}
-
- 
-
-// Close PDF card
-
-function r_closePDFCard() {
-
-  const card = document.getElementById('pdf-card');
-
-  const overlay = document.getElementById('pdf-card-overlay');
-
- 
-
-  if (card) card.remove();
-
-  if (overlay) overlay.remove();
-
- 
-
-  console.log('✅ PDF card closed');
+  console.log('✅ Offer card updated with PDF buttons');
 
 }
 
@@ -3669,7 +3481,7 @@ function r_closePDFCard() {
 
 // View PDF in new window
 
-function r_viewPDF(offerId, candidateName) {
+function r_viewOfferPDF(offerId, candidateName) {
 
   // Find the offer
 
@@ -3851,17 +3663,13 @@ function r_generatePDFContent(offerData) {
 
 function r_openSendCommunication(candidateId, candidateName, offerId) {
 
-  // Close PDF card first
-
-  r_closePDFCard();
-
- 
-
   // Open communication popup
 
   r_openCommunicationPopup(candidateId, candidateName, offerId);
 
 }
+
+ 
 
  
 
