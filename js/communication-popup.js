@@ -312,7 +312,7 @@ async function r_findCandidateEmail(candidateName, offerId) {
     // Try to fetch from database API if AM array not available
     try {
         console.log('🌐 Fetching applicants from database...');
-        const response = await fetch('../api/simple-api-new.php?action=get_applicants');
+        const response = await fetch('../api/simple-api-new.php?action=get_applications');
         const data = await response.json();
         
         if (data.success && data.applicants && data.applicants.length > 0) {
