@@ -411,12 +411,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Apply Button Event Listeners ─────────────────────────────
   const applyBtns = document.querySelectorAll('.apply-btn');
   if (applyBtns) {
+    console.log('Found apply buttons:', applyBtns.length);
     applyBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const role = btn.getAttribute('data-role') || 'Position';
+        console.log('Apply button clicked, role:', role);
         openApplyModal(role);
       });
     });
+  } else {
+    console.log('No apply buttons found');
   }
 
   // ── FAQ Accordion ───────────────────────────────────────────
