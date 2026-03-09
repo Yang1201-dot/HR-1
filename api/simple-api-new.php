@@ -223,6 +223,31 @@ switch($action) {
         
     case 'get_assessments':
         try {
+            // Ensure assessments table has correct structure
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS assessments (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    applicant_id INT NOT NULL,
+                    tech INT NOT NULL DEFAULT 5,
+                    comm INT NOT NULL DEFAULT 5,
+                    prob INT NOT NULL DEFAULT 5,
+                    fit INT NOT NULL DEFAULT 5,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (applicant_id) REFERENCES applicants(id) ON DELETE CASCADE
+                )
+            ");
+            
+            // Ensure individual columns exist
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN tech INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN comm INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN prob INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN fit INT NOT NULL DEFAULT 5"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN notes TEXT"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"); } catch(Exception $e) {}
+            try { $pdo->exec("ALTER TABLE assessments ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"); } catch(Exception $e) {}
+            
             $stmt = $pdo->query("
                 SELECT a.*, s.tech, s.comm, s.prob, s.fit, s.notes, s.created_at, s.updated_at
                 FROM assessments s
